@@ -270,10 +270,12 @@ class PriceTemplateController extends Controller
     {
         $priceTemplateItem = PriceTemplateItem::findOrFail($priceTemplateItemId);
 
+        // dd($priceTemplateItem->toArray());
         if($priceTemplateItem->priceTemplateItemUoms()->exists()) {
             $priceTemplateItemUomObj = $priceTemplateItem->priceTemplateItemUoms()->whereHas('itemUom', function($query) use ($itemUomId) {
                 $query->where('id', $itemUomId);
             })->first();
+
             if($priceTemplateItemUomObj) {
                 $priceTemplateItemUomObj->delete();
             }else {
