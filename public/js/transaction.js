@@ -1002,6 +1002,8 @@ function transactionController($scope, $http) {
             google.maps.event.trigger(map, "resize");
             map.setCenter(locationLatLng);
         });
+    }
+
     $scope.checkIsActiveUom = function (uomId, priceItem) {
         let isActive = false;
         if (priceItem.price_template_item_uoms.length) {
@@ -1056,6 +1058,7 @@ function transactionController($scope, $http) {
             $scope.totalAmount = grandTotalAmount.toFixed(2);
         }
     }
+
 }
 
 
