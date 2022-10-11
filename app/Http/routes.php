@@ -329,6 +329,8 @@ Route::delete('/position/data/{id}', 'PositionController@destroyAjax');
 Route::resource('position', 'PositionController');
 
 Route::get('/price-template', 'PriceTemplateController@getPriceTemplateIndex');
+Route::get('/price-template/{id}/edit', 'PriceTemplateController@editPriceTemplate');
+Route::post('/api/price-template/{id}/add-template-item', 'PriceTemplateController@addPriceTemplateItemApi');
 Route::post('/api/price-template', 'PriceTemplateController@getPriceTemplatesApi');
 Route::post('/api/price-template/replicate', 'PriceTemplateController@replicatePriceTemplateApi');
 Route::post('/api/price-template/create', 'PriceTemplateController@createPriceTemplateApi');
@@ -342,7 +344,9 @@ Route::post('/api/price-template/sort-sequence', 'PriceTemplateController@sortSe
 Route::post('/api/price-template/renumber-sequence', 'PriceTemplateController@renumberSequenceApi');
 Route::post('/api/price-template/{id}/attachment', 'PriceTemplateController@storeAttachmentApi');
 Route::post('/api/price-template/attachment/delete', 'PriceTemplateController@deleteAttachmentApi');
+Route::get('/price-template/{id}/attachment/{attachmentId}/delete', 'PriceTemplateController@deleteAttachment');
 Route::post('/api/price-template-item/{priceTemplateItemId}/item-uom/{itemUomId}/toggle', 'PriceTemplateController@togglePriceTemplateItemUomApi');
+Route::get('/api/price-template/price-template-item/{priceTemplateItemId}', 'PriceTemplateController@deletePriceTemplateItemApi');
 
 Route::get('/route-template', 'RouteTemplateController@getRouteTemplateIndex');
 Route::post('/api/route-template', 'RouteTemplateController@getRouteTemplatesApi');

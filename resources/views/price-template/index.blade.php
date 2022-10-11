@@ -168,9 +168,13 @@ Price Template
                             <td class="col-md-2 text-center">
                                 @{{ data.name }} <br>
                                 <div class="btn-group">
-                                    <button class="btn btn-default btn-xs" ng-click="onSinglePriceTemplateClicked(data)" data-toggle="modal" data-target="#price-template-modal">
+                                    {{-- <button class="btn btn-default btn-xs" ng-click="onSinglePriceTemplateClicked(data)" data-toggle="modal" data-target="#price-template-modal">
+
                                         Edit
-                                    </button>
+                                    </button> --}}
+                                    <a href="/price-template/@{{data.id}}/edit" class="btn btn-default btn-xs" >
+                                        Edit
+                                    </a>
                                     <button class="btn btn-danger btn-xs" ng-click="onPriceTemplateDelete(data)">
                                         Delete
                                     </button>
@@ -205,7 +209,8 @@ Price Template
             <dir-pagination-controls max-size="5" pagination-id="priceTemplates" direction-links="true" boundary-links="true" class="pull-left" on-page-change="pageChanged(newPageNumber)"> </dir-pagination-controls>
         </div>
     </div>
-
+{{--
+    <form ng-submit="onFormSubmitClicked">
     <div id="price-template-modal" class="modal fade" role="dialog">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
@@ -232,13 +237,7 @@ Price Template
                     </label>
                     <textarea class="form-control" ng-model="form.remarks" rows="3"></textarea>
                   </div>
-{{--
-                  <div class="form-group" ng-if="form.id">
-                    <label for="attachment">
-                      Attachment
-                    </label>
-                    <input type="file" ng-files="setTheFile($attachments)" id="price_template_attachment"  class="form-control">
-                  </div> --}}
+
                     <div ng-if="form.attachments && form.id">
                         <div class="table-responsive">
                             <table class="table table-list-search table-hover table-bordered">
@@ -283,7 +282,6 @@ Price Template
                         </div>
                         <div class="form-group">
                             <button class="btn btn-success" ng-click="uploadFile($event, form.id)"><i class="fa fa-upload"></i> Upload File</button>
-                            {{-- <button class="btn btn-danger" ng-click="deleteFile(form.id)"><i class="fa fa-times"></i> Remove File(s)</button> --}}
                         </div>
                     </div>
 
@@ -414,7 +412,8 @@ Price Template
                             </span>
                             <span ng-if="priceTemplateItem.item.is_inventory" ng-repeat="itemUom in priceTemplateItem.item.item_uoms">
                                 <span ng-if="itemUom.uom_id == uom.id">
-                                    <input type="checkbox" ng-model="priceTemplateItem.itemUom[itemUom.id]" ng-checked="checkExistPriceTemplateItemUom(itemUom.id, priceTemplateItem).result" ng-click="onPriceTemplateItemUomChanged(priceTemplateItem, itemUom)" ng-true-value=true ng-false-value=false >
+
+                                    <input type="checkbox" ng-model="priceTemplateItem.price_template_item_uoms[itemUom.id]" ng-true-value=true ng-false-value=false >
                                 </span>
                             </span>
                           </td>
@@ -436,16 +435,16 @@ Price Template
                         <button class="btn btn-info" ng-click="onReplicatePriceTemplateClicked(form)">
                             Replicate
                         </button>
-                        <button type="button" class="btn btn-success" data-dismiss="modal" ng-if="!form.id" ng-click="onFormSubmitClicked()" ng-disabled="!form.name">Submit</button>
-                        <button type="button" class="btn btn-success" data-dismiss="modal" ng-if="form.id" ng-click="onFormSubmitClicked()" ng-disabled="!form.name">Save</button>
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-success" ng-if="!form.id" ng-click="onFormSubmitClicked()" ng-disabled="!form.name">Submit</button>
+                        <button type="submit" class="btn btn-success" ng-if="form.id" ng-click="onFormSubmitClicked()" ng-disabled="!form.name">Save</button>
+                        <button type="submit" class="btn btn-default">Close</button>
                     </div>
                 </div>
             </div>
 
         </div>
     </div>
-
+    </form> --}}
 </div>
 <script src="/js/price-template.js"></script>
 @stop

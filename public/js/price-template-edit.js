@@ -5,6 +5,8 @@ var app = angular.module('app', [
     '720kb.datepicker'
 ]);
 
+let priceTemplateId = $('#priceTemplateId').val();
+
 function priceTemplateController($scope, $http) {
     // init the variables
     $scope.alldata = [];
@@ -14,16 +16,6 @@ function priceTemplateController($scope, $http) {
     $scope.itemsPerPage = 100;
     $scope.indexFrom = 0;
     $scope.indexTo = 0;
-    $scope.search = {
-        name: '',
-        person_id: [],
-        active: ['Yes'],
-        priceTemplates: [],
-        pageNum: 100,
-        sortBy: true,
-        sortName: '',
-        edited: false,
-    }
     $scope.form = getDefaultForm()
     $scope.uoms = [];
     // init page load
@@ -86,7 +78,6 @@ function priceTemplateController($scope, $http) {
 
     // when hitting search button
     $scope.searchDB = function () {
-        $scope.search.edited = true;
     }
 
     // search button transaction index
@@ -133,21 +124,16 @@ function priceTemplateController($scope, $http) {
     }
 
     // create
-    $scope.onAddPriceTemplateItemClicked = function () {
-        const item = JSON.parse($scope.form.item);
-        const sequence = $scope.form.sequence;
-        const retail_price = $scope.form.retail_price;
-        const quote_price = $scope.form.quote_price;
-        $scope.form.price_template_items.push({
-            item: item,
-            sequence: sequence,
-            retail_price: retail_price ? retail_price.toFixed(2) : 0,
-            quote_price: quote_price ? quote_price.toFixed(2) : 0,
-
-        });
-        $scope.form.sequence = ''
-        $scope.form.retail_price = ''
-        $scope.form.quote_price = ''
+    $scope.onAddPriceTemplateItemClicked = function (event, priceTemplateId) {
+        event.preventDefault()
+        $http.post('/api/price-template/'+ priceTemplateId + '/add-template-item',{
+            item_id: $scope.form.item_id,
+            sequence: $scope.form.sequence,
+            retail_price: $scope.form.retail_price,
+            quote_price: $scope.form.quote_price,
+        }).success(function(data) {
+            location.reload()
+        })
     }
 
     // single edit entry clicked
@@ -214,9 +200,10 @@ function priceTemplateController($scope, $http) {
     }
 
     // delete single entry api
-    $scope.onSingleEntryDeleted = function (item) {
-        let index = $scope.form.price_template_items.indexOf(item);
-        $scope.form.price_template_items.splice(index, 1)
+    $scope.onSingleEntryDeleted = function (itemId) {
+        $http.get('/api/price-template/price-template-item/' + itemId).success(function(data) {
+            location.reload();
+        })
     }
 
     // bind
@@ -278,14 +265,10 @@ function priceTemplateController($scope, $http) {
     //         });
     // };
 
-    $scope.onReplicatePriceTemplateClicked = function (data) {
-        $http.post('/api/price-template/replicate', { id: data.id }).success(function (data) {
-            $scope.form = getDefaultForm()
-            $('.select').select2({
-                placeholder: 'Select...'
-            });
-            getPage(1)
-            $('#price-template-modal').modal('hide');
+    $scope.onReplicatePriceTemplateClicked = function (event, priceTemplateId) {
+        event.preventDefault()
+        $http.post('/api/price-template/replicate', { id: priceTemplateId }).success(function (id) {
+            location.href = '/price-template/'+ id +'/edit';
         });
     }
 
@@ -316,7 +299,6 @@ function priceTemplateController($scope, $http) {
     // removing file
     $scope.removeFile = function (attachmentId) {
         $http.post('/api/price-template/attachment/delete', { 'attachmentId': attachmentId }).success(function (data) {
-            getPage(1);
             location.reload();
         });
     }
@@ -348,11 +330,11 @@ function priceTemplateController($scope, $http) {
     //         });
     // };
 
-    $scope.uploadFile = function (event, priceTemplateId) {
+    $scope.uploadFile = function (event, priceTemplateid) {
         event.preventDefault();
         var request = {
             method: 'POST',
-            url: '/api/price-template/' + priceTemplateId + '/attachment',
+            url: '/api/price-template/' + priceTemplateid + '/attachment',
             data: formData,
             headers: {
                 'Content-Type': undefined
@@ -360,18 +342,9 @@ function priceTemplateController($scope, $http) {
         };
         $http(request)
             .then(function success(e) {
-                $scope.files = e.data.files;
-                $scope.errors = [];
-                // clear uploaded file
-                var fileElement = angular.element('#image_file');
-                fileElement.value = '';
-                if (e.data === 'true') {
-                    alert("Upload Successful");
-                }
-                $scope.searchDB();
+                location.reload();
             }, function error(e) {
                 $scope.errors = e.data.errors;
-                alert('Upload unsuccessful, please try again')
             });
     };
 
@@ -386,6 +359,11 @@ function priceTemplateController($scope, $http) {
         $http.post('/api/price-template-item/' + priceTemplateItem.id + '/item-uom/' + itemUom.id + '/toggle').success(function (data) {
             // getPage(1, false);
         });
+    }
+
+    $scope.onBackButtonClicked = function(event) {
+        event.preventDefault()
+        location.href = '/price-template';
     }
 
     // retrieve page w/wo search
@@ -406,7 +384,6 @@ function priceTemplateController($scope, $http) {
                 $scope.indexTo = data.priceTemplates.length;
             }
             $scope.spinner = false;
-            $scope.search.edited = false;
         });
     }
 

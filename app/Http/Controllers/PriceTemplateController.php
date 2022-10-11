@@ -11,6 +11,7 @@ use App\PriceTemplate;
 use App\PriceTemplateItem;
 use App\PriceTemplateItemUom;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Redis;
 use Illuminate\Support\Facades\Storage;
 
@@ -94,12 +95,31 @@ class PriceTemplateController extends Controller
         ];
     }
 
+    public function editPriceTemplate($priceTemplateId)
+    {
+        $priceTemplate = PriceTemplate::with([
+            'attachments',
+            'priceTemplateItems.item',
+            'priceTemplateItems.item.itemUoms',
+            'priceTemplateItems.priceTemplateItemUoms'
+            ])->findOrFail($priceTemplateId);
+
+        return view('price-template.edit', compact('priceTemplate'));
+    }
+
+    public function addPriceTemplateItemApi(Request $request, $priceTemplateId)
+    {
+        // dd($request->all());
+        $priceTemplate = PriceTemplate::findOrFail($priceTemplateId);
+
+        $priceTemplate->priceTemplateItems()->create($request->all());
+    }
+
     // store new price template api(Request $request)
     public function storeUpdatePriceTemplateApi(Request $request)
     {
         // dd($request->all());
-        $id = $request->id;
-        $priceTemplateItems = $request->price_template_items;
+        $id = $request->priceTemplateId;
         $name = $request->name;
         $remarks = $request->remarks;
         $currentUserId = auth()->user()->id;
@@ -109,17 +129,15 @@ class PriceTemplateController extends Controller
             $priceTemplate->name = $name;
             $priceTemplate->remarks = $remarks;
             $priceTemplate->save();
-            $debugArr = [];
-            if($priceTemplate->priceTemplateItems()->exists()) {
-                foreach($priceTemplate->priceTemplateItems as $priceTemplateItem) {
-                    if($priceTemplateItem->priceTemplateItemUoms()->exists()) {
-                        foreach($priceTemplateItem->priceTemplateItemUoms as $priceTemplateItemUom) {
-                            $priceTemplateItemUom->delete();
-                        }
-                    }
-                    $priceTemplateItem->delete();
-                }
-            }
+
+            // if($priceTemplate->priceTemplateItems()->exists()) {
+            //     foreach($priceTemplate->priceTemplateItems as $priceTemplateItem) {
+            //         if($priceTemplateItem->priceTemplateItemUoms()->exists()) {
+            //             $priceTemplateItem->priceTemplateItemUoms()->delete();
+            //         }
+            //         $priceTemplateItem->delete();
+            //     }
+            // }
 
         }else {
             $priceTemplate = PriceTemplate::create([
@@ -128,11 +146,51 @@ class PriceTemplateController extends Controller
             ]);
         }
 
-        if($priceTemplateItems) {
-            foreach($priceTemplateItems as $item) {
-                $this->syncPriceTemplateItem($item, $priceTemplate->id);
+        if($priceTemplate->priceTemplateItems()->exists()) {
+            foreach($priceTemplate->priceTemplateItems as $priceTemplateItem) {
+                if($request->sequence) {
+                    foreach($request->sequence as $sequenceIndex => $sequence) {
+                        if($priceTemplateItem->id == $sequenceIndex) {
+                            $priceTemplateItem->sequence = $sequence;
+                            $priceTemplateItem->save();
+                        }
+                    }
+                }
+                if($request->retail_price) {
+                    foreach($request->retail_price as $retailPriceIndex => $retailPrice) {
+                        if($priceTemplateItem->id == $retailPriceIndex) {
+                            $priceTemplateItem->retail_price = $retailPrice;
+                            $priceTemplateItem->save();
+                        }
+                    }
+                }
+                if($request->quote_price) {
+                    foreach($request->quote_price as $quotePriceIndex => $quotePrice) {
+                        if($priceTemplateItem->id == $quotePriceIndex) {
+                            $priceTemplateItem->quote_price = $quotePrice;
+                            $priceTemplateItem->save();
+                        }
+                    }
+                }
+                if($request->priceTemplateUom) {
+                    foreach($request->priceTemplateUom as $priceTemplateUomIndex => $priceTemplateUom) {
+                        if($priceTemplateItem->id == $priceTemplateUomIndex) {
+                            if($priceTemplateUom) {
+                                $priceTemplateItem->priceTemplateItemUoms()->delete();
+
+                                foreach($priceTemplateUom as $priceTemplateUomItemIndex => $priceTemplateUomItem) {
+                                    $priceTemplateItem->priceTemplateItemUoms()->create([
+                                        'item_uom_id' => $priceTemplateUomItemIndex
+                                    ]);
+                                }
+                            }
+                        }
+                    }
+                }
+
             }
         }
+        return Redirect::action('PriceTemplateController@editPriceTemplate', $priceTemplate->id);
     }
 
     public function uploadAttachment(Request $request)
@@ -160,6 +218,12 @@ class PriceTemplateController extends Controller
             }
         }
         $model->delete();
+    }
+
+    public function deletePriceTemplateItemApi($priceTemplateItemId)
+    {
+        $priceTemplateItem = PriceTemplateItem::findOrFail($priceTemplateItemId);
+        $priceTemplateItem->delete();
     }
 
     // unbind single
@@ -210,6 +274,7 @@ class PriceTemplateController extends Controller
                 $replicatedPriceTemplateItem->save();
             }
         }
+        return $replicatedModel->id;
     }
 
     public function sortSequenceApi(Request $request)
@@ -279,6 +344,12 @@ class PriceTemplateController extends Controller
         }
 
 
+    }
+
+    public function deleteAttachment($priceTemplateId, $attachmentId)
+    {
+        $attachment = Attachment::findOrFail($attachmentId);
+        $attachment->delete();
     }
 
     public function deleteAttachmentApi()
