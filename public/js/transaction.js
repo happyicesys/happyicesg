@@ -332,7 +332,6 @@ function transactionController($scope, $http) {
                                 if (priceTemplateItemUomValue.item_uom && priceTemplateItemUomValue.item_uom.uom.id == uomValue.id) {
                                     isShowField = true;
                                 }
-
                                 if (uomValue.id == 3 && priceItemValue.item.is_inventory == 0) {
                                     isShowField = true;
                                 }

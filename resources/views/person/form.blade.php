@@ -5,6 +5,7 @@
 @inject('custcategories', 'App\Custcategory')
 @inject('franchisees', 'App\User')
 @inject('users', 'App\User')
+@inject('people', 'App\Person')
 @inject('persontags', 'App\Persontag')
 @inject('persontagattaches', 'App\Persontagattach')
 @inject('zones', 'App\Zone')
@@ -265,13 +266,30 @@
             {!! Form::label('is_non_freezer_point', 'Non Freezer Point', ['class'=>'control-label', 'style'=>'padding-left:5px;']) !!}
         </div>
     </div>
-{{--
-    <div class="col-md-6 col-sm-6 col-xs-6">
+
+    <div class="col-md-12 col-sm-12 col-xs-6">
         <div class="form-group">
-            {!! Form::checkbox('is_profit_percent', $person->is_profit_percent) !!}
-            {!! Form::label('is_profit_percent', 'Profit Sharing by Percentage?', ['class'=>'control-label', 'style'=>'padding-left:5px;']) !!}
+            {!! Form::checkbox('is_parent', $person->is_parent, null, ['ng-model'=>'form.is_parent', 'ng-true-value'=>1, 'ng-false-value'=>0]) !!}
+            {!! Form::label('is_parent', 'Is Leasor?', ['class'=>'control-label', 'style'=>'padding-left:5px;']) !!}
         </div>
-    </div> --}}
+    </div>
+
+    <div class="col-md-12 col-sm-12 col-xs-12" ng-if="!form.is_parent">
+        <div class="form-group">
+            {!! Form::label('parent_id', 'Belongs To Leasor', ['class'=>'control-label']) !!}
+            <select name="parent_id" class="selectNormal form-control" {{$disabled ? 'disabled' : ''}}>
+                <option value="">Select...</option>
+                @foreach($people->where('is_parent', true)->orderBy('cust_id')->get() as $personOption)
+                    <option value="{{$personOption->id}}" {{$person->parent_id == $personOption->id ? 'selected' : ''}}>
+                        {{$personOption->cust_id}} - {{ $personOption->company }}
+                    </option>
+                @endforeach
+            </select>
+            {{-- {!! Form::select('parent_id',
+                            $people::select(DB::raw("CONCAT(cust_id,' - ',name) AS full, id"))->where('is_parent', true)->pluck('full', 'id'),
+                            null, ['id'=>'parent_id', 'class'=>'select form-control', 'disabled'=>$disabled]) !!} --}}
+        </div>
+    </div>
 </div>
 <hr>
 

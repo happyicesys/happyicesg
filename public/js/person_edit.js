@@ -69,7 +69,8 @@ function personEditController($scope, $http) {
         terminal_provider: '',
         cms_serial_number: '',
         key_lock_number: '',
-        serial_no: ''
+        serial_no: '',
+        is_parent: '',
     }
     $scope.commissionOptions = [
         {

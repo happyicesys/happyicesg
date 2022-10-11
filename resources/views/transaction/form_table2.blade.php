@@ -36,6 +36,7 @@
             <div class="table-responsive" style="padding-top:10px;">
                 <table class="table table-list-search table-hover table-bordered table-condensed">
                     <tr style="background-color: #DDFDF8;">
+                        {{-- <th></th> --}}
                         <th class="text-center">
                             Item
                         </th>
@@ -67,6 +68,9 @@
                     </tr>
 
                     <tr ng-repeat="priceItem in priceItems">
+                        {{-- <td>
+                            <img src="@{{priceItem.item.main_imgpath}}" class="img-rounded" >
+                        </td> --}}
                         <td class="col-md-3 col-xs-4" style="min-width: 150px;">
                             <div class="row">
                                 <div class="col-md-3 col-xs-5 text-right">
@@ -130,6 +134,9 @@
             <ul class="list-group">
                 <li class="list-group-item" ng-repeat="priceItem in priceItems">
                     <div class="row" style="font-size: 13px; padding-left: 3px;">
+
+                        {{-- <img src="@{{priceItem.item.main_imgpath}}" class="img-rounded"> --}}
+
                         <strong>
                             @{{priceItem.item.product_id}} -  @{{priceItem.item.name}}
                         </strong>

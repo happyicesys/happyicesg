@@ -285,6 +285,7 @@ class PersonController extends Controller
             $request->merge(array('is_gst_inclusive' => 0 ));
         }
 
+        $request->merge(array('is_parent' => $request->has('is_parent') == 'true' ? 1 : 0));
         $request->merge(array('is_stock_balance_count_required' => $request->has('is_stock_balance_count_required') == 'true' ? 1 : 0));
 
         $person = Person::findOrFail($id);
@@ -359,9 +360,12 @@ class PersonController extends Controller
             ]);
         }
 
+        if($person->is_parent) {
+            $person->parent_id = null;
+            $person->save();
+        }
 
         // $person->is_profit_sharing_report = $request->has('is_profit_sharing_report') ? 1 : 0;
-        $person->save();
         if (!$person->is_vending and !$person->is_dvm) {
             $person->vending_piece_price = 0.00;
             $person->vending_monthly_rental = 0.00;
