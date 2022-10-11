@@ -12,6 +12,7 @@ use App\PriceTemplateItem;
 use App\PriceTemplateItemUom;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Redis;
+use Illuminate\Support\Facades\Storage;
 
 class PriceTemplateController extends Controller
 {
@@ -96,6 +97,7 @@ class PriceTemplateController extends Controller
     // store new price template api(Request $request)
     public function storeUpdatePriceTemplateApi(Request $request)
     {
+        // dd($request->all());
         $id = $request->id;
         $priceTemplateItems = $request->price_template_items;
         $name = $request->name;
@@ -249,13 +251,34 @@ class PriceTemplateController extends Controller
         $priceTemplate->save();
 
         if($image = request()->file('image_file')){
+            // $name = (Carbon::now()->format('dmYHi')).$image->getClientOriginalName();
+            // $image->move('price_template/'.$priceTemplate->id.'/', $name);
+            // $priceTemplate->attachments()->create([
+            //     'url' => '/price_template/'.$priceTemplate->id.'/'.$name,
+            //     'full_url' => '/price_template/'.$priceTemplate->id.'/'.$name,
+            // ]);
+
             $name = (Carbon::now()->format('dmYHi')).$image->getClientOriginalName();
-            $image->move('price_template/'.$priceTemplate->id.'/', $name);
+            Storage::put('price_template/'.$name, file_get_contents($image->getRealPath()), 'public');
+            $url = (Storage::url('price_template/'.$name));
             $priceTemplate->attachments()->create([
-                'url' => '/price_template/'.$priceTemplate->id.'/'.$name,
-                'full_url' => '/price_template/'.$priceTemplate->id.'/'.$name,
+                'url' => 'price_template/'.$name,
+                'full_url' => $url,
+                'is_primary' => true,
             ]);
+
+
+            // $name1 = (Carbon::now()->format('dmYHi')).$attachment1->getClientOriginalName();
+            // Storage::put('service_attachments/'.$name1, file_get_contents($attachment1->getRealPath()), 'public');
+            // $url1 = (Storage::url('service_attachments/'.$name1));
+            // $savedAttachment1 = $serviceItem->attachments()->create([
+            //     'url' => 'service_attachments/'.$name1,
+            //     'full_url' => $url1,
+            //     'is_primary' => true,
+            // ]);
         }
+
+
     }
 
     public function deleteAttachmentApi()

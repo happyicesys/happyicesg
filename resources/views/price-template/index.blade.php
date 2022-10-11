@@ -394,14 +394,14 @@ Price Template
                           <td class="col-md-2 text-right">
                             <input type="text" class="form-control text-center" ng-model="priceTemplateItem.quote_price" ng-model-options="{ debounce: 1000 }">
                           </td>
+
                           <td class="col-md-1 text-center" ng-repeat="uom in uoms">
                             <span ng-if="!priceTemplateItem.item.is_inventory && $index == 0">
                                 <input type="checkbox" checked disabled>
                             </span>
                             <span ng-if="priceTemplateItem.item.is_inventory" ng-repeat="itemUom in priceTemplateItem.item.item_uoms">
                                 <span ng-if="itemUom.uom_id == uom.id">
-                                    <input type="checkbox" ng-model="priceTemplateItem.itemUom[uom.id]" ng-checked="checkExistPriceTemplateItemUom(itemUom.id, priceTemplateItem).result" ng-click="onPriceTemplateItemUomChanged(priceTemplateItem, itemUom)" ng-true-value=true ng-false-value=false >
-                                    {{-- <input type="checkbox" ng-model="priceTemplateItem.price_template_item_uoms[checkExistPriceTemplateItemUom(itemUom.id, priceTemplateItem).priceTemplateItemUomId]" ng-checked="checkExistPriceTemplateItemUom(itemUom.id, priceTemplateItem).result" ng-true-value=true ng-false-value=false > --}}
+                                    <input type="checkbox" ng-model="priceTemplateItem.itemUom[itemUom.id]" ng-checked="checkExistPriceTemplateItemUom(itemUom.id, priceTemplateItem).result" ng-click="onPriceTemplateItemUomChanged(priceTemplateItem, itemUom)" ng-true-value=true ng-false-value=false >
                                 </span>
                             </span>
                           </td>

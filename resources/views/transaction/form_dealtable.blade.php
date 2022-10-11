@@ -265,7 +265,7 @@
                                 @if(!$transaction->is_discard)
                                 <td></td>
                                 @endif
-                                <td colspan="@{{transaction.person.price_template_id ? uoms.length + 1 : '2'}}"></td>
+                                <td colspan="@{{transaction.person.price_template_id ? uoms.length + 2 : '2'}}"></td>
                                 <td class="col-md-1 text-right">
                                     @{{subtotalModel}}
                                 </td>
@@ -277,7 +277,7 @@
                                 @if(!$transaction->is_discard)
                                 <td></td>
                                 @endif
-                                <td colspan="@{{transaction.person.price_template_id ? uoms.length + 1 : '2'}}"></td>
+                                <td colspan="@{{transaction.person.price_template_id ? uoms.length + 2 : '2'}}"></td>
                                 <td class="col-md-1 text-right">
                                     @{{taxModel}}
                                 </td>

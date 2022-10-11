@@ -101,7 +101,7 @@
                                 <input type="text" name="quote[@{{priceItem.id}}]"
                                     ng-model="priceItem.quote_price"
                                     ng-change="syncAmount(priceItem)"
-                                    class="form-control text-right" ng-readonly="priceItem.item.is_inventory == 1"/>
+                                    class="form-control text-right" ng-readonly="priceItem.item.is_inventory == 1 && transaction.person.price_template"/>
                             </strong>
                         </td>
                         <td class="col-md-2 col-xs-2">

@@ -150,17 +150,33 @@ function priceTemplateController($scope, $http) {
             placeholder: 'Select...'
         });
 
-        $scope.form = data
-        // if (data.price_template_items.length) {
-        //     angular.forEach(data.price_template_items, function (price_template_item, priceTemplateItemIndex) {
-        //         if (price_template_item.price_template_item_uom.length) {
-        //             angular.forEach(price_template_item.price_template_item_uom, function (value, index) {
-        //                 $scope.form.price_template_items[priceTemplateItemIndex].isActive[value.item_uom_id] = true;
-        //             });
-        //         }
-        //     });
+        // let result = angular.forEach(data.price_template_items, function(price_template_item, index) {
+        //     if (price_template_item.price_template_item_uoms.length) {
+        //         angular.forEach(price_template_item.price_template_item_uoms, function (price_template_item_uom, index) {
+        //             if (price_template_item_uom.item_uom_id == itemUomId) {
+        //                 price_template_item.item.checked[]
+        //             }
+        //         })
+        //     }
+        // })
+
+        // $scope.checkExistPriceTemplateItemUom = function (itemUomId, priceTemplateItem) {
+        //     let result = false;
+        //     let priceTemplateItemUomId = '';
+        //     if (priceTemplateItem.price_template_item_uoms.length) {
+        //         angular.forEach(priceTemplateItem.price_template_item_uoms, function (value, index) {
+        //             if (value.item_uom_id == itemUomId) {
+        //                 result = true;
+        //             }
+        //         })
+        //     }
+        //     return {
+        //         'result': result,
+        //         'priceTemplateItemUomId': priceTemplateItemUomId,
+        //     };
         // }
 
+        $scope.form = data
     }
 
     $scope.checkExistPriceTemplateItemUom = function (itemUomId, priceTemplateItem) {
@@ -194,8 +210,10 @@ function priceTemplateController($scope, $http) {
 
     // upon form submit
     $scope.onFormSubmitClicked = function () {
+        console.log($scope.checked)
         $http.post('/api/price-template/store-update', $scope.form).success(function (data) {
             $scope.form = getDefaultForm()
+
             $('.select').select2({
                 placeholder: 'Select...'
             });
@@ -348,7 +366,7 @@ function priceTemplateController($scope, $http) {
 
     $scope.onPriceTemplateItemUomChanged = function (priceTemplateItem, itemUom) {
         $http.post('/api/price-template-item/' + priceTemplateItem.id + '/item-uom/' + itemUom.id + '/toggle').success(function (data) {
-            getPage(1, false);
+            // getPage(1, false);
         });
     }
 

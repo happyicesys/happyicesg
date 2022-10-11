@@ -327,7 +327,7 @@ function transactionController($scope, $http) {
                 angular.forEach($scope.uoms, function (uomValue, uomKey) {
                     let isShowField = false;
                     angular.forEach($scope.priceItems, function (priceItemValue, priceItemKey) {
-                        if (priceItemValue.price_template_item_uoms.length) {
+                        if (priceItemValue.price_template_item_uoms && priceItemValue.price_template_item_uoms.length) {
                             angular.forEach(priceItemValue.price_template_item_uoms, function (priceTemplateItemUomValue, priceTemplateItemUomKey) {
                                 if (priceTemplateItemUomValue.item_uom && priceTemplateItemUomValue.item_uom.uom.id == uomValue.id) {
                                     isShowField = true;
@@ -347,7 +347,7 @@ function transactionController($scope, $http) {
                 return value.is_active;
             });
 
-            console.log($scope.uoms);
+            // console.log($scope.uoms);
             // console.log($scope.taxModel);
 
             $scope.getTotalPieces = function () {

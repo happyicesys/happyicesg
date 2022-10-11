@@ -901,7 +901,7 @@ class TransactionController extends Controller
         // dd($request['ctn'],$quantities, $amounts, $request->quote);
 
         $dealsArr = [];
-        if($transaction->person->price_template_id) {
+        if($transaction->person->price_template_id && $transaction->person->price_template_id > 0) {
             foreach(Uom::orderby('sequence', 'desc')->get() as $uom) {
                 if($request->has($uom->name)) {
                     foreach($request[$uom->name] as $priceTemplateItemId => $qty) {
@@ -913,6 +913,7 @@ class TransactionController extends Controller
                 if($request->amount) {
                     foreach($request->amount as $priceTemplateItemId => $amt) {
                         if($amt != null) {
+                            // dd($transaction->person->price_template_id, $request->amount);
                             $priceTemplateItem = PriceTemplateItem::findOrFail($priceTemplateItemId);
                             $dealsArr[$priceTemplateItemId]['amount'] = $amt;
                             $dealsArr[$priceTemplateItemId]['item_id'] = $priceTemplateItem->item->id;
@@ -929,9 +930,10 @@ class TransactionController extends Controller
                 }
                 foreach($request->amount as $priceId => $amt) {
                     if($amt != null) {
-                        $price = Price::findOrFail($priceId);
+                        $item = Item::findOrFail($priceId);
+
                         $dealsArr[$priceId]['amount'] = $amt;
-                        $dealsArr[$priceId]['item_id'] = $price->item->id;
+                        $dealsArr[$priceId]['item_id'] = $item->id;
                     }
                 }
             }
