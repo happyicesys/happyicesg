@@ -225,13 +225,13 @@
                             Base UOM? <small>(override other Base UOM)</small>
                         </span>
                     </label>
-
+{{--
                     <label style="padding-left: 10px;">
                         <input type="checkbox" ng-model="formUom.is_transacted_unit" ng-true-value=true ng-false-value=false>
                         <span style="padding-left: 5px; margin-top: 5px;">
                             Transacted UOM? <small>(override other Transacted UOM)</small>
                         </span>
-                    </label>
+                    </label> --}}
                   </div>
                 </div>
                 <div class="modal-footer">

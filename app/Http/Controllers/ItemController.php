@@ -482,11 +482,13 @@ class ItemController extends Controller
                 'value' => $value,
             ]);
         }else {
+            $defaultCtnTransaction = $uomId == 3 ? true : false;
+
             $itemUom = ItemUom::create([
                 'item_id' => $itemId,
                 'uom_id' => $uomId,
                 'is_base_unit' => $isBaseUnit ? true : false,
-                'is_transacted_unit' => $isTransactedUnit ? true : false,
+                'is_transacted_unit' => $defaultCtnTransaction,
                 'value' => $value,
             ]);
 

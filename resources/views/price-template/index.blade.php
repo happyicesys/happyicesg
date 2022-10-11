@@ -209,7 +209,7 @@ Price Template
             <dir-pagination-controls max-size="5" pagination-id="priceTemplates" direction-links="true" boundary-links="true" class="pull-left" on-page-change="pageChanged(newPageNumber)"> </dir-pagination-controls>
         </div>
     </div>
-{{--
+
     <form ng-submit="onFormSubmitClicked">
     <div id="price-template-modal" class="modal fade" role="dialog">
         <div class="modal-dialog modal-lg">
@@ -284,65 +284,65 @@ Price Template
                             <button class="btn btn-success" ng-click="uploadFile($event, form.id)"><i class="fa fa-upload"></i> Upload File</button>
                         </div>
                     </div>
-
+{{--
                   <hr class="row">
-                    <div class="panel panel-primary">
-                        <div class="panel-heading">
-                            Create new Pricing
-                        </div>
-                        <div class="panel-body">
-                            <div class="row">
-                                <div class="col-md-12 col-sm-12 col-xs-12">
-                                    <div class="col-md-8 col-sm-8 col-xs-12">
-                                        <div class="form-group">
-                                            <label for="item">
-                                                Item
-                                            </label>
-                                            <label style="color: red;">*</label>
-                                            <select class="select form-control" ng-model="form.item" ng-change="onFormItemSelected(form.item)">
-                                                <option value=""></option>
-                                                @foreach($items::with(['itemCategory', 'itemGroup', 'itemUoms', 'itemUoms.uom'])->whereIsActive(1)->orderBy('product_id')->get() as $item)
-                                                <option value="{{$item}}">
-                                                    {{$item->product_id}} - {{$item->name}} {{$item->remark}}
-                                                </option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4 col-sm-4 col-xs-12">
-                                        <div class="form-group">
-                                            <label for="sequence">
-                                                Sequence
-                                            </label>
-                                            <input type="number" class="form-control" ng-model="form.sequence">
-                                        </div>
+                <div class="panel panel-primary">
+                    <div class="panel-heading">
+                        Create new Pricing
+                    </div>
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-md-12 col-sm-12 col-xs-12">
+                                <div class="col-md-8 col-sm-8 col-xs-12">
+                                    <div class="form-group">
+                                        <label for="item">
+                                            Item
+                                        </label>
+                                        <label style="color: red;">*</label>
+                                        <select class="select form-control" ng-model="form.item" ng-change="onFormItemSelected(form.item)">
+                                            <option value=""></option>
+                                            @foreach($items::with(['itemCategory', 'itemGroup', 'itemUoms', 'itemUoms.uom'])->whereIsActive(1)->orderBy('product_id')->get() as $item)
+                                            <option value="{{$item}}">
+                                                {{$item->product_id}} - {{$item->name}} {{$item->remark}}
+                                            </option>
+                                            @endforeach
+                                        </select>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-12 col-sm-12 col-xs-12">
-                                    <div class="col-md-6 col-sm-6 col-xs-12">
-                                        <label for="retail_price">
-                                            Retail Price
+                                <div class="col-md-4 col-sm-4 col-xs-12">
+                                    <div class="form-group">
+                                        <label for="sequence">
+                                            Sequence
                                         </label>
-                                        <input type="number" class="form-control" ng-model="form.retail_price">
-                                    </div>
-                                    <div class="col-md-6 col-sm-6 col-xs-12">
-                                        <label for="quote_price">
-                                            Quote Price
-                                        </label>
-                                        <input type="number" class="form-control" ng-model="form.quote_price">
+                                        <input type="number" class="form-control" ng-model="form.sequence">
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="panel-footer">
-                            <button type="button" class="btn btn-success" ng-click="onAddPriceTemplateItemClicked()" ng-disabled="!form.item">
-                            <i class="fa fa-plus" aria-hidden="true"></i>
-                            Add Pricing
-                            </button>
+                        <div class="row">
+                            <div class="col-md-12 col-sm-12 col-xs-12">
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                    <label for="retail_price">
+                                        Retail Price
+                                    </label>
+                                    <input type="number" class="form-control" ng-model="form.retail_price">
+                                </div>
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                    <label for="quote_price">
+                                        Quote Price
+                                    </label>
+                                    <input type="number" class="form-control" ng-model="form.quote_price">
+                                </div>
+                            </div>
                         </div>
                     </div>
+                    <div class="panel-footer">
+                        <button type="button" class="btn btn-success" ng-click="onAddPriceTemplateItemClicked()" ng-disabled="!form.item">
+                        <i class="fa fa-plus" aria-hidden="true"></i>
+                        Add Pricing
+                        </button>
+                    </div>
+                </div>
 
                   <div class="form-group" style="padding-top: 20px;">
                     <div class="table-responsive">
@@ -429,22 +429,22 @@ Price Template
                       </table>
                     </div>
                   </div>
-                </div>
+                </div> --}}
                 <div class="modal-footer">
                     <div class="btn-group">
-                        <button class="btn btn-info" ng-click="onReplicatePriceTemplateClicked(form)">
+                        {{-- <button class="btn btn-info" data-dismiss="modal" ng-click="onReplicatePriceTemplateClicked(form)">
                             Replicate
-                        </button>
-                        <button type="submit" class="btn btn-success" ng-if="!form.id" ng-click="onFormSubmitClicked()" ng-disabled="!form.name">Submit</button>
-                        <button type="submit" class="btn btn-success" ng-if="form.id" ng-click="onFormSubmitClicked()" ng-disabled="!form.name">Save</button>
-                        <button type="submit" class="btn btn-default">Close</button>
+                        </button> --}}
+                        <button type="submit" class="btn btn-success" ng-if="!form.id" ng-click="onFormSubmitClicked()" data-dismiss="modal" ng-disabled="!form.name">Submit</button>
+                        <button type="submit" class="btn btn-success" ng-if="form.id" ng-click="onFormSubmitClicked()" data-dismiss="modal" ng-disabled="!form.name">Save</button>
+                        <button type="submit" data-dismiss="modal" class="btn btn-default">Close</button>
                     </div>
                 </div>
             </div>
 
         </div>
     </div>
-    </form> --}}
+    </form>
 </div>
 <script src="/js/price-template.js"></script>
 @stop
