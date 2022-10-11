@@ -75,7 +75,7 @@ Price Template
                 </div>
                 <div class="form-group col-md-4 col-sm-6 col-xs-12">
                     {!! Form::label('person_id', 'Customer', ['class'=>'control-label search-title']) !!}
-                    {!! Form::select('person_id', [''=>'All']+$people::select(DB::raw("CONCAT(cust_id,' - ',company) AS full, id"))->orderBy('cust_id', 'asc')->pluck('full', 'id')->all(),
+                    {!! Form::select('person_id', [''=>'All']+$people::select(DB::raw("CONCAT(cust_id,' - ',company) AS full, id"))->orderBy('cust_id', 'asc')->where('active', 'Yes')->pluck('full', 'id')->all(),
                         null,
                         [
                             'class'=>'selectmultiple form-control',
@@ -98,6 +98,19 @@ Price Template
                 </div>
             </div>
             <div class="row">
+                <div class="col-md-4 col-sm-6 col-xs-12">
+                    <div class="">
+                        <button class="btn btn-md btn-success" ng-click="onSearchButtonClicked($event)">
+                            Search
+                            <i class="fa fa-search" ng-show="!spinner"></i>
+                            <i class="fa fa-spinner fa-1x fa-spin" ng-show="spinner"></i>
+                        </button>
+                        <span class="row">
+                            <br>
+                            <small ng-if="search.edited">You have edited the filter, search?</small>
+                        </span>
+                    </div>
+                </div>
                 <div class="form-group col-md-4 col-xs-12">
                     @if(auth()->user()->hasRole('admin') or auth()->user()->hasRole('account') or auth()->user()->hasRole('accountadmin') or auth()->user()->hasRole('supervisor'))
                         {{-- <button class="btn btn-sm btn-primary" ng-click="exportCustCatGroupExcel($event)">Export Excel</button> --}}

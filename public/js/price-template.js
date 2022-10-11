@@ -21,7 +21,8 @@ function priceTemplateController($scope, $http) {
         priceTemplates: [],
         pageNum: 100,
         sortBy: true,
-        sortName: ''
+        sortName: '',
+        edited: false,
     }
     $scope.form = getDefaultForm()
     $scope.uoms = [];
@@ -85,9 +86,15 @@ function priceTemplateController($scope, $http) {
 
     // when hitting search button
     $scope.searchDB = function () {
+        $scope.search.edited = true;
+    }
+
+    // search button transaction index
+    $scope.onSearchButtonClicked = function (event) {
+        event.preventDefault();
         $scope.search.sortName = '';
         $scope.search.sortBy = true;
-        getPage(1, false);
+        getPage(1);
     }
 
     $scope.onPriceTemplateCreateClicked = function () {
@@ -388,6 +395,7 @@ function priceTemplateController($scope, $http) {
                 $scope.indexTo = data.priceTemplates.length;
             }
             $scope.spinner = false;
+            $scope.search.edited = false;
         });
     }
 
