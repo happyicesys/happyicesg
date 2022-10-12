@@ -587,7 +587,7 @@
                                 @if($transaction->is_vending_generate)
                                     Percent
                                 @else
-                                    Price/Unit(ctn) ({{$transaction->person->profile->currency ? $transaction->person->profile->currency->symbol: '$'}})
+                                    Price/ Unit ({{$transaction->person->profile->currency ? $transaction->person->profile->currency->symbol: '$'}})
                                 @endif
                             </th>
                             <th class="col-xs-1 text-center">
@@ -629,7 +629,7 @@
                                 </td>
                                 @if($deal->divisor and $deal->item->is_inventory === 1)
                                     <td class="col-xs-2 text-right">
-                                        {{ $deal->divisor == 1 ? $deal->qty + 0 : ($deal->dividend + 0).'/'.($deal->divisor + 0)}} {{ $deal->item->unit }}
+                                        {{ $deal->divisor == 1 ? $deal->qty + 0 : ($deal->dividend + 0).'/'.($deal->divisor + 0)}}
                                     </td>
                                 @elseif($deal->item->is_inventory === 0)
                                     <td class="col-xs-2 text-left">
