@@ -559,6 +559,9 @@ class TransactionController extends Controller
                                         ->priceTemplate
                                         ->priceTemplateItems()
                                         ->with(['item', 'priceTemplate', 'priceTemplateItemUoms', 'priceTemplateItemUoms.itemUom'])
+                                        ->whereHas('item', function($query) {
+                                            $query->where('is_active', true);
+                                        })
                                         ->orderBy('sequence')
                                         ->get();
             }
@@ -618,7 +621,6 @@ class TransactionController extends Controller
     public function update(TransactionRequest $request, $id)
     {
 
-        // dd(request()->all());
         // dynamic form arrays
         $quantities = $request->qty;
         $amounts = $request->amount;
@@ -943,7 +945,6 @@ class TransactionController extends Controller
                 $dealsArr[$dealArrIndex]['quote'] = $request->quote[$dealArrIndex];
             }
         }
-
         // sync deals
         if($transaction->status === 'Confirmed'){
             $this->syncDeal($transaction, $dealsArr, 1);
@@ -3117,7 +3118,6 @@ class TransactionController extends Controller
     // private function syncDeal($transaction, $quantities, $amounts, $quotes, $status)
     private function syncDeal($transaction, $dealsArr, $status)
     {
-
         if($dealsArr) {
             $errors = [];
             foreach($dealsArr as $dealArrIndex => $dealArr) {
@@ -3217,6 +3217,7 @@ class TransactionController extends Controller
                 }
             }
         }
+
         if($status == 2){
             $this->dealOrder2Actual($transaction->id);
         }
@@ -3226,6 +3227,24 @@ class TransactionController extends Controller
         $deal_totalqty = clone $deals;
         $deal_total = $deal_total->sum('amount');
         $deal_totalqty = $deal_totalqty->where('items.is_inventory', 1)->sum('qty');
+
+        $qtyJsonTotal = [];
+        foreach($uomsObj as $uomObj) {
+            $qtyJsonTotal[$uomObj->name] = 0;
+        }
+        if($transaction->deals()->exists()) {
+            $uomsObj = Uom::orderBy('sequence', 'desc')->get();
+            foreach($transaction->deals()->whereHas('item', function($query) {
+                $query->where('is_active', true)->where('is_inventory', true);
+            })->get() as $dealObj) {
+                if($dealObj->qty_json) {
+                    foreach($uomsObj as $uomObj) {
+                        $qtyJsonTotal[$uomObj->name] += $dealObj->qty_json[$uomObj->name];
+                    }
+                }
+            }
+        }
+        $transaction->qty_json = $qtyJsonTotal;
         $transaction->total = $deal_total;
         $transaction->total_qty = $deal_totalqty;
         $transaction->save();
@@ -3299,6 +3318,7 @@ class TransactionController extends Controller
         $deals = Deal::where('qty_status', '1')->where('transaction_id', $transaction_id)->get();
         // dd($deals->toArray(), $transaction_id);
         foreach($deals as $deal){
+            // dd($deal->item_id, Item::where('id', $deal->item_id)->toSql());
             $item = Item::findOrFail($deal->item_id);
             $deal->qty_status = 2;
             if($item->is_inventory === 1) {

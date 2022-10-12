@@ -53,15 +53,16 @@
                         <th class="col-md-4 text-center">
                             Description
                         </th>
-                        {{-- <th class="col-md-1 text-center">
-                            T.Qty (pcs)
-                        </th> --}}
+                        <th class="col-md-1 text-center">
+                            Qty
+                        </th>
+                        <th class="col-md-1 text-center" ng-if="!transaction.person.price_template">
+                            Input Qty
+                        </th>
                         <th class="col-md-1 text-center" ng-if="transaction.person.price_template" ng-repeat="uom in uoms">
                             @{{uom.name}}
                         </th>
-                        <th class="col-md-1 text-center" ng-if="!transaction.person.price_template">
-                            Qty
-                        </th>
+
 {{--
                         @if($transaction->person->price_template_id)
                             @foreach($uoms::orderBy('sequence', 'desc')->get() as $uom)
@@ -96,10 +97,20 @@
                             <td class="col-md-1 text-center">@{{ $index + 1 }}</td>
                             <td class="col-md-1 text-center">@{{ deal.product_id }}</td>
                             <td class="col-md-5">@{{ deal.item_name }}<br> <small>@{{ deal.item_remark }}</small></td>
-                            {{-- <td class="col-md-1 text-right">@{{ deal.pieces }}</td> --}}
+                            <td class="col-md-1 text-right">
+                                <span ng-if="deal.is_inventory">
+                                    @{{deal.qty}}
+                                </span>
+                                <span ng-if="!deal.is_inventory">
+                                    @{{deal.qty_json['ctn']}}
+                                    <span ng-if="deal.qty_json['ctn']">
+                                        Unit
+                                    </span>
+                                </span>
+                            </td>
 
                             <td class="col-md-1 text-right" ng-repeat="uom in uoms" style="background-color: @{{uom.color}}" ng-if="deal.qty_json && transaction.person.price_template">
-                                <span ng-if="deal.qty_json[uom.name]">
+                                <span ng-if="deal.qty_json[uom.name] && deal.is_inventory">
                                     <strong>
                                         @{{deal.qty_json[uom.name]}}
                                     </strong>
@@ -220,6 +231,7 @@
                                 <td colspan="3" class="text-right">
                                     <strong>GST ({{number_format($transaction->gst_rate)}}%)</strong>
                                 </td>
+                                <td></td>
                                 <td colspan="@{{transaction.person.price_template_id ? uoms.length + 1 : ''}}"></td>
                                 <td class="col-md-1 text-right">
                                     @{{taxModel}}
@@ -229,6 +241,7 @@
                                 <td colspan="3" class="text-right">
                                     <strong>Exclude GST</strong>
                                 </td>
+                                <td></td>
                                 <td colspan="@{{transaction.person.price_template_id ? uoms.length + 1 : ''}}"></td>
                                 <td class="col-md-1 text-right">
                                     @{{subtotalModel}}
@@ -236,10 +249,13 @@
                             </tr>
                             <tr ng-if="deals.length>0">
                                 <td colspan="3" class="text-right">
-                                    <strong>Total (@{{totalqtyModel}} ctn)</strong>
+                                    <strong>Total</strong>
                                 </td>
-                                <td class="col-md-1 text-center" colspan="@{{transaction.person.price_template_id ? uoms.length : ''}}">
-                                    <strong></strong>
+                                <td class="col-md-1 text-right">
+                                    @{{transaction.total_qty}}
+                                </td>
+                                <td class="col-md-1 text-right" ng-if="transaction.person.price_template" ng-repeat="uom in uoms">
+                                    @{{ transaction.qty_json[uom.name] }}
                                 </td>
                                 @if(!$transaction->is_discard)
                                     <td colspan="1"></td>
@@ -253,6 +269,7 @@
                                 <td colspan="3" class="text-right">
                                     <strong>Subtotal</strong>
                                 </td>
+                                <td></td>
                                 <td colspan="@{{transaction.person.price_template_id ? uoms.length + 1 : '2'}}"></td>
                                 <td class="col-md-1 text-right">
                                     @{{subtotalModel}}
@@ -262,6 +279,7 @@
                                 <td colspan="3" class="text-right">
                                     <strong>GST ({{number_format($transaction->gst_rate)}}%)</strong>
                                 </td>
+                                <td></td>
                                 <td colspan="@{{transaction.person.price_template_id ? uoms.length + 1 : '2'}}"></td>
                                 <td class="col-md-1 text-right">
                                     @{{taxModel}}
@@ -269,11 +287,18 @@
                             </tr>
                             <tr ng-if="deals.length>0">
                                 <td colspan="3" class="text-right">
-                                    <strong>Total (@{{totalqtyModel}} ctn)</strong>
+                                    <strong>Total</strong>
                                 </td>
-                                <td class="col-md-1 text-center" colspan="@{{transaction.person.price_template_id ? uoms.length : ''}}">
-                                    <strong></strong>
+                                <td class="col-md-1 text-right">
+                                    @{{transaction.total_qty}}
                                 </td>
+
+                                <td ng-if="!transaction.person.price_template">
+                                </td>
+                                <td class="col-md-1 text-right" ng-if="transaction.person.price_template" ng-repeat="uom in uoms">
+                                    @{{ transaction.qty_json[uom.name] }}
+                                </td>
+
                                 @if(!$transaction->is_discard)
                                     <td colspan="1"></td>
                                 @endif
@@ -284,10 +309,13 @@
                         @else
                             <tr ng-if="deals.length>0">
                                 <td colspan="3" class="text-right">
-                                    <strong>Total (@{{totalqtyModel}} ctn)</strong>
+                                    <strong>Total</strong>
                                 </td>
-                                <td class="col-md-1 text-center" colspan="@{{transaction.person.price_template_id ? uoms.length : ''}}">
-                                    <strong></strong>
+                                <td class="col-md-1 text-right">
+                                    @{{transaction.total_qty}}
+                                </td>
+                                <td class="col-md-1 text-right" ng-if="transaction.person.price_template" ng-repeat="uom in uoms">
+                                    @{{ transaction.qty_json[uom.name] }}
                                 </td>
                                 @if(!$transaction->is_discard)
                                     <td colspan="1"></td>

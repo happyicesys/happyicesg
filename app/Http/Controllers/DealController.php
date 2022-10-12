@@ -11,6 +11,7 @@ use App\Http\Controllers\Controller;
 use App\Deal;
 use App\Transaction;
 use App\Item;
+use App\Uom;
 use Log;
 
 class DealController extends Controller
@@ -52,23 +53,29 @@ class DealController extends Controller
     {
 
         $deal = Deal::findOrFail($deal_id);
-
-/*
-        $item = Item::findOrFail($deal->item_id);
-        // revert back the inventory once inv was added
-        if($deal->qty_status == 1){
-            $deal->qty_status = 3;
-        }else if($deal->qty_status == 2){
-            $item->qty_now += $deal->qty;
-        }
-        $deal->delete();
-        $item->qty_order = $this->syncDealOrder($item->id);
-        $item->save();*/
         $this->dealDeleteSingle($deal);
         $transaction = Transaction::findOrFail($deal->transaction_id);
         $deals = Deal::whereTransactionId($deal->transaction_id)->get();
         $deal_total = $deals->sum('amount');
         $deal_totalqty = $deals->sum('qty');
+
+        $qtyJsonTotal = [];
+        foreach($uomsObj as $uomObj) {
+            $qtyJsonTotal[$uomObj->name] = 0;
+        }
+        if($transaction->deals()->exists()) {
+            $uomsObj = Uom::orderBy('sequence', 'desc')->get();
+            foreach($transaction->deals()->whereHas('item', function($query) {
+                $query->where('is_active', true)->where('is_inventory', true);
+            })->get() as $dealObj) {
+                if($dealObj->qty_json) {
+                    foreach($uomsObj as $uomObj) {
+                        $qtyJsonTotal[$uomObj->name] += $dealObj->qty_json[$uomObj->name];
+                    }
+                }
+            }
+        }
+        $transaction->qty_json = $qtyJsonTotal;
         $transaction->total = $deal_total;
         $transaction->total_qty = $deal_totalqty;
         $transaction->save();

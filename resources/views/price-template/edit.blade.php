@@ -178,7 +178,9 @@ Price Template
                               Action
                             </th>
                           </tr>
-                          @foreach($priceTemplate->priceTemplateItems as $priceTemplateItem)
+                          @foreach($priceTemplate->priceTemplateItems()->whereHas('item', function($query) {
+                            $query->where('is_active', 1);
+                          })->get() as $priceTemplateItem)
                           <tr>
                             <td class="col-md-1 text-center">
                               <input type="text" name="sequence[{{$priceTemplateItem->id}}]" value="{{$priceTemplateItem->sequence}}" class=" text-center" style="width:40px">

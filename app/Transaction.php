@@ -78,10 +78,15 @@ class Transaction extends Model
         'gst', 'is_gst_inclusive', 'gst_rate', 'is_deliveryorder', 'created_by', 'sign_url',
         'driver_id', 'del_lat', 'del_lng', 'is_important', 'sequence', 'merchandiser', 'is_sync_inventory', 'bill_postcode', 'is_discard',
         'is_service', 'cancel_reason_option', 'cancel_reason_remarks', 'billing_country_id', 'delivery_country_id', 'stock_balance_count',
+        'qty_json',
     ];
 
     protected $dates =[
         'created_at', 'delivery_date', 'order_date', 'paid_at'
+    ];
+
+    protected $casts = [
+        'qty_json' => 'array',
     ];
 /*
     public function setDeliveryDateAttribute($date)

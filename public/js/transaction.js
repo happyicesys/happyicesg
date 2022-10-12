@@ -325,7 +325,6 @@ function transactionController($scope, $http) {
 
             if ($scope.priceItems.length) {
                 angular.forEach($scope.uoms, function (uomValue, uomKey) {
-
                     let isShowField = false;
                     angular.forEach($scope.priceItems, function (priceItemValue, priceItemKey) {
                         if (priceItemValue.price_template_item_uoms && priceItemValue.price_template_item_uoms.length) {
@@ -354,13 +353,13 @@ function transactionController($scope, $http) {
             if($scope.deals.length) {
                 angular.forEach($scope.deals, function(dealObj, dealKey) {
                     angular.forEach($scope.uoms, function(uomObj, uomKey) {
-                        if(dealObj.qty_json[uomObj.name]) {
-                            $scope.uomTotalQty[uomObj.name] += parseInt(dealObj.qty_json[uomObj.name])
-                        }
+                        // if(dealObj.qty_json[uomObj.name]) {
+                        //     $scope.uomTotalQty[uomObj.name] += parseInt(dealObj.qty_json[uomObj.name])
+                        // }
                     })
                 })
             }
-            console.log($scope.uomTotalQty)
+            // console.log($scope.uomTotalQty)
 
             $scope.form = {
                 person_data: data.transaction.person,
