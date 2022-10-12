@@ -53,9 +53,9 @@
                         <th class="col-md-4 text-center">
                             Description
                         </th>
-                        <th class="col-md-1 text-center">
+                        {{-- <th class="col-md-1 text-center">
                             T.Qty (pcs)
-                        </th>
+                        </th> --}}
                         <th class="col-md-1 text-center" ng-if="transaction.person.price_template" ng-repeat="uom in uoms">
                             @{{uom.name}}
                         </th>
@@ -96,7 +96,7 @@
                             <td class="col-md-1 text-center">@{{ $index + 1 }}</td>
                             <td class="col-md-1 text-center">@{{ deal.product_id }}</td>
                             <td class="col-md-5">@{{ deal.item_name }}<br> <small>@{{ deal.item_remark }}</small></td>
-                            <td class="col-md-1 text-right">@{{ deal.pieces }}</td>
+                            {{-- <td class="col-md-1 text-right">@{{ deal.pieces }}</td> --}}
 
                             <td class="col-md-1 text-right" ng-repeat="uom in uoms" style="background-color: @{{uom.color}}" ng-if="deal.qty_json && transaction.person.price_template">
                                 <span ng-if="deal.qty_json[uom.name]">
@@ -220,9 +220,6 @@
                                 <td colspan="3" class="text-right">
                                     <strong>GST ({{number_format($transaction->gst_rate)}}%)</strong>
                                 </td>
-                                @if(!$transaction->is_discard)
-                                <td></td>
-                                @endif
                                 <td colspan="@{{transaction.person.price_template_id ? uoms.length + 1 : ''}}"></td>
                                 <td class="col-md-1 text-right">
                                     @{{taxModel}}
@@ -232,9 +229,6 @@
                                 <td colspan="3" class="text-right">
                                     <strong>Exclude GST</strong>
                                 </td>
-                                @if(!$transaction->is_discard)
-                                <td></td>
-                                @endif
                                 <td colspan="@{{transaction.person.price_template_id ? uoms.length + 1 : ''}}"></td>
                                 <td class="col-md-1 text-right">
                                     @{{subtotalModel}}
@@ -242,13 +236,10 @@
                             </tr>
                             <tr ng-if="deals.length>0">
                                 <td colspan="3" class="text-right">
-                                    <strong>Total</strong>
-                                </td>
-                                <td class="col-md-1 text-right">
-                                    @{{getTotalPieces()}}
+                                    <strong>Total (@{{totalqtyModel}} ctn)</strong>
                                 </td>
                                 <td class="col-md-1 text-center" colspan="@{{transaction.person.price_template_id ? uoms.length : ''}}">
-                                    <strong>@{{totalqtyModel}}</strong>
+                                    <strong></strong>
                                 </td>
                                 @if(!$transaction->is_discard)
                                     <td colspan="1"></td>
@@ -262,10 +253,7 @@
                                 <td colspan="3" class="text-right">
                                     <strong>Subtotal</strong>
                                 </td>
-                                @if(!$transaction->is_discard)
-                                <td></td>
-                                @endif
-                                <td colspan="@{{transaction.person.price_template_id ? uoms.length + 2 : '2'}}"></td>
+                                <td colspan="@{{transaction.person.price_template_id ? uoms.length + 1 : '2'}}"></td>
                                 <td class="col-md-1 text-right">
                                     @{{subtotalModel}}
                                 </td>
@@ -274,23 +262,17 @@
                                 <td colspan="3" class="text-right">
                                     <strong>GST ({{number_format($transaction->gst_rate)}}%)</strong>
                                 </td>
-                                @if(!$transaction->is_discard)
-                                <td></td>
-                                @endif
-                                <td colspan="@{{transaction.person.price_template_id ? uoms.length + 2 : '2'}}"></td>
+                                <td colspan="@{{transaction.person.price_template_id ? uoms.length + 1 : '2'}}"></td>
                                 <td class="col-md-1 text-right">
                                     @{{taxModel}}
                                 </td>
                             </tr>
                             <tr ng-if="deals.length>0">
                                 <td colspan="3" class="text-right">
-                                    <strong>Total</strong>
-                                </td>
-                                <td class="col-md-1 text-right">
-                                    @{{getTotalPieces()}}
+                                    <strong>Total (@{{totalqtyModel}} ctn)</strong>
                                 </td>
                                 <td class="col-md-1 text-center" colspan="@{{transaction.person.price_template_id ? uoms.length : ''}}">
-                                    <strong>@{{totalqtyModel}}</strong>
+                                    <strong></strong>
                                 </td>
                                 @if(!$transaction->is_discard)
                                     <td colspan="1"></td>
@@ -302,13 +284,10 @@
                         @else
                             <tr ng-if="deals.length>0">
                                 <td colspan="3" class="text-right">
-                                    <strong>Total</strong>
-                                </td>
-                                <td class="col-md-1 text-right">
-                                    @{{getTotalPieces()}}
+                                    <strong>Total (@{{totalqtyModel}} ctn)</strong>
                                 </td>
                                 <td class="col-md-1 text-center" colspan="@{{transaction.person.price_template_id ? uoms.length : ''}}">
-                                    <strong>@{{totalqtyModel}}</strong>
+                                    <strong></strong>
                                 </td>
                                 @if(!$transaction->is_discard)
                                     <td colspan="1"></td>

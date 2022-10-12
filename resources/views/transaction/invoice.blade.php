@@ -595,7 +595,7 @@
                                 @if($transaction->is_vending_generate)
                                     Percent
                                 @else
-                                    Price/Unit ({{$transaction->person->profile->currency ? $transaction->person->profile->currency->symbol: '$'}})
+                                    Price/Unit(ctn) ({{$transaction->person->profile->currency ? $transaction->person->profile->currency->symbol: '$'}})
                                 @endif
                             </th>
                             <th class="col-xs-1 text-center">
@@ -637,6 +637,9 @@
                                 </td>
 
                                 @if($deal->transaction->person->price_template_id and $deal->qty_json)
+                                    @php
+
+                                    @endphp
                                     @foreach(\App\Uom::orderBy('sequence', 'desc')->get() as $uom)
                                         <td class="col-xs-1 text-right">
                                             @if(isset($deal->qty_json[$uom->name]))

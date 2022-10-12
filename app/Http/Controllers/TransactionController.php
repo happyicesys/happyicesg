@@ -3118,7 +3118,6 @@ class TransactionController extends Controller
     private function syncDeal($transaction, $dealsArr, $status)
     {
 
-        // dd($dealsArr);
         if($dealsArr) {
             $errors = [];
             foreach($dealsArr as $dealArrIndex => $dealArr) {
@@ -3131,31 +3130,37 @@ class TransactionController extends Controller
                 $qty = $dealArr['qty'];
 
                 if(is_array($qty)) {
+
                     $uomQtyTotal = 0;
                     $priceTemplateItem = PriceTemplateItem::findOrFail($dealArrIndex);
                     if($priceTemplateItem->priceTemplateItemUoms()->exists()) {
                         foreach($priceTemplateItem->priceTemplateItemUoms as $priceTemplateItemUom) {
                             foreach($qty as $qtyKey => $qtyObj) {
                                 if($priceTemplateItemUom->itemUom->uom->name == $qtyKey) {
+                                    // dd($priceTemplateItemUom->itemUom->uom->name, $qtyKey, $qtyObj, $priceTemplateItemUom->itemUom->value,
 
+                                    // );
                                     $uomQtyTotal += $qtyObj
                                                 * $priceTemplateItemUom->itemUom->value
                                                 / (
-                                                        $priceTemplateItem
-                                                        ->priceTemplateItemUoms()
-                                                        ->whereHas('itemUom', function($query) {
-                                                                $query->where('is_transacted_unit', true);
-                                                        })
-                                                        ->first()
-                                                        ->itemUom
-                                                        ->value ?? 1
+                                                    $priceTemplateItem
+                                                    ->item
+                                                    ->itemUoms()
+                                                    ->where('is_transacted_unit', true)
+                                                    ->first()
+                                                    ->value ?? 1
                                                     );
+
                                 }
                             }
                         }
+                        $qty = $uomQtyTotal;
+                    }else {
+                        $uomQtyTotal = $qty['ctn'];
+                        $qty = $uomQtyTotal;
                     }
-                    $qty = $uomQtyTotal;
                 }
+
 
                 $dividend = 0;
                 $divisor = 1;
@@ -3164,7 +3169,6 @@ class TransactionController extends Controller
                     $divisor = explode('/', $qty)[1];
                     $qty = $this->fraction($qty);
                 }
-                // dd($dealsArr, $dealArr);
 
                 if($qty != NULL or $qty != 0 ){
                     $item = Item::findOrFail($dealArr['item_id']);
@@ -3184,15 +3188,6 @@ class TransactionController extends Controller
                             $item->save();
                         }
                     }
-
-
-        // $dealsArr[$priceTemplateItemId/$priceId] = [
-        //     'qty',
-        //     'qty.uom_name',
-        //     'amount',
-        //     'item_id',
-        //     'quote',
-        // ];
 
                     if($status == 1 and $this->calOrderLimit($qty, $item)) {
                         array_push($errors, $item->product_id.' - '.$item->name);
@@ -3222,7 +3217,6 @@ class TransactionController extends Controller
                 }
             }
         }
-
         if($status == 2){
             $this->dealOrder2Actual($transaction->id);
         }

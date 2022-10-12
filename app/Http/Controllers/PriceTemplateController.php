@@ -109,10 +109,10 @@ class PriceTemplateController extends Controller
 
     public function addPriceTemplateItemApi(Request $request, $priceTemplateId)
     {
-        // dd($request->all());
-        $priceTemplate = PriceTemplate::findOrFail($priceTemplateId);
-
-        $priceTemplate->priceTemplateItems()->create($request->all());
+        if($request->item_id) {
+            $priceTemplate = PriceTemplate::findOrFail($priceTemplateId);
+            $priceTemplate->priceTemplateItems()->create($request->all());
+        }
     }
 
     // store new price template api(Request $request)
