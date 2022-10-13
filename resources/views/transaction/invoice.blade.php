@@ -761,7 +761,7 @@
                             </tr>
                             <tr>
                                 <td colspan="2" class="text-right">
-                                    <strong>Exclude GST</strong>
+                                    <strong>Total Before GST</strong>
                                 </td>
                                 <td colspan="2"></td>
                                 <td class="text-right">
