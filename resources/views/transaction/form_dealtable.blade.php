@@ -60,7 +60,7 @@
                             Input Qty
                         </th>
                         <th class="col-md-1 text-center" ng-if="transaction.person.price_template" ng-repeat="uom in uoms">
-                            @{{uom.name}}
+                            @{{uom.name}}@{{uom.chinese_name}}
                         </th>
 
 {{--
@@ -236,6 +236,7 @@
                                 <td class="col-md-1 text-right">
                                     @{{taxModel}}
                                 </td>
+                                <td></td>
                             </tr>
                             <tr ng-if="deals.length>0">
                                 <td colspan="3" class="text-right">
@@ -246,6 +247,7 @@
                                 <td class="col-md-1 text-right">
                                     @{{subtotalModel}}
                                 </td>
+                                <td></td>
                             </tr>
                             <tr ng-if="deals.length>0">
                                 <td colspan="3" class="text-right">
@@ -263,6 +265,7 @@
                                 <td class="col-md-1 text-right">
                                     <strong>@{{totalModel}}</strong>
                                 </td>
+                                <td></td>
                             </tr>
                         @elseif($transaction->gst and !$transaction->is_gst_inclusive)
                             <tr ng-if="deals.length>0">
@@ -274,6 +277,7 @@
                                 <td class="col-md-1 text-right">
                                     @{{subtotalModel}}
                                 </td>
+                                <td></td>
                             </tr>
                             <tr ng-if="deals.length>0">
                                 <td colspan="3" class="text-right">
@@ -284,6 +288,7 @@
                                 <td class="col-md-1 text-right">
                                     @{{taxModel}}
                                 </td>
+                                <td></td>
                             </tr>
                             <tr ng-if="deals.length>0">
                                 <td colspan="3" class="text-right">
@@ -305,6 +310,7 @@
                                 <td class="col-md-1 text-right">
                                     <strong>@{{totalModel}}</strong>
                                 </td>
+                                <td></td>
                             </tr>
                         @else
                             <tr ng-if="deals.length>0">
@@ -323,6 +329,7 @@
                                 <td class="col-md-1 text-right">
                                     <strong>@{{totalModel}}</strong>
                                 </td>
+                                <td></td>
                             </tr>
                         @endif
                         <tr ng-show="(deals | filter:search).deals == 0 || ! deals.length">

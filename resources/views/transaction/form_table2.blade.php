@@ -42,7 +42,7 @@
                         </th>
                         {{-- @{{transaction.person.price_template}} --}}
                         <th class="text-center" ng-if="transaction.person.price_template" ng-repeat="uom in uoms">
-                            @{{uom.name}}
+                            @{{uom.name}}@{{uom.chinese_name}}
                         </th>
                         <th class="text-center" ng-if="!transaction.person.price_template">
                             Qty
@@ -148,19 +148,19 @@
                         <div class="table-responsive">
                             <table class="table table-bordered table-condensed">
                                 <tr style="background-color: #DDFDF8;">
-                                    <th class="text-center" ng-if="transaction.person.price_template" ng-repeat="uom in uoms">
+                                    <th class="text-center" ng-if="transaction.person.price_template && priceItem.item.is_inventory" ng-repeat="uom in uoms">
                                         @{{uom.name}}
                                     </th>
-                                    <th class="text-center" ng-if="!transaction.person.price_template">
+                                    <th class="text-center" ng-if="!transaction.person.price_template || !priceItem.item.is_inventory">
                                         Qty
                                     </th>
                                 </tr>
                                 <tr>
-                                    <td class="text-right col-md-1 col-xs-2" ng-if="transaction.person.price_template" ng-repeat="uom in uoms">
+                                    <td class="text-right col-md-1 col-xs-2" ng-if="transaction.person.price_template && priceItem.item.is_inventory" ng-repeat="uom in uoms">
                                         <input type="number" name="@{{uom.name}}[@{{priceItem.id}}]" ng-model="priceItem.qty[uom.name]" ng-change="syncAmount(priceItem)" class="form-control text-right" ng-disabled="!checkIsActiveUom(uom.id, priceItem)"/>
                                     </td>
-                                    <td class="text-right col-md-1 col-xs-2" ng-if="!transaction.person.price_template">
-                                        <input type="text" name="qty[@{{priceItem.id}}]"  ng-model="priceItem.qty['ctn']" ng-change="syncAmount(priceItem)" class="form-control text-right"/>
+                                    <td class="text-right col-md-1 col-xs-2" ng-if="!transaction.person.price_template || !priceItem.item.is_inventory">
+                                        <input type="text" name="ctn[@{{priceItem.id}}]"  ng-model="priceItem.qty['ctn']" ng-change="syncAmount(priceItem)" class="form-control text-right"/>
                                     </td>
                                 </tr>
                             </table>

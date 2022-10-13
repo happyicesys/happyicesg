@@ -725,6 +725,17 @@
                             // $total = number_format($total, 2);
                         @endphp
 
+                        @if($type == 'do')
+                            <tr>
+                                <td colspan="2" class="text-center">
+                                    Total
+                                </td>
+                                <td class="text-right">
+                                    {{$totalqty}}
+                                </td>
+                            </tr>
+                        @endif
+
                         @if($type == 'invoice')
                         @if($transaction->delivery_fee != 0)
                         <tr>

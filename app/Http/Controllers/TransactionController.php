@@ -900,7 +900,6 @@ class TransactionController extends Controller
         // operation worksheet management
         $this->operationDatesSync($transaction->id, $delivery_date, $previous_delivery_date);
 
-        // dd($request['ctn'],$quantities, $amounts, $request->quote);
 
         $dealsArr = [];
         if($transaction->person->price_template_id && $transaction->person->price_template_id > 0) {
@@ -2664,13 +2663,23 @@ class TransactionController extends Controller
                         'unit_price' => -$inventoryDealsAmount,
                         'qty_status' => 1,
                         'is_stock_action' => true,
+                        'qty_json' => ['ctn' => 1],
                     ]);
                 }
+                $this->syncTransactionTotalAmountQty($transactionId);
                 break;
             case -1:
                 if($deals = $inventoryDeals->get()) {
                     // dd('here');
                     foreach($deals as $deal) {
+
+                        if($deal->qty_json) {
+                            $newQtyJsonArr = [];
+                            foreach($deal->qty_json as $jsonIndex => $jsonItem) {
+                                $newQtyJsonArr[$jsonIndex] = -abs($jsonItem);
+                            }
+                            $deal->qty_json = $newQtyJsonArr;
+                        }
                         $deal->qty = -abs($deal->qty);
                         $deal->dividend = -abs($deal->dividend);
                         $deal->unit_price = $deal->unit_price ? abs($deal->unit_price) : abs($deal->amount/ $deal->dividend * $deal->divisor);
@@ -2688,8 +2697,10 @@ class TransactionController extends Controller
                         'unit_price' => -$inventoryDealsAmount,
                         'qty_status' => 1,
                         'is_stock_action' => true,
+                        'qty_json' => ['ctn' => 1],
                     ]);
                 }
+                $this->syncTransactionTotalAmountQty($transactionId, true);
                 break;
             case 0:
                 if($deals = $inventoryDeals->get()) {
@@ -2711,6 +2722,7 @@ class TransactionController extends Controller
                         'unit_price' => -$inventoryDealsAmount,
                         'qty_status' => 1,
                         'is_stock_action' => true,
+                        'qty_json' => ['ctn' => 1],
                     ]);
 
                     foreach($extraDealProductId as $productId) {
@@ -2726,23 +2738,31 @@ class TransactionController extends Controller
                             'unit_price' => -$balancedDeal->unit_price,
                             'qty_status' => 1,
                             'is_stock_action' => true,
+                            'qty_json' => ['ctn' => 1],
                         ]);
                     }
-
-                    if($inventoryDealsCollections = $inventoryDeals->get()) {
-                        foreach($inventoryDealsCollections as $inventoryDealsCollection) {
-                            $inventoryDealsCollection->qty = -abs($inventoryDealsCollection->qty);
-                            $inventoryDealsCollection->unit_price = 0;
-                            $inventoryDealsCollection->amount = 0;
-                            $inventoryDealsCollection->save();
-                        }
-                    }
                 }
+                $this->syncTransactionTotalAmountQty($transactionId);
                 break;
         }
 
+        if($inventoryDealsCollections = $inventoryDeals->get()) {
+            foreach($inventoryDealsCollections as $inventoryDealsCollection) {
+                if($inventoryDealsCollection->qty_json) {
+                    $newQtyJsonArr = [];
+                    foreach($inventoryDealsCollection->qty_json as $jsonIndex => $jsonItem) {
+                        $newQtyJsonArr[$jsonIndex] = -abs($jsonItem);
+                    }
+                    $inventoryDealsCollection->qty_json = $newQtyJsonArr;
+                }
+                $inventoryDealsCollection->qty = -abs($inventoryDealsCollection->qty);
+                $inventoryDealsCollection->unit_price = 0;
+                $inventoryDealsCollection->amount = 0;
+                $inventoryDealsCollection->save();
+            }
+        }
+
         $this->transactionDealSyncOrder($transactionId);
-        $this->syncTransactionTotalAmountQty($transactionId);
     }
 
     private function dealMakeOrder($transaction_id, $qty_status)
@@ -3081,11 +3101,37 @@ class TransactionController extends Controller
         $this->syncItems($transaction, $request);
     }
 
-    private function syncTransactionTotalAmountQty($transactionId)
+    private function syncTransactionTotalAmountQty($transactionId, $isNegative = false)
     {
         $transaction = Transaction::findOrFail($transactionId);
         $transaction->total = $transaction->deals()->sum('amount');
-        $transaction->total_qty = $transaction->deals()->sum('qty');
+        $transaction->total_qty = $isNegative ? -($transaction->deals()->sum('qty')) : $transaction->deals()->sum('qty');
+
+        $uomsObj = Uom::orderBy('sequence', 'desc')->get();
+
+        $qtyJsonTotal = [];
+        foreach($uomsObj as $uomObj) {
+            $qtyJsonTotal[$uomObj->name] = 0;
+        }
+        if($transaction->deals()->exists()) {
+            foreach($transaction->deals()->whereHas('item', function($query) {
+                $query->where('is_active', true)->where('is_inventory', true);
+            })->get() as $dealObj) {
+                if($dealObj->qty_json) {
+                    foreach($uomsObj as $uomObj) {
+                        $qtyJsonTotal[$uomObj->name] += $isNegative ? -($dealObj->qty_json[$uomObj->name]) : $dealObj->qty_json[$uomObj->name];
+                    }
+                }
+            }
+        }
+        if($transaction->qty_json and $isNegative) {
+            $newQtyJsonArr = [];
+            foreach($transaction->qty_json as $jsonIndex => $jsonItem) {
+                $newQtyJsonArr[$jsonIndex] = -abs($jsonItem);
+            }
+            $transaction->qty_json = $newQtyJsonArr;
+        }
+
         $transaction->save();
     }
 

@@ -58,13 +58,13 @@ class DealController extends Controller
         $deals = Deal::whereTransactionId($deal->transaction_id)->get();
         $deal_total = $deals->sum('amount');
         $deal_totalqty = $deals->sum('qty');
+        $uomsObj = Uom::orderBy('sequence', 'desc')->get();
 
         $qtyJsonTotal = [];
         foreach($uomsObj as $uomObj) {
             $qtyJsonTotal[$uomObj->name] = 0;
         }
         if($transaction->deals()->exists()) {
-            $uomsObj = Uom::orderBy('sequence', 'desc')->get();
             foreach($transaction->deals()->whereHas('item', function($query) {
                 $query->where('is_active', true)->where('is_inventory', true);
             })->get() as $dealObj) {
