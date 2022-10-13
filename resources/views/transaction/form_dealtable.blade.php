@@ -240,7 +240,7 @@
                             </tr>
                             <tr ng-if="deals.length>0">
                                 <td colspan="3" class="text-right">
-                                    <strong>Exclude GST</strong>
+                                    <strong>Total Before GST</strong>
                                 </td>
                                 <td></td>
                                 <td colspan="@{{transaction.person.price_template_id ? uoms.length + 1 : ''}}"></td>
