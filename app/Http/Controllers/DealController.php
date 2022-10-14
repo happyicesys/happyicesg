@@ -55,9 +55,11 @@ class DealController extends Controller
         $deal = Deal::findOrFail($deal_id);
         $this->dealDeleteSingle($deal);
         $transaction = Transaction::findOrFail($deal->transaction_id);
-        $deals = Deal::whereTransactionId($deal->transaction_id)->get();
-        $deal_total = $deals->sum('amount');
-        $deal_totalqty = $deals->sum('qty');
+        // $deals = Deal::whereTransactionId($deal->transaction_id)->get();
+        $deal_total = Deal::whereTransactionId($deal->transaction_id)->get()->sum('amount');
+        $deal_totalqty = Deal::whereTransactionId($deal->transaction_id)->whereHas('item', function($query) {
+            $query->where('is_inventory', true);
+        })->get()->sum('qty');
         $uomsObj = Uom::orderBy('sequence', 'desc')->get();
 
         $qtyJsonTotal = [];
