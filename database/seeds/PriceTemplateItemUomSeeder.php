@@ -24,10 +24,12 @@ class PriceTemplateItemUomSeeder extends Seeder
             foreach($priceTemplateItems as $priceTemplateItem) {
                 foreach($itemUoms as $itemUom) {
                     if($priceTemplateItem->item_id == $itemUom->item_id) {
-                        PriceTemplateItemUom::create([
-                            'price_template_item_id' => $priceTemplateItem->id,
-                            'item_uom_id' => $itemUom->id,
-                        ]);
+                        if($itemUom->uom->name == 'pcs') {
+                            PriceTemplateItemUom::create([
+                                'price_template_item_id' => $priceTemplateItem->id,
+                                'item_uom_id' => $itemUom->id,
+                            ]);
+                        }
                     }
                 }
             }
