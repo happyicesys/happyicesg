@@ -317,7 +317,7 @@
                                     @{{$index + 1}}
                                 </td>
                                 <td class="col-md-9">
-                                    <img src="{{$attachment->url}}" alt="{{$attachment->url}}" style="max-width:300px;">
+                                    <img src="{{$attachment->full_url}}" alt="{{$attachment->full_url}}" style="max-width:300px;">
                                 </td>
                                 <td class="col-md-2 text-center">
                                     <div class="btn-group">
