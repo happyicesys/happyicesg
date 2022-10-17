@@ -321,7 +321,7 @@
                                 </td>
                                 <td class="col-md-2 text-center">
                                     <div class="btn-group">
-                                        <a href="{{$attachment->url}}" class="btn btn-sm btn-success" target="_blank"><i class="fa fa-download"></i> <span class="hidden-xs">Open</span></a>
+                                        <a href="{{$attachment->full_url}}" class="btn btn-sm btn-success" target="_blank"><i class="fa fa-download"></i> <span class="hidden-xs">Open</span></a>
                                     </div>
                                 </td>
                             </tr>
