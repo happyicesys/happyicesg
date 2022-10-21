@@ -136,6 +136,7 @@ function stockBillingController($scope, $http) {
     function getPage(pageNumber, first) {
         $scope.spinner = true;
         $http.post('/api/detailrpt/stock/billing?page=' + pageNumber + '&init=' + first, $scope.search).success(function (data) {
+            console.log(JSON.parse(JSON.stringify(data)))
             if (data.deals.data) {
                 $scope.alldata = data.deals.data;
                 $scope.totalCount = data.deals.total;

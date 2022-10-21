@@ -2694,7 +2694,8 @@ class DetailRptController extends Controller
             'deals' => $deals,
             'totals' => $totals
         ];
-
+        // dd(request()->all(),$data);
+        // return response()->json($data);
         return $data;
     }
 
@@ -3112,11 +3113,11 @@ class DetailRptController extends Controller
             'total_costs' => $total_costs,
             'total_sell_value' => $total_sell_value,
             'total_gross_profit' => $total_gross_profit,
-            'total_gross_profit_percent' => $total_gross_profit/ $total_sell_value * 100,
+            'total_gross_profit_percent' => $total_sell_value ? ($total_gross_profit/ $total_sell_value * 100) : 0,
             'total_sf_fee' => $total_sf_fee,
             'total_commission' => $total_commission,
             'total_gross_after_sf_fee' => $total_gross_profit + $total_sf_fee + $total_commission,
-            'total_gross_after_sf_fee_percent' => ($total_gross_profit + $total_sf_fee + $total_commission)/ $total_sell_value * 100,
+            'total_gross_after_sf_fee_percent' => $total_sell_value ? (($total_gross_profit + $total_sf_fee + $total_commission)/ $total_sell_value * 100) : 0,
 
 
         ];
