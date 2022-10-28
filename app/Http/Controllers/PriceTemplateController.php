@@ -111,7 +111,14 @@ class PriceTemplateController extends Controller
     {
         if($request->item_id) {
             $priceTemplate = PriceTemplate::findOrFail($priceTemplateId);
-            $priceTemplate->priceTemplateItems()->create($request->all());
+            $priceTemplateItem = $priceTemplate->priceTemplateItems()->create($request->all());
+
+            if($priceTemplateItem) {
+                $itemUom = $priceTemplateItem->item->itemUoms()->where('is_base_unit', true)->first();
+                if($itemUom) {
+                    $priceTemplateItem->priceTemplateItemUoms()->create(['item_uom_id' => $itemUom->id]);
+                }
+            }
         }
     }
 
@@ -272,6 +279,14 @@ class PriceTemplateController extends Controller
                 $replicatedPriceTemplateItem = $priceTemplateItem->replicate();
                 $replicatedPriceTemplateItem->price_template_id = $replicatedModel->id;
                 $replicatedPriceTemplateItem->save();
+
+                if($priceTemplateItem->priceTemplateItemUoms()->exists()) {
+                    foreach($priceTemplateItem->priceTemplateItemUoms as $priceTemplateItemUom) {
+                        $replicatedPriceTemplateItemUom = $priceTemplateItemUom->replicate();
+                        $replicatedPriceTemplateItemUom->price_template_item_id = $replicatedPriceTemplateItem->id;
+                        $replicatedPriceTemplateItemUom->save();
+                    }
+                }
             }
         }
         return $replicatedModel->id;
