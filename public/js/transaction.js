@@ -380,7 +380,8 @@ function transactionController($scope, $http) {
                 order_date: data.transaction.order_date ? data.transaction.order_date : moment().format("YYYY-MM-DD"),
                 delivery_date: data.transaction.delivery_date ? data.transaction.delivery_date : moment().format("YYYY-MM-DD"),
                 sign_url: data.transaction.sign_url,
-                is_deliveryorder: data.transaction.is_deliveryorder
+                is_deliveryorder: data.transaction.is_deliveryorder,
+                map_icon_file: data.transaction.person.custcategory.map_icon_file,
             }
 
             if (data.transaction.deliveryorder) {
@@ -877,8 +878,11 @@ function transactionController($scope, $http) {
         var markers = [];
 
         if (singleperson) {
-            // console.log('here1');
-            var contentString = '<span style=font-size:10px;>' +
+            $http.post('/api/person/edit/' + singleperson).success(function(data) {
+
+                singleperson = data;
+
+                var contentString = '<span style=font-size:10px;>' +
                 '<b>' +
                 '(' + singleperson.id + ') ' + singleperson.cust_id + ' - ' + singleperson.company +
                 '</b>' +
@@ -886,51 +890,51 @@ function transactionController($scope, $http) {
                 // '<span style="font-size:13px">' + '<b>' + singleperson.del_postcode + '</b>' + '</span>' + ' ' + singleperson.del_address +
                 '</span>';
 
-            var infowindow = new google.maps.InfoWindow({
-                content: contentString
-            });
-            $http.get('https://developers.onemap.sg/commonapi/search?searchVal=' + singleperson.del_postcode + '&returnGeom=Y&getAddrDetails=Y').success(function (data) {
+                var infowindow = new google.maps.InfoWindow({
+                    content: contentString
+                });
+                $http.get('https://developers.onemap.sg/commonapi/search?searchVal=' + singleperson.del_postcode + '&returnGeom=Y&getAddrDetails=Y').success(function (data) {
 
-                // console.log(singleperson)
-                let coord = {
-                    transaction_id: singleperson.id,
-                    lat: data.results[0].LATITUDE,
-                    lng: data.results[0].LONGITUDE,
-                }
-                $http.post('/api/person/storelatlng/' + singleperson.id, coord).success(function (data) {
-                    let url = map_icon_base + MAP_ICON_FILE[singleperson.map_icon_file]
-                    var pos = new google.maps.LatLng(singleperson.del_lat, singleperson.del_lng);
-                    if (type === 2) {
-                        var marker = new google.maps.Marker({
-                            position: pos,
-                            map: map,
-                            title: singleperson.cust_id + ' - ' + singleperson.company + ' - ' + singleperson.custcategory,
-                            label: { fontSize: '13px', text: '(' + singleperson.cust_id + ') ' + singleperson.company, fontWeight: 'bold' },
-                            icon: {
-                                labelOrigin: new google.maps.Point(15, 10),
-                                url: url
-                            }
-                        });
-                    } else {
-                        var marker = new google.maps.Marker({
-                            position: pos,
-                            map: map,
-                            title: singleperson.cust_id + ' - ' + singleperson.company + ' - ' + singleperson.custcategory,
-                            label: { fontSize: '15px', text: '(' + singleperson.cust_id + ') ' + singleperson.company, fontWeight: 'bold' },
-                            icon: {
-                                labelOrigin: new google.maps.Point(15, 10),
-                                url: url
-                            }
-                        });
+                    // console.log(singleperson)
+                    let coord = {
+                        transaction_id: singleperson.id,
+                        lat: data.results[0].LATITUDE,
+                        lng: data.results[0].LONGITUDE,
                     }
-                    markers.push(marker);
+                    $http.post('/api/person/storelatlng/' + singleperson.id, coord).success(function (data) {
+                        let url = map_icon_base + MAP_ICON_FILE[singleperson.custcategory.map_icon_file]
+                        var pos = new google.maps.LatLng(singleperson.del_lat, singleperson.del_lng);
+                        if (type === 2) {
+                            var marker = new google.maps.Marker({
+                                position: pos,
+                                map: map,
+                                title: singleperson.cust_id + ' - ' + singleperson.company + ' - ' + singleperson.custcategory,
+                                label: { fontSize: '13px', text: '(' + singleperson.cust_id + ') ' + singleperson.company, fontWeight: 'bold' },
+                                icon: {
+                                    labelOrigin: new google.maps.Point(15, 10),
+                                    url: url
+                                }
+                            });
+                        } else {
+                            var marker = new google.maps.Marker({
+                                position: pos,
+                                map: map,
+                                title: singleperson.cust_id + ' - ' + singleperson.company + ' - ' + singleperson.custcategory,
+                                label: { fontSize: '15px', text: '(' + singleperson.cust_id + ') ' + singleperson.company, fontWeight: 'bold' },
+                                icon: {
+                                    labelOrigin: new google.maps.Point(15, 10),
+                                    url: url
+                                }
+                            });
+                        }
+                        markers.push(marker);
 
-                    marker.addListener('click', function () {
-                        infowindow.open(map, marker);
+                        marker.addListener('click', function () {
+                            infowindow.open(map, marker);
+                        });
                     });
                 });
-            });
-
+            })
         } else {
             $scope.coordsArr = [];
             $scope.alldata.forEach(function (person, key) {
@@ -961,6 +965,8 @@ function transactionController($scope, $http) {
                         });
                     });
                 }
+                console.log(person)
+                console.log('here2')
                 let url = map_icon_base + MAP_ICON_FILE[person.map_icon_file]
                 var pos = new google.maps.LatLng(person.del_lat, person.del_lng);
                 if (type === 2) {

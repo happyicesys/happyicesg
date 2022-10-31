@@ -108,7 +108,7 @@
                 </div>
 
                 <div class="form-group">
-                    <button type="button" class="btn btn-md btn-info" data-toggle="modal" data-target="#mapModal" ng-click="onMapClicked(form.person_data)">
+                    <button type="button" class="btn btn-md btn-info" data-toggle="modal" data-target="#mapModal" ng-click="onMapClicked(form.person)">
                         Map <i class="fa fa-map-o"></i>
                     </button>
                 </div>

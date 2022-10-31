@@ -232,7 +232,7 @@ class PersonController extends Controller
 
     public function editApi($id)
     {
-        $person = Person::findOrFail($id);
+        $person = Person::with('custcategory')->findOrFail($id);
         return $person;
     }
 
