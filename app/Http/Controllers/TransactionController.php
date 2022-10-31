@@ -486,9 +486,11 @@ class TransactionController extends Controller
         $deals = Deal::query()
                     ->leftJoin('transactions', 'transactions.id', '=', 'deals.transaction_id')
                     ->leftJoin('people', 'people.id', '=', 'transactions.person_id')
+                    ->leftJoin('custcategories', 'custcategories.id', '=', 'people.custcategory_id')
                     ->leftJoin('profiles', 'profiles.id', '=', 'people.profile_id')
                     ->leftJoin('items', 'items.id', '=', 'deals.item_id')
                     ->select(
+                                'custcategories.map_icon_file',
                                 'deals.transaction_id', 'deals.dividend', 'deals.divisor', 'deals.qty', 'deals.qty_before', 'deals.qty_after', 'deals.unit_price', 'deals.amount', 'deals.id AS deal_id', 'deals.is_stock_action', 'deals.qty_json',
                                 'items.id AS item_id', 'items.product_id', 'items.name AS item_name', 'items.remark AS item_remark', 'items.is_inventory', 'items.unit',
                                 'people.cust_id', 'people.company', 'people.name', 'people.id as person_id', 'people.price_template_id',

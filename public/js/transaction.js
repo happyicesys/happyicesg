@@ -898,8 +898,7 @@ function transactionController($scope, $http) {
                     lng: data.results[0].LONGITUDE,
                 }
                 $http.post('/api/person/storelatlng/' + singleperson.id, coord).success(function (data) {
-
-                    let url = map_icon_base + MAP_ICON_FILE[singleperson.custcategory.map_icon_file]
+                    let url = map_icon_base + MAP_ICON_FILE[singleperson.map_icon_file]
                     var pos = new google.maps.LatLng(singleperson.del_lat, singleperson.del_lng);
                     if (type === 2) {
                         var marker = new google.maps.Marker({
@@ -962,7 +961,6 @@ function transactionController($scope, $http) {
                         });
                     });
                 }
-
                 let url = map_icon_base + MAP_ICON_FILE[person.map_icon_file]
                 var pos = new google.maps.LatLng(person.del_lat, person.del_lng);
                 if (type === 2) {
