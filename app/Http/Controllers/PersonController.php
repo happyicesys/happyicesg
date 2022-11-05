@@ -34,6 +34,8 @@ use App\HasProfileAccess;
 use App\Persontag;
 use App\Persontagattach;
 use App\Traits\HasCustcategoryAccess;
+use GuzzleHttp\Client;
+use GuzzleHttp\Psr7\Request as ClientRequest;
 
 class PersonController extends Controller
 {
@@ -378,6 +380,11 @@ class PersonController extends Controller
 
         // tagging feature sync
         $this->syncPersonTags($person, $request);
+
+        $client = new Client();
+        $clientUrl = "https://sys.happyice.com.sg/api/customer/migrate";
+        $clientRequest = $client->post($clientUrl, $person->toArray());
+        $clientRequest->send();
 
 
         return Redirect::action('PersonController@edit', $person->id);
