@@ -382,10 +382,10 @@ class PersonController extends Controller
         $this->syncPersonTags($person, $request);
 
         // return $this->retrieveCustomerMigration($person->id);
-        // $client = new Client();
-        // $clientUrl = "https://sys.happyice.com.sg/api/v1/customer/migrate";
-        // $clientRequest = $client->post($clientUrl, $person->toArray());
-        // $clientRequest->send();
+        $client = new Client();
+        $clientUrl = "https://sys.happyice.com.sg/api/v1/customer/migrate";
+        $clientRequest = $client->post($clientUrl, $person->toArray());
+        $clientRequest->send();
 
 
         return Redirect::action('PersonController@edit', $person->id);
