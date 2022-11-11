@@ -311,18 +311,17 @@ class TransactionController extends Controller
         $request->merge(['created_by' => auth()->user()->id]);
         $request->merge(['merchandiser' => auth()->user()->id]);
 
-        // haagen daz user logic, open delivery order
-/*
-        if(auth()->user()->hasRole('hd_user')) {
-            $request->merge(array('is_deliveryorder' => 1));
-        } */
-
-
         $person = Person::findOrFail(request('person_id'));
         $request->merge(['del_postcode' => $person->del_postcode]);
+        $request->merge(['del_address' => $person->del_address]);
         $request->merge(['bill_postcode' => $person->bill_postcode]);
+        $request->merge(['bill_address' => $person->bill_address]);
         $request->merge(['del_lat' => $person->del_lat]);
         $request->merge(['del_lng' => $person->del_lng]);
+        $request->merge(['name' => $person->name]);
+        $request->merge(['contact' => $person->contact]);
+        $request->merge(['person_remark' => $person->remark]);
+
 
         // temporary hard code to set haagen daz as DO
         if($person->cust_id == 'B301') {

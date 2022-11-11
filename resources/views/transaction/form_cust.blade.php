@@ -43,12 +43,12 @@
             <div class="col-md-6 col-sm-6 col-xs-12">
                 <div class="form-group">
                     {!! Form::label('bill_postcode', 'Billing Postcode', ['class'=>'control-label']) !!}
-                    {!! Form::text('bill_postcode', null, ['class'=>'form-control', 'id'=>'bill_postcode', 'disabled'=>$disabled, 'ng-model'=>'form.bill_postcode']) !!}
+                    {!! Form::text('bill_postcode', null, ['class'=>'form-control', 'id'=>'bill_postcode', 'disabled'=>$disabled]) !!}
                 </div>
 
                 <div class="form-group">
                     {!! Form::label('bill_address', 'Billing Address', ['class'=>'control-label']) !!}
-                    {!! Form::textarea('bill_address', null, ['class'=>'form-control', 'rows'=>'2', 'disabled'=>$disabled, 'ng-model'=>'form.bill_address']) !!}
+                    {!! Form::textarea('bill_address', null, ['class'=>'form-control', 'rows'=>'2', 'disabled'=>$disabled]) !!}
                 </div>
 
                 <div class="form-group">
@@ -94,12 +94,13 @@
             <div class="col-md-6 col-sm-6 col-xs-12">
                 <div class="form-group">
                     {!! Form::label('del_postcode', 'Delivery Postcode', ['class'=>'control-label']) !!}
-                    {!! Form::text('del_postcode', null, ['class'=>'form-control', 'id'=>'del_postcode', 'disabled'=>$disabled, 'ng-model'=>'form.del_postcode']) !!}
+                    <span style="color: red;">*</span>
+                    {!! Form::text('del_postcode', null, ['class'=>'form-control', 'id'=>'del_postcode', 'disabled'=>$disabled]) !!}
                 </div>
 
                 <div class="form-group">
                     {!! Form::label('del_address', 'Delivery Address', ['class'=>'control-label']) !!}
-                    {!! Form::textarea('del_address', null, ['id'=>'del_address', 'class'=>'form-control', 'rows'=>'2', 'disabled'=>$disabled, 'ng-model'=>'form.del_address']) !!}
+                    {!! Form::textarea('del_address', null, ['id'=>'del_address', 'class'=>'form-control', 'rows'=>'2', 'disabled'=>$disabled]) !!}
                 </div>
 
                 <div class="form-group">
@@ -160,7 +161,7 @@
             <div class="col-md-3 col-sm-12 col-xs-12 form-group">
                 {!! Form::label('form.order_date', 'Order On', ['class'=>'control-label']) !!}
                 <div class="input-group date">
-                    {!! Form::text('order_date', null, ['class'=>'form-control', 'id'=>'order_date', 'disabled'=> $disabled, 'ng-model'=>'form.order_date']) !!}
+                    {!! Form::text('order_date', null, ['class'=>'form-control', 'id'=>'order_date', 'disabled'=> $disabled]) !!}
                     <span class="input-group-addon"><span class="glyphicon-calendar glyphicon"></span></span>
                 </div>
             </div>
@@ -168,7 +169,7 @@
             <div class="col-md-3 col-sm-12 col-xs-12 form-group">
                 {!! Form::label('form.delivery_date', 'Delivery On', ['class'=>'control-label']) !!}
                 <div class="input-group date">
-                    {!! Form::text('delivery_date', null, ['class'=>'form-control', 'id'=>'delivery_date', 'disabled'=> $disabled, 'ng-model'=>'form.delivery_date']) !!}
+                    {!! Form::text('delivery_date', null, ['class'=>'form-control', 'id'=>'delivery_date', 'disabled'=> $disabled]) !!}
                     <span class="input-group-addon"><span class="glyphicon-calendar glyphicon"></span></span>
                 </div>
             </div>
@@ -176,7 +177,7 @@
             <div class="col-md-3 col-sm-12 col-xs-12 form-group">
                 {!! Form::label('form.order_date', 'Order On', ['class'=>'control-label']) !!}
                 <div class="input-group date">
-                    {!! Form::text('order_date', null, ['class'=>'form-control', 'id'=>'order_date', 'disabled'=> $disabled, 'ng-model'=>'form.order_date']) !!}
+                    {!! Form::text('order_date', null, ['class'=>'form-control', 'id'=>'order_date', 'disabled'=> $disabled]) !!}
                     <span class="input-group-addon"><span class="glyphicon-calendar glyphicon"></span></span>
                 </div>
             </div>
@@ -184,7 +185,7 @@
             <div class="col-md-3 col-sm-12 col-xs-12 form-group">
                 {!! Form::label('form.delivery_date', 'Delivery On', ['class'=>'control-label']) !!}
                 <div class="input-group date">
-                    {!! Form::text('delivery_date', null, ['class'=>'form-control', 'id'=>'delivery_date', 'disabled'=> $disabled, 'ng-model'=>'form.delivery_date']) !!}
+                    {!! Form::text('delivery_date', null, ['class'=>'form-control', 'id'=>'delivery_date', 'disabled'=> $disabled]) !!}
                     <span class="input-group-addon"><span class="glyphicon-calendar glyphicon"></span></span>
                 </div>
             </div>
@@ -194,7 +195,7 @@
             <div class="col-md-3 col-sm-12 col-xs-12 form-group">
                 {!! Form::label('form.delivery_date', 'Delivery On', ['class'=>'control-label']) !!}
                 <div class="input-group date">
-                    {!! Form::text('delivery_date', null, ['class'=>'form-control', 'id'=>'delivery_date', 'disabled'=> $disabled, 'ng-model'=>'form.delivery_date']) !!}
+                    {!! Form::text('delivery_date', null, ['class'=>'form-control', 'id'=>'delivery_date', 'disabled'=> $disabled]) !!}
                     <span class="input-group-addon"><span class="glyphicon-calendar glyphicon"></span></span>
                 </div>
             </div>
@@ -205,8 +206,7 @@
                 {!! Form::label('payterm', 'Pay Term', ['class'=>'control-label']) !!}
                 {{-- {!! Form::select('payterm', $payterms::lists('name', 'name'), null, ['id'=>'payterm', 'class'=>'select form-control', 'disabled'=>$disabled]) !!} --}}
 
-                {!! Form::textarea('payterm', null, ['class'=>'form-control',
-                'ng-model'=>'form.payterm',
+                {!! Form::textarea('payterm', $transaction->person->payterm, ['class'=>'form-control',
                 'readonly'=>'readonly',
                 'rows'=>'1']) !!}
             </div>
@@ -236,7 +236,6 @@
                 <div class="col-md-4 form-group">
                     {!! Form::label('name', 'Attn. Name', ['class'=>'control-label']) !!}
                     {!! Form::text('name', null, ['class'=>'form-control',
-                    'ng-model'=>'form.attn_name',
                     'disabled'=> $disabled,
                     'readonly'=>'readonly'
                     ]) !!}
@@ -245,7 +244,6 @@
                 <div class="col-md-4 form-group">
                     {!! Form::label('contact', 'Tel No.', ['class'=>'control-label']) !!}
                     {!! Form::text('contact', null, ['class'=>'form-control',
-                    'ng-model'=>'form.contact',
                     'disabled'=> $disabled,
                     'readonly'=>'readonly'
                     ]) !!}
@@ -260,15 +258,13 @@
                 <div class="col-md-4 form-group">
                     {!! Form::label('name', 'Attn. Name', ['class'=>'control-label']) !!}
                     {!! Form::text('name', null, ['class'=>'form-control',
-                    'disabled'=> $disabled,
-                    'ng-model'=>'form.attn_name']) !!}
+                    'disabled'=> $disabled]) !!}
                 </div>
 
                 <div class="col-md-4 form-group">
                     {!! Form::label('contact', 'Tel No.', ['class'=>'control-label']) !!}
                     {!! Form::text('contact', null, ['class'=>'form-control',
-                    'disabled'=> $disabled,
-                    'ng-model'=>'form.contact']) !!}
+                    'disabled'=> $disabled]) !!}
                 </div>
             @endif
         </div>
@@ -300,7 +296,7 @@
                         <div class="col-md-4 form-group">
                             {!! Form::label('paid_at', 'Payment Received On', ['class'=>'control-label']) !!}
                         <div class="input-group date">
-                            {!! Form::text('paid_at', null, ['class'=>'form-control', 'id'=>'paid_at', 'disabled'=> $disabled,]) !!}
+                            {!! Form::text('paid_at', null, ['class'=>'form-control', 'id'=>'paid_at', 'disabled'=> $disabled]) !!}
                             <span class="input-group-addon"><span class="glyphicon-calendar glyphicon"></span></span>
                         </div>
                         </div>
@@ -422,7 +418,6 @@
                 <div class="form-group">
                     {!! Form::label('person_remark', 'Customer Remarks', ['class'=>'control-label']) !!}
                     {!! Form::textarea('person_remark', null, ['class'=>'form-control text-xs',
-                    'ng-model'=>'form.person_remark',
                     'disabled'=> 'disabled',
                     'rows'=>'5']) !!}
                 </div>
@@ -441,7 +436,6 @@
                             {!! Form::textarea('transremark', null, ['class'=>'form-control text-xs', 'rows'=>'5', 'readonly'=>'readonly']) !!}
                             @else
                             {!! Form::textarea('transremark', null, ['class'=>'form-control text-xs',
-                            'ng-model'=>'form.transremark',
                             'disabled'=> $disabled,
                             'rows'=>'5']) !!}
                             @endif
