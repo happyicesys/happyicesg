@@ -291,6 +291,7 @@
                             @endif
                             @if(!$transaction->is_service)
                                 <a href="/transaction/download/{{$transaction->id}}?value=do" class="btn btn-primary">Print DO</a>
+                                <a href="/transaction/download/{{$transaction->id}}?value=quotation" class="btn btn-warning">Quotation</a>
                             @endif
                             <a href="/transaction" class="btn btn-default">Back</a>
                         </div>
@@ -329,6 +330,7 @@
                 @endif
                 @if(!$transaction->is_service)
                     <a href="/transaction/download/{{$transaction->id}}?value=do" class="btn btn-primary btn-block">Print DO</a>
+                    <a href="/transaction/download/{{$transaction->id}}?value=quotation" class="btn btn-warning">Quotation</a>
                 @endif
                 <a href="/transaction" class="btn btn-default btn-block">Back</a>
             </div>
@@ -364,6 +366,7 @@
                             <a href="/transaction/download/{{$transaction->id}}" class="btn btn-primary">Print Invoice</a>
                             @if(!$transaction->is_service)
                                 <a href="/transaction/download/{{$transaction->id}}?value=do" class="btn btn-warning">Print DO</a>
+                                <a href="/transaction/download/{{$transaction->id}}?value=quotation" class="btn btn-warning">Quotation</a>
                                 <a href="/transaction/emailInv/{{$transaction->id}}" class="btn btn-primary">Send Inv Email</a>
                             @endif
                             <a href="/transaction" class="btn btn-default">Back</a>
@@ -396,6 +399,7 @@
                 <a href="/transaction/download/{{$transaction->id}}" class="btn btn-primary btn-block">Print Invoice</a>
                 @if(!$transaction->is_service)
                     <a href="/transaction/download/{{$transaction->id}}?value=do" class="btn btn-warning btn-block">Print DO</a>
+                    <a href="/transaction/download/{{$transaction->id}}?value=quotation" class="btn btn-warning">Quotation</a>
                     <a href="/transaction/emailInv/{{$transaction->id}}" class="btn btn-primary btn-block">Send Inv Email</a>
                 @endif
                 <a href="/transaction" class="btn btn-default btn-block">Back</a>
@@ -455,6 +459,7 @@
                             <a href="/transaction/download/{{$transaction->id}}" class="btn btn-default">Print Invoice</a>
                             {{-- @if($transaction->is_deliveryorder) --}}
                                 <a href="/transaction/download/{{$transaction->id}}?value=do" class="btn btn-primary">Print DO</a>
+                                <a href="/transaction/download/{{$transaction->id}}?value=quotation" class="btn btn-warning">Quotation</a>
                             {{-- @endif --}}
                             <a href="/transaction" class="btn btn-default">Back</a>
                         </div>
@@ -483,6 +488,7 @@
                     <a href="/transaction/emailInv/{{$transaction->id}}" class="btn btn-primary btn-block">Send Inv Email</a>
                     <a href="/transaction/download/{{$transaction->id}}" class="btn btn-primary btn-block">Print Invoice</a>
                         <a href="/transaction/download/{{$transaction->id}}?value=do" class="btn btn-primary btn-block">Print DO</a>
+                        <a href="/transaction/download/{{$transaction->id}}?value=quotation" class="btn btn-warning">Quotation</a>
                     <a href="/transaction" class="btn btn-default btn-block">Back</a>
             </div>
             @elseif($state === 7)

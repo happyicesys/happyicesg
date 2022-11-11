@@ -183,6 +183,8 @@
                                             <strong>SALES REPORT</strong>
                                         @elseif($type == 'do')
                                             <strong>DELIVERY ORDER</strong>
+                                        @elseif($type == 'quotation')
+                                            <strong>QUOTATION</strong>
                                         @else
                                             @if($transaction->gst)
                                             <strong>DO/ TAX INVOICE</strong>

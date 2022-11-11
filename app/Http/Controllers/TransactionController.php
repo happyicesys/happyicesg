@@ -1161,6 +1161,9 @@ class TransactionController extends Controller
         if(request()->has('value')) {
             $type = 'do';
         }
+        if(request()->has('value')) {
+            $type = 'quotation';
+        }
         $transaction = Transaction::findOrFail($id);
         $person = Person::findOrFail($transaction->person_id);
         $deals = Deal::whereTransactionId($transaction->id)->get();

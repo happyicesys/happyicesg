@@ -381,8 +381,9 @@ class PersonController extends Controller
         // tagging feature sync
         $this->syncPersonTags($person, $request);
 
+        return $this->retrieveCustomerMigration($person->id);
         $client = new Client();
-        $clientUrl = "https://sys.happyice.com.sg/api/customer/migrate";
+        $clientUrl = "https://sys.happyice.com.sg/api/v1/customer/migrate";
         $clientRequest = $client->post($clientUrl, $person->toArray());
         $clientRequest->send();
 
@@ -1201,7 +1202,7 @@ class PersonController extends Controller
         return view('person.potential-index', compact('month_options'));
     }
 
-    public function retrieveCustomerMigration()
+    public function retrieveCustomerMigration($personId = null)
     {
         $people = Person::with([
                         'accountManager',
@@ -1214,9 +1215,12 @@ class PersonController extends Controller
                         'profile',
                         'profile.currency',
                         'zone'
-                    ])
-                    // ->whereNotNull('vend_code')
-                    ->where('custcategory_id', '<>', 43)
+        ]);
+
+        if($personId) {
+            $people = $people->where('id', $personId);
+        }
+            $people = $people->where('custcategory_id', '<>', 43)
                     ->where('people.cust_id', 'NOT LIKE', 'H%')
                     ->where('people.cust_id', 'NOT LIKE', 'D%')
                     ->orderBy('cust_id')
