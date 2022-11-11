@@ -951,7 +951,11 @@
                         <div class="col-xs-6">
                             <div class="form-group">
                                 <span class="text-center col-xs-12">
-                                    <strong>Goods Received in Good Conditions</strong>
+                                    @if($type == 'quotation')
+                                        <strong>Client Acceptance</strong>
+                                    @else
+                                        <strong>Goods Received in Good Conditions</strong>
+                                    @endif
                                 </span>
                                 @if($transaction->is_deliveryorder and $transaction->sign_url)
                                     <span class="text-center col-xs-12" style="margin-bottom:-1px; padding-top:10px">
