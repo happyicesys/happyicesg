@@ -385,7 +385,6 @@ class PersonController extends Controller
         $client = new Client();
         $clientUrl = "https://sys.happyice.com.sg/api/v1/customer/migrate";
         $clientRequest = $client->post($clientUrl, $this->retrieveCustomerMigration($person->id));
-        $clientRequest->send();
 
 
         return Redirect::action('PersonController@edit', $person->id);
@@ -1226,7 +1225,7 @@ class PersonController extends Controller
                     ->orderBy('cust_id')
                     ->get();
 
-        return $people->toArray();
+        return $people;
     }
 
     // conditional filter parser(Collection $query, Formrequest $request)
