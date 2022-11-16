@@ -1226,7 +1226,7 @@ class PersonController extends Controller
                     ->orderBy('cust_id')
                     ->get();
 
-        return $people;
+        return $people->toArray();
     }
 
     // conditional filter parser(Collection $query, Formrequest $request)
