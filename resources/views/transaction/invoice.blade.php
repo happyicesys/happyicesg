@@ -569,11 +569,13 @@
                 </span>
                 @endif
                 @php
-                    if($deal->transaction->person->price_template_id) {
+                    if($transaction->person->price_template_id) {
                         $uomArr = [];
                         foreach(\App\Uom::orderBy('sequence', 'desc')->get() as $uom) {
-                            if($deal->qty_json and isset($deal->qty_json[$uom->name])) {
-                                array_push($uomArr, $uom->name);
+                            foreach($deals as $deal) {
+                                if($deal->qty_json and isset($deal->qty_json[$uom->name])) {
+                                        array_push($uomArr, $uom->name);
+                                }
                             }
                         }
                     }
