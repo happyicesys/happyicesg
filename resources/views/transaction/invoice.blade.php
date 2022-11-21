@@ -568,6 +568,16 @@
                     Items
                 </span>
                 @endif
+                @php
+                    if($deal->transaction->person->price_template_id) {
+                        $uomArr = []
+                        foreach(\App\Uom::orderBy('sequence', 'desc')->get() as $uom) {
+                            if($deal->qty_json and isset($deal->qty_json[$uom->name])) {
+                                array_push($uomArr, $uom->name);
+                            }
+                        }
+                    }
+                @endphp
                 </div>
                     <table class="table table-bordered table-condensed">
                         <tr>
@@ -578,7 +588,7 @@
                                 Description
                             </th>
                             @if($transaction->person->price_template_id)
-                                <th class="col-xs-2 text-center" colspan="3">
+                                <th class="col-xs-2 text-center" colspan="{{count($uomArr)}}">
                                     Packing
                                 </th>
                             @endif
@@ -604,9 +614,9 @@
                         </tr>
                         @if($transaction->person->price_template_id)
                         <tr>
-                            @foreach(\App\Uom::orderBy('sequence', 'desc')->get() as $uom)
+                            @foreach($uomArr as $uomName)
                                 <td class="col-xs-1 text-center">
-                                    {{$uom->name}}
+                                    {{$uomName}}
                                 </td>
                             @endforeach
                         </tr>
@@ -645,10 +655,10 @@
                                 </td>
 
                                 @if($deal->transaction->person->price_template_id and $deal->qty_json)
-                                    @foreach(\App\Uom::orderBy('sequence', 'desc')->get() as $uom)
+                                    @foreach($uomArr as $uomName)
                                         <td class="col-xs-1 text-right">
-                                            @if(isset($deal->qty_json[$uom->name]))
-                                                {{$deal->qty_json[$uom->name]}}
+                                            @if(isset($deal->qty_json[$uomName]))
+                                                {{$deal->qty_json[$uomName]}}
                                             @endif
                                         </td>
                                     @endforeach
