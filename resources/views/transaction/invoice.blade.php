@@ -763,6 +763,9 @@
 
                         @if($transaction->gst and $transaction->is_gst_inclusive)
                             <tr class="noBorder">
+                                @if($uomArr)
+                                    <td></td>
+                                @endif
                                 <td colspan="2" class="text-right">
                                     <strong>GST ({{$transaction->gst_rate + 0}}%)</strong>
                                 </td>
@@ -772,6 +775,9 @@
                                 </td>
                             </tr>
                             <tr>
+                                @if($uomArr)
+                                    <td></td>
+                                @endif
                                 <td colspan="2" class="text-right">
                                     <strong>Total Before GST</strong>
                                 </td>
@@ -781,6 +787,9 @@
                                 </td>
                             </tr>
                             <tr>
+                                @if($uomArr)
+                                    <td></td>
+                                @endif
                                 <td colspan="2" class="text-right">
                                     <strong>Total</strong>
                                 </td>
@@ -794,6 +803,9 @@
                             </tr>
                         @elseif($transaction->gst and !$transaction->is_gst_inclusive)
                             <tr class="noBorder">
+                                @if($uomArr)
+                                    <td></td>
+                                @endif
                                 <td colspan="2" class="text-right">
                                     <strong>SubTotal</strong>
                                 </td>
@@ -803,6 +815,9 @@
                                 </td>
                             </tr>
                             <tr>
+                                @if($uomArr)
+                                    <td></td>
+                                @endif
                                 <td colspan="2" class="text-right">
                                     <strong>GST ({{$transaction->gst_rate + 0}}%)</strong>
                                 </td>
@@ -812,6 +827,9 @@
                                 </td>
                             </tr>
                             <tr class="noBorder">
+                                @if($uomArr)
+                                    <td></td>
+                                @endif
                                 <td colspan="2" class="text-right">
                                     <strong>Total</strong>
                                 </td>
@@ -825,6 +843,9 @@
                             </tr>
                         @else
                             <tr class="noBorder">
+                                @if($uomArr)
+                                    <td></td>
+                                @endif
                                 <td colspan="2" class="text-right">
                                     <strong>Total</strong>
                                 </td>
