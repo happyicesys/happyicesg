@@ -591,7 +591,7 @@
                             <th class="col-xs-6 text-center" rowspan="{{$uomArr ? 2 : 0}}">
                                 Description
                             </th>
-                            @if($transaction->person->price_template_id and $transaction->person->price_template_id != '-1')
+                            @if($transaction->person->price_template_id and $transaction->person->price_template_id != '-1' and $uomArr)
                                 <th class="col-xs-2 text-center" colspan="{{count($uomArr)}}">
                                     Packing
                                 </th>
