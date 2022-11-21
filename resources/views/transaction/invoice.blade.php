@@ -571,13 +571,18 @@
                 </div>
                     <table class="table table-bordered table-condensed">
                         <tr>
-                            <th class="col-xs-1 text-center">
+                            <th class="col-xs-1 text-center" rowspan="2">
                                 Item Code
                             </th>
-                            <th class="col-xs-6 text-center">
+                            <th class="col-xs-6 text-center" rowspan="2">
                                 Description
                             </th>
-                            <th class="col-xs-2 text-center">
+                            @if($transaction->person->price_template_id)
+                                <th class="col-xs-2 text-center" colspan="3">
+                                    Packing
+                                </th>
+                            @endif
+                            <th class="col-xs-2 text-center" rowspan="2">
                                 @if($transaction->is_vending_generate)
                                     Sales
                                 @else
@@ -585,18 +590,27 @@
                                 @endif
                             </th>
                             @if($type == 'invoice')
-                            <th class="col-xs-1 text-center">
+                            <th class="col-xs-1 text-center" rowspan="2">
                                 @if($transaction->is_vending_generate)
                                     Percent
                                 @else
                                     Price/ Unit ({{$transaction->person->profile->currency ? $transaction->person->profile->currency->symbol: '$'}})
                                 @endif
                             </th>
-                            <th class="col-xs-1 text-center">
+                            <th class="col-xs-1 text-center" rowspan="2">
                                 Amount ({{$transaction->person->profile->currency ? $transaction->person->profile->currency->symbol: '$'}})
                             </th>
                             @endif
                         </tr>
+                        @if($transaction->person->price_template_id)
+                        <tr>
+                            @foreach(\App\Uom::orderBy('sequence', 'desc')->get() as $uom)
+                                <td class="col-xs-1 text-center">
+                                    {{$uom->name}}
+                                </td>
+                            @endforeach
+                        </tr>
+                        @endif
 
                         @php
                             $counter = 0;
@@ -629,6 +643,17 @@
                                 <td class="col-xs-6">
                                     {{ $deal->item->name}} {{ $deal->item->remark }}
                                 </td>
+
+                                @if($deal->transaction->person->price_template_id and $deal->qty_json)
+                                    @foreach(\App\Uom::orderBy('sequence', 'desc')->get() as $uom)
+                                        <td class="col-xs-1 text-right">
+                                            @if(isset($deal->qty_json[$uom->name]))
+                                                {{$deal->qty_json[$uom->name]}}
+                                            @endif
+                                        </td>
+                                    @endforeach
+                                @endif
+
                                 @if($deal->divisor and $deal->item->is_inventory === 1)
                                     <td class="col-xs-2 text-right">
                                         {{ $deal->divisor == 1 ? $deal->qty + 0 : ($deal->dividend + 0).'/'.($deal->divisor + 0)}}
@@ -646,35 +671,6 @@
                                         {{ $deal->qty + 0 }}
                                     </td>
                                 @endif
-{{--
-                                @if($deal->transaction->person->price_template_id and $deal->qty_json)
-
-                                    @foreach(\App\Uom::orderBy('sequence', 'desc')->get() as $uom)
-                                        <td class="col-xs-1 text-right">
-                                            @if(isset($deal->qty_json[$uom->name]))
-                                                {{$deal->qty_json[$uom->name]}}
-                                            @endif
-                                        </td>
-                                    @endforeach
-                                @else
-                                    @if($deal->divisor and $deal->item->is_inventory === 1)
-                                        <td class="col-xs-1 text-right" colspan="{{count(\App\Uom::all())}}">
-                                            {{ $deal->divisor == 1 ? $deal->qty + 0 : ($deal->dividend + 0).'/'.($deal->divisor + 0)}} {{ $deal->item->unit }}
-                                        </td>
-                                    @elseif($deal->item->is_inventory === 0)
-                                        <td class="col-xs-1 text-left" colspan="{{count(\App\Uom::all())}}">
-                                            @if($deal->dividend === 1)
-                                                1 Unit
-                                            @else
-                                                {{$deal->dividend ? $deal->dividend + 0 : 1}} Unit
-                                            @endif
-                                        </td>
-                                    @else
-                                        <td class="col-xs-1 text-right" colspan="{{count(\App\Uom::all())}}">
-                                            {{ $deal->qty + 0 }}
-                                        </td>
-                                    @endif
-                                @endif --}}
 
                                 @if($type == 'invoice')
                                 @if($deal->unit_price == 0 || $deal->unit_price == null)

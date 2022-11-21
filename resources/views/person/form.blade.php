@@ -266,6 +266,12 @@
             {!! Form::label('is_non_freezer_point', 'Non Freezer Point', ['class'=>'control-label', 'style'=>'padding-left:5px;']) !!}
         </div>
     </div>
+    <div class="col-md-4 col-sm-4 col-xs-6">
+        <div class="form-group">
+            <input type="radio" name="type" value="none" {{!$person->is_dvm && !$person->is_vending && !$person->is_combi && !$person->is_subsidiary && !$person->is_non_freezer_point ? 'checked' : null}} {{$disabled ? 'disabled' : null}}>
+            {!! Form::label('none', 'N/A', ['class'=>'control-label', 'style'=>'padding-left:5px;']) !!}
+        </div>
+    </div>
 
     <div class="col-md-12 col-sm-12 col-xs-6">
         <div class="form-group">

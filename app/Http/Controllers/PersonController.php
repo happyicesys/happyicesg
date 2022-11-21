@@ -324,16 +324,18 @@ class PersonController extends Controller
             $request->merge(['is_subsidiary' => 0]);
             $request->merge(['is_non_freezer_point' => 0]);
 
-            // default setting is dvm based on custcategory
-            if($person->custcategory) {
-                if ($person->custcategory->name == 'V-Dir') {
-                    $request->merge(['is_dvm' => 1]);
-                    $request->merge(['is_vending' => 0]);
+            if($type != 'none') {
+                // default setting is dvm based on custcategory
+                if($person->custcategory) {
+                    if ($person->custcategory->name == 'V-Dir') {
+                        $request->merge(['is_dvm' => 1]);
+                        $request->merge(['is_vending' => 0]);
+                    }else {
+                        $request->merge([$type => 1]);
+                    }
                 }else {
                     $request->merge([$type => 1]);
                 }
-            }else {
-                $request->merge([$type => 1]);
             }
         }
         if($request->vending_id) {
