@@ -569,7 +569,7 @@
                 </span>
                 @endif
                 @php
-                    if($transaction->person->price_template_id) {
+                    if($transaction->person->price_template_id and $transaction->person->price_template_id != '-1') {
                         $uomArr = [];
                         foreach(\App\Uom::orderBy('sequence', 'desc')->get() as $uom) {
                             foreach($deals as $deal) {
@@ -591,7 +591,7 @@
                             <th class="col-xs-6 text-center" rowspan="2">
                                 Description
                             </th>
-                            @if($transaction->person->price_template_id)
+                            @if($transaction->person->price_template_id and $transaction->person->price_template_id != '-1')
                                 <th class="col-xs-2 text-center" colspan="{{count($uomArr)}}">
                                     Packing
                                 </th>
@@ -616,7 +616,7 @@
                             </th>
                             @endif
                         </tr>
-                        @if($transaction->person->price_template_id)
+                        @if($transaction->person->price_template_id and $transaction->person->price_template_id != '-1')
                         <tr>
                             @foreach($uomArr as $uomName)
                                 <td class="col-xs-1 text-center">
