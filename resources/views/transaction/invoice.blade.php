@@ -573,7 +573,7 @@
                         $uomArr = [];
                         foreach(\App\Uom::orderBy('sequence', 'desc')->get() as $uom) {
                             foreach($deals as $deal) {
-                                if($deal->qty_json and isset($deal->qty_json[$uom->name])) {
+                                if($deal->qty_json and $deal->item->is_inventory and isset($deal->qty_json[$uom->name])) {
                                     if(!in_array($uom->name, $uomArr, true)){
                                         array_push($uomArr, $uom->name);
                                     }
