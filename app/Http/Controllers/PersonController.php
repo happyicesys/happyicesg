@@ -1055,6 +1055,8 @@ class PersonController extends Controller
             'transremark' => $transremark,
             'order_date' => Carbon::today(),
             'is_service' => $isService == 'true' ? 1 : 0,
+            'name' => $person->name,
+            'contact' => $person->contact,
         ]);
 
         if($serviceNotices and $isService == 'true') {

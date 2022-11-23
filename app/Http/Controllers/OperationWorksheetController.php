@@ -162,7 +162,7 @@ class OperationWorksheetController extends Controller
                         'del_lng' => $person->del_lng,
                         'driver' => $driver,
                         'order_date' => Carbon::today(),
-                        'name' => $person->name,
+                        'name' => $person->attn_name,
                         'contact' => $person->contact,
                     ]);
 
