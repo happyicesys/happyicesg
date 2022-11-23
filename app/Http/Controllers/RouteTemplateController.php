@@ -122,6 +122,8 @@ class RouteTemplateController extends Controller
                             'del_lat' => $person->del_lat,
                             'del_lng' => $person->del_lng,
                             'order_date' => Carbon::today(),
+                            'name' => $person->name,
+                            'contact' => $person->contact,
                         ]);
 
                         $prevOpsDate = Operationdate::where('person_id', $person->id)->whereDate('delivery_date', '=', $invoiceDate)->first();
