@@ -895,6 +895,7 @@
                                             <option value="cheque">Cheque</option>
                                             <option value="tt">TT</option>
                                             <option value="creditcard">Credit Card</option>
+                                            <option value="contra">Contra</option>
                                         </select>
                                     </div>
                                 </div>

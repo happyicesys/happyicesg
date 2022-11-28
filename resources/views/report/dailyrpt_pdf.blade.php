@@ -352,6 +352,9 @@
                                             case 'creditcard':
                                                 $paymethod = 'Credit Card';
                                                 break;
+                                            case 'contra':
+                                                $paymethod = 'Contra';
+                                                break;
                                         }
                                     @endphp
                                         <td class="col-xs-1 text-center">
