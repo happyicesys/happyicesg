@@ -239,6 +239,22 @@
                             @{{paid_tt ? paid_tt : 0 | currency: "": 2}}
                         </div>
                     </div>
+                    <div class="row">
+                        <div class="col-md-5 col-sm-5 col-xs-5" style="margin-left: 15px;">
+                            Total Paid 'Credit Card'
+                        </div>
+                        <div class="col-md-3 col-sm-3 col-xs-3 text-right" style="border: thin black solid;">
+                            @{{paid_creditcard ? paid_creditcard : 0 | currency: "": 2}}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-5 col-sm-5 col-xs-5" style="margin-left: 15px;">
+                            Total Paid 'Contra'
+                        </div>
+                        <div class="col-md-3 col-sm-3 col-xs-3 text-right" style="border: thin black solid;">
+                            @{{paid_contra ? paid_contra : 0 | currency: "": 2}}
+                        </div>
+                    </div>
                 </div>
                 {{-- @endcannot --}}
             </div>
@@ -350,6 +366,22 @@
                         <td></td>
                         <td ng-if="!getdriver()">Total Paid 'TT'</td>
                         <td ng-if="!getdriver()" class="text-right">@{{rptdata.tt_mod | currency: "": 2}}</td>
+                    </tr>
+                    <tr class="hidden">
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td ng-if="!getdriver()">Total Paid 'Credit Card'</td>
+                        <td ng-if="!getdriver()" class="text-right">@{{rptdata.creditcard_mod | currency: "": 2}}</td>
+                    </tr>
+                    <tr class="hidden">
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td ng-if="!getdriver()">Total Paid 'Contra'</td>
+                        <td ng-if="!getdriver()" class="text-right">@{{rptdata.contra_mod | currency: "": 2}}</td>
                     </tr>
                     <tr class="hidden" data-tableexport-display="always">
                         <td></td>

@@ -233,6 +233,22 @@
                                 {{ number_format($paid_tt, 2, '.', ',') }}
                             </div>
                         </div>
+                        <div class="row">
+                            <div class="col-xs-8">
+                                <strong>Total Paid 'Credit Card':</strong>
+                            </div>
+                            <div class="col-xs-4 text-right">
+                                {{ number_format($paid_creditcard, 2, '.', ',') }}
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-8">
+                                <strong>Total Paid 'Contra':</strong>
+                            </div>
+                            <div class="col-xs-4 text-right">
+                                {{ number_format($paid_contra, 2, '.', ',') }}
+                            </div>
+                        </div>
                     </div>
                 {{-- @endunless --}}
 

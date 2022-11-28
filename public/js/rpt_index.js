@@ -80,6 +80,8 @@ function rptController($scope, $http) {
                     $scope.paid_cheque_in = data.paid_cheque_in;
                     $scope.paid_cheque_out = data.paid_cheque_out;
                     $scope.paid_tt = data.paid_tt;
+                    $scope.paid_creditcard = data.paid_creditcard;
+                    $scope.paid_contra = data.paid_contra;
                     $scope.paid_equals = data.paid_equals;
 
                     $scope.transactions = data.transactions;

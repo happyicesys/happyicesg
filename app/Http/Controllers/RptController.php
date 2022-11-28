@@ -451,6 +451,8 @@ class RptController extends Controller
         $paid_cheque_in = 0;
         $paid_cheque_out = 0;
         $paid_tt = 0;
+        $paid_creditcard = 0;
+        $paid_contra = 0;
         $paid_equals = false;
 
         foreach($transactionArr as $transaction) {
@@ -481,6 +483,12 @@ class RptController extends Controller
                     case 'tt':
                        $paid_tt += $transaction->total;
                        break;
+                    case 'creditcard':
+                        $paid_creditcard += $transaction->total;
+                        break;
+                    case 'contra':
+                        $paid_contra += $transaction->total;
+                        break;
                 }
             }
         }
@@ -493,9 +501,11 @@ class RptController extends Controller
         $paid_cash = round($paid_cash, 2);
         $paid_cheque_in = round($paid_cheque_in, 2);
         $paid_cheque_out = round($paid_cheque_out, 2);
+        $paid_creditcard = round($paid_creditcard, 2);
+        $paid_contra = round($paid_contra, 2);
         $paid_tt = round($paid_tt, 2);
 
-        if($paid_amount == $paid_cash + $paid_cheque_in + $paid_cheque_out + $paid_tt) {
+        if($paid_amount == $paid_cash + $paid_cheque_in + $paid_cheque_out + $paid_tt + $paid_creditcard + $paid_contra) {
             $paid_equals = true;
         }
 
@@ -508,7 +518,9 @@ class RptController extends Controller
             'paid_cheque_in' => $paid_cheque_in,
             'paid_cheque_out' => $paid_cheque_out,
             'paid_tt' => $paid_tt,
-            'paid_equals' => $paid_equals
+            'paid_creditcard' => $paid_creditcard,
+            'paid_contra' => $paid_contra,
+            'paid_equals' => $paid_equals,
         ];
     }
 
@@ -674,6 +686,8 @@ class RptController extends Controller
             'paid_cheque_in' => $calArr['paid_cheque_in'],
             'paid_cheque_out' => $calArr['paid_cheque_out'],
             'paid_tt' => $calArr['paid_tt'],
+            'paid_creditcard' => $calArr['paid_creditcard'],
+            'paid_contra' => $calArr['paid_contra'],
             'paid_equals' => $calArr['paid_equals']
         ];
 
@@ -751,6 +765,8 @@ class RptController extends Controller
         $chequein_mod = $this->payMethodConDB($query2, 'cheque', 'in');
         $chequeout_mod = $this->payMethodConDB($query2, 'cheque', 'out');
         $tt_mod = $this->payMethodConDB($query2, 'tt');
+        $creditcard_mod = $this->payMethodConDB($query2, 'creditcard');
+        $contra_mod = $this->payMethodConDB($query2, 'contra');
         $del_cashmod = $this->payMethodConDBDelivery($query2, 'cash');
         $del_chequemod = $this->payMethodConDBDelivery($query2, 'cheque');
         $delivery_total1 = $this->calDBDeliveryTotal($query1);
@@ -765,7 +781,9 @@ class RptController extends Controller
             'cash_mod' => $cash_mod /*+ $del_cashmod*/,
             'chequein_mod' => $chequein_mod /*+ $del_chequemod*/,
             'chequeout_mod' => $chequeout_mod,
-            'tt_mod' => $tt_mod
+            'tt_mod' => $tt_mod,
+            'creditcard_mod' => $creditcard_mod,
+            'contra_mod' => $contra_mod,
         ];
         return $data;
     }
