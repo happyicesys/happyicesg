@@ -8,7 +8,7 @@
 <div class="panel panel-primary">
     <div class="panel-body">
         <label style="margin-bottom: 15px; font-size: 18px;">
-            <a href="/person/@{{ form.person }}">
+            <a href="/person/{{ $person->id }}">
                 {{$transaction->person->cust_id}} - {{$transaction->person->company}}
             </a>
             @if(($transaction->person->is_vending === 1 or $transaction->person->is_dvm) and $transaction->person->vending)
