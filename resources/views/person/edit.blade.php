@@ -332,7 +332,10 @@
                 @endif
 
                 <label for="price_template">
-                    Binded Price Template: {{$person->priceTemplate->name}} @if($person->priceTemplate->remarks) ({{$person->priceTemplate->remarks}}) @endif
+                    Binded Price Template:
+                    <a href="/price-template/{{$person->priceTemplate->id}}/edit">
+                        {{$person->priceTemplate->name}} @if($person->priceTemplate->remarks) ({{$person->priceTemplate->remarks}}) @endif
+                    </a>
                 </label>
                 <div class="table-responsive">
                     <table class="table table-list-search table-hover table-bordered table-condensed">
