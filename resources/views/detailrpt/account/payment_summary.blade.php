@@ -20,7 +20,7 @@
                     [
                     'class'=>'select form-control',
                     'ng-model'=>'search.profile_id',
-                    'ng-change'=>'searchDB()'
+                    // 'ng-change'=>'searchDB()'
                     ])
                 !!}
             </div>
@@ -132,6 +132,14 @@
 
 <div class="row" style="padding-left: 15px; padding-top: 20px;">
     <div class="col-md-12 col-sm-12 col-xs-12">
+        <button class="btn btn-success" ng-click="onSearchButtonClicked($event)">
+            Search
+            <i class="fa fa-search" ng-show="!spinner"></i>
+            <i class="fa fa-spinner fa-1x fa-spin" ng-show="spinner"></i>
+            <span ng-if="search.edited">
+                <br><small>You have edited the filter, search?</small>
+            </span>
+        </button>
         @if(auth()->user()->hasRole('admin') or auth()->user()->hasRole('account') or auth()->user()->hasRole('accountadmin') or auth()->user()->hasRole('supervisor'))
             <button class="btn btn-primary" type="submit" form="export_excel" name="export_excel" value="export_excel"><i class="fa fa-file-excel-o"></i><span class="hidden-xs"> Export Excel</span></button>
         @endif

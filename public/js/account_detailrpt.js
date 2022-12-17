@@ -52,35 +52,35 @@ var app = angular.module('app', [
             if(date){
                 $scope.search.delivery_from = moment(new Date(date)).format('YYYY-MM-DD');
             }
-            $scope.searchDB();
+            // $scope.searchDB();
         }
         $scope.onPaymentFromChanged = function(date){
             if(date){
                 $scope.search.payment_from = moment(new Date(date)).format('YYYY-MM-DD');
             }
-            $scope.searchDB();
+            // $scope.searchDB();
         }
         $scope.onDeliveryToChanged = function(date){
             if(date){
                 $scope.search.delivery_to = moment(new Date(date)).format('YYYY-MM-DD');
             }
-            $scope.searchDB();
+            // $scope.searchDB();
         }
         $scope.onPaymentToChanged = function(date){
             if(date){
                 $scope.search.payment_to = moment(new Date(date)).format('YYYY-MM-DD');
             }
-            $scope.searchDB();
+            // $scope.searchDB();
         }
 
         $scope.onPrevSingleClicked = function(scope_name, date) {
             $scope.search[scope_name] = date ? moment(new Date(date)).subtract(1, 'days').format('YYYY-MM-DD') : moment().format('YYYY-MM-DD');
-            $scope.searchDB();
+            // $scope.searchDB();
         }
 
         $scope.onNextSingleClicked = function(scope_name, date) {
             $scope.search[scope_name] = date ? moment(new Date(date)).add(1, 'days').format('YYYY-MM-DD') : moment().format('YYYY-MM-DD');
-            $scope.searchDB();
+            // $scope.searchDB();
         }
 
         $scope.exportData = function (event) {
@@ -397,7 +397,7 @@ var app = angular.module('app', [
             itemsPerPage: 100
         }
         // init page load
-        getPage(1, true);
+        // getPage(1, true);
 
         angular.element(document).ready(function () {
             $('.select').select2();
@@ -469,10 +469,24 @@ var app = angular.module('app', [
         }
 
           // when hitting search button
-        $scope.searchDB = function(){
+        // $scope.searchDB = function(){
+        //     $scope.search.sortName = '';
+        //     $scope.search.sortBy = true;
+        //     getPage(1, false);
+        // }
+
+            // when hitting search button
+        $scope.searchDB = function () {
+            $scope.search.edited = true;
+        }
+
+        // search button transaction index
+        $scope.onSearchButtonClicked = function (event) {
+            event.preventDefault();
             $scope.search.sortName = '';
             $scope.search.sortBy = true;
-            getPage(1, false);
+            getPage(1);
+            $scope.search.edited = false;
         }
 
         // retrieve page w/wo search
