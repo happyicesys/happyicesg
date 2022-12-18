@@ -336,7 +336,6 @@ class DetailRptController extends Controller
         $transactions = $this->filterUserDbCustcategory($transactions);
 
         $totals = $this->calAccPaySummary($transactions);
-        // dd($transactions->get());
         $transactions = $transactions->groupBy(DB::raw('Date(transactions.paid_at)'), 'profiles.id', 'transactions.pay_method')->orderBy('transactions.paid_at', 'profiles.id');
         if($request->sortName){
             $transactions = $transactions->orderBy($request->sortName, $request->sortBy ? 'asc' : 'desc');
@@ -4132,40 +4131,65 @@ class DetailRptController extends Controller
     // calculate all the totals for pay summary detailed rpt (query $transactions)
     private function calAccPaySummary($transactions)
     {
-        $data = [];
+        $dataArr = [];
         $profiles = Profile::all();
-
         foreach($profiles as $profile) {
             $profileArr = [];
+            $profileArr['id'] = $profile->id;
             $profileArr['name'] = $profile->name;
-            $cash = clone $transactions;
-            $profileArr['cash'] = $cash->where('profiles.id', $profile->id)->where('transactions.pay_method', '=', 'cash')->sum(DB::raw('ROUND((CASE WHEN transactions.gst=1 THEN (CASE WHEN transactions.is_gst_inclusive=0 THEN (transactions.total * (100+transactions.gst_rate)/100) ELSE (transactions.total) END) ELSE transactions.total END) + (CASE WHEN transactions.delivery_fee>0 THEN transactions.delivery_fee ELSE 0 END), 2)'));
-            $chequein = clone $transactions;
-            $profileArr['chequein'] = $chequein->where('profiles.id', $profile->id)->where('transactions.pay_method', '=', 'cheque')->where('transactions.total', '>', 0)->sum(DB::raw('ROUND((CASE WHEN transactions.gst=1 THEN (CASE WHEN transactions.is_gst_inclusive=0 THEN (transactions.total * (100+transactions.gst_rate)/100) ELSE (transactions.total) END) ELSE transactions.total END) + (CASE WHEN transactions.delivery_fee>0 THEN transactions.delivery_fee ELSE 0 END), 2)'));
-            $chequeout = clone $transactions;
-            $profileArr['chequeout'] = $chequeout->where('profiles.id', $profile->id)->where('transactions.pay_method', '=', 'cheque')->where('transactions.total', '<', 0)->sum(DB::raw('ROUND((CASE WHEN transactions.gst=1 THEN (CASE WHEN transactions.is_gst_inclusive=0 THEN (transactions.total * (100+transactions.gst_rate)/100) ELSE (transactions.total) END) ELSE transactions.total END) + (CASE WHEN transactions.delivery_fee>0 THEN transactions.delivery_fee ELSE 0 END), 2)'));
-            $tt = clone $transactions;
-            $profileArr['tt'] = $tt->where('profiles.id', $profile->id)->where('transactions.pay_method', '=', 'tt')->sum(DB::raw('ROUND((CASE WHEN transactions.gst=1 THEN (CASE WHEN transactions.is_gst_inclusive=0 THEN (transactions.total * (100+transactions.gst_rate)/100) ELSE (transactions.total) END) ELSE transactions.total END) + (CASE WHEN transactions.delivery_fee>0 THEN transactions.delivery_fee ELSE 0 END), 2)'));
-            $subtotal = clone $transactions;
-            $profileArr['subtotal'] = $subtotal->where('profiles.id', $profile->id)->sum(DB::raw('ROUND((CASE WHEN transactions.gst=1 THEN (CASE WHEN transactions.is_gst_inclusive=0 THEN (transactions.total * (100+transactions.gst_rate)/100) ELSE (transactions.total) END) ELSE transactions.total END) + (CASE WHEN transactions.delivery_fee>0 THEN transactions.delivery_fee ELSE 0 END), 2)'));
-            array_push($data, $profileArr);
+            $profileArr['Cash'] = 0;
+            $profileArr['ChequeIn'] = 0;
+            $profileArr['ChequeOut'] = 0;
+            $profileArr['TT'] = 0;
+            $profileArr['Contra'] = 0;
+            $profileArr['Subtotal'] = 0;
+            array_push($dataArr, $profileArr);
         }
 
-        $profileArr = [];
-        $profileArr['name'] = 'All Profile(s)';
-        $cash_all = clone $transactions;
-        $profileArr['cash'] = $cash_all->where('transactions.pay_method', '=', 'cash')->sum(DB::raw('ROUND((CASE WHEN transactions.gst=1 THEN (CASE WHEN transactions.is_gst_inclusive=0 THEN (transactions.total * (100+transactions.gst_rate)/100) ELSE (transactions.total) END) ELSE transactions.total END) + (CASE WHEN transactions.delivery_fee>0 THEN transactions.delivery_fee ELSE 0 END), 2)'));
-        $chequein_all = clone $transactions;
-        $profileArr['chequein'] = $chequein_all->where('transactions.pay_method', '=', 'cheque')->where('transactions.total', '>', 0)->sum(DB::raw('ROUND((CASE WHEN transactions.gst=1 THEN (CASE WHEN transactions.is_gst_inclusive=0 THEN (transactions.total * (100+transactions.gst_rate)/100) ELSE (transactions.total) END) ELSE transactions.total END) + (CASE WHEN transactions.delivery_fee>0 THEN transactions.delivery_fee ELSE 0 END), 2)'));
-        $chequeout_all = clone $transactions;
-        $profileArr['chequeout'] = $chequeout_all->where('transactions.pay_method', '=', 'cheque')->where('transactions.total', '<', 0)->sum(DB::raw('ROUND((CASE WHEN transactions.gst=1 THEN (CASE WHEN transactions.is_gst_inclusive=0 THEN (transactions.total * (100+transactions.gst_rate)/100) ELSE (transactions.total) END) ELSE transactions.total END) + (CASE WHEN transactions.delivery_fee>0 THEN transactions.delivery_fee ELSE 0 END), 2)'));
-        $tt_all = clone $transactions;
-        $profileArr['tt'] = $tt_all->where('transactions.pay_method', '=', 'tt')->sum(DB::raw('ROUND((CASE WHEN transactions.gst=1 THEN (CASE WHEN transactions.is_gst_inclusive=0 THEN (transactions.total * (100+transactions.gst_rate)/100) ELSE (transactions.total) END) ELSE transactions.total END) + (CASE WHEN transactions.delivery_fee>0 THEN transactions.delivery_fee ELSE 0 END), 2)'));
-        $all = clone $transactions;
-        $profileArr['subtotal'] = $all->sum(DB::raw('ROUND((CASE WHEN transactions.gst=1 THEN (CASE WHEN transactions.is_gst_inclusive=0 THEN (transactions.total * (100+transactions.gst_rate)/100) ELSE (transactions.total) END) ELSE transactions.total END) + (CASE WHEN transactions.delivery_fee>0 THEN transactions.delivery_fee ELSE 0 END), 2)'));
-        array_push($data, $profileArr);
+        $payMethodProfiles = $transactions->groupBy('profiles.id')->groupBy('transactions.pay_method')->get();
 
-        return $data;
+        if($payMethodProfiles) {
+            foreach($payMethodProfiles as $payMethodProfile) {
+                foreach($dataArr as $dataIndex => $data) {
+                    $subtotal = 0;
+                    if($payMethodProfile->profile_id == $data['id']) {
+                        foreach($data as $key => $dataValue) {
+                            if(strtolower($key) == $payMethodProfile->pay_method) {
+                                $dataArr[$dataIndex][$key] = $payMethodProfile->total;
+                                $subtotal = $payMethodProfile->total;
+                            }
+                            if($payMethodProfile->pay_method == 'cheque') {
+                                if($payMethodProfile->total > 0) {
+                                    $dataArr[$dataIndex]['ChequeIn'] = $payMethodProfile->total;
+                                }else {
+                                    $dataArr[$dataIndex]['ChequeOut'] = $payMethodProfile->total;
+                                }
+                                $subtotal = $payMethodProfile->total;
+                            }
+                        }
+                    }
+                    $dataArr[$dataIndex]['Subtotal'] += $subtotal;
+                    // $dataCollection = collect($data);
+                    // $dataArr[$dataIndex]['subtotal'] = $dataCollection->except(['id', 'name'])->sum();
+                }
+            }
+        }
+
+        $dataCollections = collect($dataArr);
+
+        $profileArr = [];
+        $profileArr['id'] = 'all';
+        $profileArr['name'] = 'All Profile(s)';
+        $profileArr['Cash'] = $dataCollections->sum('Cash');
+        $profileArr['ChequeIn'] = $dataCollections->sum('ChequeIn');
+        $profileArr['ChequeOut'] = $dataCollections->sum('ChequeOut');;
+        $profileArr['TT'] = $dataCollections->sum('TT');;
+        $profileArr['Contra'] = $dataCollections->sum('Contra');;
+        $profileArr['Subtotal'] = $dataCollections->sum('Subtotal');;
+        array_push($dataArr, $profileArr);
+
+        $dataCollections = collect($dataArr);
+        return $dataCollections;
     }
 
     // calculate sales product detail months total(query $items)

@@ -152,13 +152,22 @@
 
 <div class="row" style="padding-top: 15px;">
     <div class="col-md-12 col-sm-12 col-xs-12">
-        <div ng-repeat="total in totals" class="col-md-3 col-md-6 col-xs-12">
+        <div ng-repeat="total in totals" class="col-md-3 col-md-6 col-xs-12" style="padding-top: 10px;">
             <div class="row">
                 <div class="col-md-12 col-sm-12 col-xs-12 text-center">
                     <strong>@{{total.name}}</strong>
                 </div>
             </div>
-            <div class="row">
+            <div class="row" ng-repeat="(key, value) in total" ng-if="key != 'id' && key != 'name'">
+                <div class="col-md-6 col-sm-6 col-xs-6 text-right">
+                    @{{key}}
+                </div>
+                <div class="col-md-6 col-sm-6 col-xs-6 text-right" style="border: thin black solid">
+                    <strong>@{{ value ? value : 0.00 | currency: "": 2}}</strong>
+                </div>
+            </div>
+
+            {{-- <div class="row">
                 <div class="col-md-6 col-sm-6 col-xs-6 text-right">
                     Cash:
                 </div>
@@ -197,7 +206,7 @@
                 <div class="col-md-6 col-sm-6 col-xs-6 text-right" style="border: thin black solid">
                     <strong>@{{ total.subtotal ? total.subtotal : 0.00 | currency: "": 2}}</strong>
                 </div>
-            </div>
+            </div> --}}
         </div>
     </div>
 </div>
