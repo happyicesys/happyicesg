@@ -329,7 +329,7 @@
         </div>
     </div>
 
-    <div id="exportable_daily_report" class="col-md-12 col-sm-12 col-xs-12" style="padding-top: 20px;">
+    <div id="exportable_daily_report" class="table-responsive col-md-12 col-sm-12 col-xs-12" style="padding-top: 20px;">
         <table class="table table-list-search table-hover table-bordered">
             <tr style="background-color: #DDFDF8">
                 <th class="col-md-1 text-center">

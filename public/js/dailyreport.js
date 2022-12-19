@@ -118,7 +118,7 @@ var app = angular.module('app', [
         // retrieve page w/wo search
         function getPage(pageNumber, first){
             $scope.spinner = true;
-            $http.post('/api/dailyreport/index/1?page=' + pageNumber + '&init=' + first, $scope.search).success(function(data){
+            $http.post('/api/dailyreport/index/?page=' + pageNumber + '&init=' + first, $scope.search).success(function(data){
                 if(data.alldeals.data){
                     $scope.alldata = data.alldeals.data;
                     $scope.totalCount = data.alldeals.total;

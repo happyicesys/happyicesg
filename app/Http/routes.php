@@ -627,7 +627,7 @@ Route::delete('/api/transactionpersonasset/{id}/delete', 'Transactionpersonasset
 Route::post('/api/dailyreport/account-manager-performance', 'DailyreportController@getAccountManagerPerformanceApi');
 Route::get('/dailyreport/account-manager-performance', 'DailyreportController@getAccountManagerPerformanceIndex');
 Route::get('/dailyreport/commission', 'DailyreportController@commissionIndex');
-Route::post('/api/dailyreport/index/{type}', 'DailyreportController@indexApi');
+Route::post('/api/dailyreport/index', 'DailyreportController@indexApi');
 Route::post('/api/dailyreport/location-count', 'DailyreportController@getLocationCountApi');
 Route::get('/dailyreport/driver-location-count', 'DailyreportController@driverNumberOfLocationIndex');
 Route::post('/api/dailyreport/driver-location-count/update/{status}', 'DailyreportController@updateLocationCountApi');

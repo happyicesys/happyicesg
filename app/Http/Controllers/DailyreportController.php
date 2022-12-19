@@ -32,227 +32,57 @@ class DailyreportController extends Controller
     }
 
     // return daily report index api
-    public function indexApi(Request $request, $type = 1)
+    public function indexApi(Request $request)
     {
 
-        $totalRaw = "(SELECT SUM(CASE WHEN transactions.gst=1 THEN (CASE WHEN transactions.is_gst_inclusive=0 THEN deals.amount ELSE deals.amount /(100 + transactions.gst_rate) * 100 END) ELSE deals.amount END) AS total, transactions.driver, transactions.delivery_date FROM deals
-        LEFT JOIN transactions ON transactions.id = deals.transaction_id
-        LEFT JOIN items ON items.id = deals.item_id
-        LEFT JOIN people ON people.id = transactions.person_id
-        LEFT JOIN profiles ON profiles.id = people.profile_id
-        LEFT JOIN custcategories ON custcategories.id = people.custcategory_id
-        LEFT JOIN custcategory_groups ON custcategory_groups.id = custcategories.custcategory_group_id
-        where 1=1";
-
-        if($request->profile_id) {
-            $totalRaw .= " and profiles.id =".$request->profile_id." ";
-        }
-
-        if ($request->person_active) {
-            $personstatus = $request->person_active;
-
-            $personstatus = implode("','",$personstatus);
-            $totalRaw .= " and people.active IN ('".$personstatus."')";
-        }
-
-        if($request->status) {
-            if($request->status == 'Delivered') {
-                $totalRaw .= " and (transactions.status = 'Delivered' or transactions.status = 'Verified Owe' or transactions.status = 'Verified Paid') ";
-            }else {
-                $totalRaw .= " and (transactions.status = '".$request->status."') ";
-            }
-        }
-
-        if($request->custcategory) {
-            $custcategories = $request->custcategory;
-            $custcategories = implode("','",$custcategories);
-
-            if($request->exclude_custcategory) {
-                $totalRaw .= " and custcategories.id NOT IN ('".$custcategories."')";
-            }else {
-                $totalRaw .= " and custcategories.id IN ('".$custcategories."')";
-            }
-        }
-
-        if($request->custcategory_group) {
-            $custcategory_groups = $request->custcategory_group;
-            $custcategory_groups = implode("','",$custcategory_groups);
-
-            if($request->exclude_custcategory_group) {
-                $totalRaw .= " and custcategory_groups.id NOT IN ('".$custcategory_groups."')";
-            }else {
-                $totalRaw .= " and custcategory_groups.id IN ('".$custcategory_groups."')";
-            }
-        }
-/*
-        if($request->is_commission != '') {
-            $totalRaw .= "and items.is_commission = '".$request->is_commission."'";
-        } */
-
-        if($request->is_commission != '') {
-            $is_commission = $request->is_commission;
-            switch($is_commission) {
-                case '0':
-                    $totalRaw .= " AND items.is_commission='".$is_commission."' ";
-                    $totalRaw .= " AND items.is_supermarket_fee='".$is_commission."' ";
-                    break;
-                case '1':
-                    $totalRaw .= " AND items.is_commission=1 ";
-                    $totalRaw .= " AND items.is_supermarket_fee=0 ";
-                    break;
-                case '2':
-                    $totalRaw .= " AND items.is_commission=0 ";
-                    $totalRaw .= " AND items.is_supermarket_fee=1 ";
-                    break;
-            }
-        }
-
-        $totalRaw .= " GROUP BY transactions.delivery_date, transactions.driver) totalRaw";
-
-        $totalRaw = DB::raw($totalRaw);
-
-        $deals = DB::table('deals')
-            ->leftJoin('items', 'items.id', '=', 'deals.item_id')
-            ->leftJoin('transactions', 'transactions.id', '=', 'deals.transaction_id')
-            ->leftJoin('people', 'transactions.person_id', '=', 'people.id')
-            ->leftJoin('profiles', 'people.profile_id', '=', 'profiles.id')
-            ->leftJoin('custcategories', 'custcategories.id', '=', 'people.custcategory_id')
-            ->leftJoin('custcategory_groups', 'custcategory_groups.id', '=', 'custcategories.custcategory_group_id')
-            // ->leftJoin('users', 'users.name', 'LIKE', DB::raw( "CONCAT('%', transactions.driver, '%')"))
-            ->leftJoin('users', 'users.name', '=', 'transactions.driver')
-            ->rightJoin('role_user', 'role_user.user_id', '=', 'users.id')
-            ->leftJoin($totalRaw, function($join) {
-                $join->on('totalRaw.driver', '=', 'transactions.driver');
-                $join->on('totalRaw.delivery_date', '=', 'transactions.delivery_date');
-            })
-            ->leftJoin('driver_locations', function($join) {
-                $join->on(DB::raw('DATE(driver_locations.delivery_date)'), '=', DB::raw('DATE(transactions.delivery_date)'));
-                $join->on('driver_locations.user_id', '=', 'users.id');
-            })
-            ->leftJoin('users AS updater', 'updater.id', 'LIKE', 'driver_locations.updated_by')
-            ->leftJoin('users AS approver', 'approver.id', 'LIKE', 'driver_locations.approved_by')
-
-            ->select(
-                'transactions.driver', 'transactions.status',
-                DB::raw('DATE(transactions.delivery_date) AS delivery_date'),
-                DB::raw('DAYNAME(transactions.delivery_date) AS delivery_day'),
-                'totalRaw.total', 'users.id AS user_id', 'driver_locations.location_count', 'driver_locations.online_location_count', 'driver_locations.status AS submission_status', 'driver_locations.submission_date',
-                DB::raw('DAYNAME(driver_locations.submission_date) AS submission_day'),
-                'updater.name AS updated_by', 'approver.name AS approved_by', 'driver_locations.approved_at', 'driver_locations.daily_limit',
-                'driver_locations.remarks',
-                DB::raw('(driver_locations.location_count - driver_locations.daily_limit) AS extra_location_count')
+        $deals = Deal::with([
+            'item',
+            'transaction',
+            'transaction.person',
+            'transaction.person.profile',
+            'transaction.person.custcategory',
+            'transaction.person.custcategory.custcategoryGroup',
+        ])
+        ->leftJoin('transactions', 'transactions.id', '=', 'deals.transaction_id')
+        ->leftJoin('users', 'users.name', '=', 'transactions.driver')
+        ->leftJoin('driver_locations', function($join) {
+            $join->on(DB::raw('DATE(driver_locations.delivery_date)'), '=', DB::raw('DATE(transactions.delivery_date)'));
+            $join->on('driver_locations.user_id', '=', 'users.id');
+        })
+        ->select(
+            'driver',
+            DB::raw('DATE(transactions.delivery_date) AS delivery_date'),
+            DB::raw('DAYNAME(transactions.delivery_date) AS delivery_day'),
+            DB::raw('ROUND(SUM(CASE WHEN transactions.gst=1 THEN (CASE WHEN transactions.is_gst_inclusive=0 THEN deals.amount ELSE deals.amount /(100 + transactions.gst_rate) * 100 END) ELSE deals.amount END), 2) AS total'),
+            'driver_locations.location_count',
+            'driver_locations.daily_limit',
+            'driver_locations.online_location_count',
+            DB::raw('(driver_locations.location_count - driver_locations.daily_limit) AS extra_location_count'),
+            'driver_locations.status AS submission_status'
             );
 
-        // only include drivers
+        $deals = $this->filterCommission($deals, $request);
 
-        if($type == 2) {
-            $deals = $deals->whereIn('role_user.role_id', [6, 16]);
-        }
+        $driverTechnicianName = User::whereHas('roles', function($query) {
+            $query->whereIn('name', ['driver', 'technician', 'driver-supervisor']);
+        })->pluck('name');
+        $deals = $deals->whereIn('transactions.driver', $driverTechnicianName);
 
-        if($request->profile_id) {
-            $deals = $deals->where('profiles.id', $request->profile_id);
-        }
-        if($request->date_from) {
-            $deals = $deals->whereDate('transactions.delivery_date', '>=', $request->date_from);
-        }
-        if($request->date_to) {
-            $deals = $deals->whereDate('transactions.delivery_date', '<=', $request->date_to);
-        }
-        if($request->cust_id) {
-            $deals = $deals->where('people.cust_id', 'LIKE', $request->cust_id.'%');
-        }
-        if($request->id_prefix) {
-            $deals = $deals->where('people.cust_id', 'LIKE', $request->id_prefix.'%');
-        }
-/*
-        if($request->is_commission != '') {
-            $deals = $deals->where('items.is_commission', $request->is_commission);
-        } */
-        if($request->is_commission != '') {
-            $is_commission = $request->is_commission;
-            switch($is_commission) {
-                case '0':
-                    $deals = $deals->where('items.is_commission', $is_commission);
-                    $deals = $deals->where('items.is_supermarket_fee', $is_commission);
-                    break;
-                case '1':
-                    $deals = $deals->where('items.is_commission', 1);
-                    $deals = $deals->where('items.is_commission', 0);
-                    break;
-                case '2':
-                    $deals = $deals->where('items.is_commission', 0);
-                    $deals = $deals->where('items.is_commission', 1);
-                    break;
-            }
-        }
-        if ($request->person_active) {
-            // dd($request->person_active);
-            $personstatus = $request->person_active;
-            if (count($personstatus) == 1) {
-                $personstatus = [$personstatus];
-            }
-            $deals = $deals->whereIn('people.active', $personstatus);
-        }
+        // $deals = $deals->groupBy(DB::raw('DATE(transactions.delivery_date)'))
+        //                 ->groupBy('transactions.driver')
+        //                 ->orderBy('transactions.delivery_date', 'DESC')
+        //                 ->orderBy('transactions.driver', 'ASC')
+        //                 ->get();
 
-        // set logic to distinguish driver or technician role
-        $driver = '';
+        // dd($deals->toArray());
 
-        if($request->driver) {
-            $driver_role = User::where('name', $request->driver)->first();
-            if($driver_role->hasRole('driver')) {
-                $driver = 'driver';
-                $deals = $deals->where('transactions.driver', $request->driver);
-            }else if($driver_role->hasRole('technician')) {
-                $driver = 'technician';
-                $deals = $deals->where('items.product_id', '051');
-            }
-        }
-
-        if($request->custcategory) {
-            $custcategories = $request->custcategory;
-            if (count($custcategories) == 1) {
-                $custcategories = [$custcategories];
-            }
-            if($request->exclude_custcategory) {
-                $deals = $deals->whereNotIn('custcategories.id', $custcategories);
-            }else {
-                $deals = $deals->whereIn('custcategories.id', $custcategories);
-            }
-        }
-
-        if($request->custcategory_group) {
-            $custcategory_groups = $request->custcategory_group;
-            if (count($custcategory_groups) == 1) {
-                $custcategory_groups = [$custcategory_groups];
-            }
-            if($request->exclude_custcategory_group) {
-                $deals = $deals->whereNotIn('custcategory_groups.id', $custcategory_groups);
-            }else {
-                $deals = $deals->whereIn('custcategory_groups.id', $custcategory_groups);
-            }
-        }
-
-        if($request->status) {
-            if($request->status == 'Delivered') {
-                $deals = $deals->where(function($query) {
-                    $query->where('transactions.status', 'Delivered')->orWhere('transactions.status', 'Verified Owe')->orWhere('transactions.status', 'Verified Paid');
-                });
-            }else {
-                $deals = $deals->where('transactions.status', $request->status);
-            }
-        }
-        // dd($deals->where('transactions.driver', 'LIKE', '%'.'iris'.'%')->get());
-/*
-        if($request->tag) {
-            if($request->tag == 'technician') {
-
-            }
-        } */
-        // dd($deals->get());
 
         $commission051_query = clone $deals;
         $commission051 = 0;
-        $commission051 = $commission051_query->where('items.product_id', '051')->sum('amount');
+        // $commission051 = $commission051_query->where('items.product_id', '051')->sum('amount');
+        $commission051 = $commission051_query->whereHas('item', function($query) {
+            $query->where('product_id', '051');
+        })->sum('amount');
 
         if($request->driver) {
             if(auth()->user()->hasRole('driver')) {
@@ -273,18 +103,11 @@ class DailyreportController extends Controller
 
         $subtotal_query = clone $alldeals;
         $subtotalArr = $subtotal_query->get();
-        // dd($subtotalArr);
-        foreach($subtotalArr as $dealtotal) {
-            $subtotal += $dealtotal->total;
-            if($dealtotal->submission_status == DriverLocation::STATUS_APPROVED) {
-                if($dealtotal->extra_location_count > 0) {
-                    $extra_location_total += $dealtotal->extra_location_count;
-                }
-                if($dealtotal->online_location_count > 0) {
-                    $online_location_total += $dealtotal->online_location_count;
-                }
-            }
-        }
+        $subtotalArr = $subtotalArr->where('submission_status', DriverLocation::STATUS_APPROVED);
+
+        $extra_location_total = $subtotalArr->sum('extra_location_count');
+        $online_location_total = $subtotalArr->sum('online_location_count');
+        $subtotal = $subtotalArr->sum('total');
 
         if($request->driver) {
             $user = User::where('name', $request->driver)->first();
@@ -292,34 +115,23 @@ class DailyreportController extends Controller
             if($user->hasRole('driver')) {
                 $commission_rate = 0.008;
                 $totalcommission = $subtotal * $commission_rate;
-/*
-                if($subtotal <= 40000) {
-                    $commission_rate = 0.006;
-                    $totalcommission = $subtotal * $commission_rate;
-                }else {
-                    $commission_rate = 0.01;
-                    $totalcommission = (40000 * 0.006) + ($subtotal - 40000) * $commission_rate;
-                } */
             }
 
             if($user->hasRole('technician')) {
-                // dd('here2');
                 $commission_rate = 0.004;
                 $totalcommission = $commission051 * $commission_rate;
             }
         }
-        // $alldeals = $alldeals->orderBy('transactions.delivery_date', 'desc');
 
         if($request->sortName){
             $alldeals = $alldeals
-            ->orderBy($request->sortName, $request->sortBy ? 'asc' : 'desc');
+            ->orderBy($request->sortName, $request->sortBy ? 'ASC' : 'DESC');
         }else {
             $alldeals = $alldeals
-            ->orderBy('transactions.delivery_date', 'desc')
-            ->orderBy('transactions.driver');
+            ->orderBy('transactions.delivery_date', 'DESC')
+            ->orderBy('transactions.driver', 'ASC');
         }
 
-        // dd($alldeals->toSql());
         $pageNum = $request->pageNum ? $request->pageNum : 100;
         if($pageNum == 'All'){
             $alldeals = $alldeals->get();
@@ -754,5 +566,145 @@ class DailyreportController extends Controller
             $dataArr[$monthIndex]['visitTotal'] = $visitTotal;
         }
         return $dataArr;
+    }
+
+    private function filterCommission($deals, $request)
+    {
+        if($request->profile_id) {
+            $deals = $deals->whereHas('person', function($query) use ($request) {
+                $query->where('profile_id', $request->profile_id);
+            });
+        }
+        if($request->date_from) {
+            $deals = $deals->whereHas('transaction', function($query) use ($request) {
+                $query->whereDate('delivery_date', '>=', $request->date_from);
+            });
+        }
+        if($request->date_to) {
+            $deals = $deals->whereHas('transaction', function($query) use ($request) {
+                $query->whereDate('delivery_date', '<=', $request->date_to);
+            });
+        }
+        if($request->cust_id) {
+            $deals = $deals->whereHas('person', function($query) use ($request) {
+                $query->where('cust_id', 'LIKE', $request->cust_id.'%');
+            });
+        }
+        if($request->id_prefix) {
+            $deals = $deals->whereHas('person', function($query) use ($request) {
+                $query->where('cust_id', 'LIKE', $request->id_prefix.'%');
+            });
+        }
+
+        if($request->is_commission != '') {
+            $is_commission = $request->is_commission;
+            switch($is_commission) {
+                case '0':
+                    $deals = $deals->whereHas('item', function($query) use ($request) {
+                        $query->where('is_commission', $request->is_commission);
+                        $query->where('is_supermarket_fee', $request->is_commission);
+                    });
+                    break;
+                case '1':
+                    $deals = $deals->whereHas('item', function($query) use ($request) {
+                        $query->where('is_commission', 1);
+                        $query->where('is_supermarket_fee', 0);
+                    });
+                    break;
+                case '2':
+                    $deals = $deals->whereHas('item', function($query) use ($request) {
+                        $query->where('is_commission', 0);
+                        $query->where('is_supermarket_fee', 1);
+                    });
+                    break;
+            }
+        }
+        if($request->person_active) {
+            $personstatus = $request->person_active;
+            if (count($personstatus) == 1) {
+                $personstatus = [$personstatus];
+            }
+            $deals = $deals->whereHas('person', function($query) use ($personstatus) {
+                $query->whereIn('active', $personstatus);
+            });
+        }
+
+        // set logic to distinguish driver or technician role
+        $driver = '';
+
+        if($request->driver) {
+            $driver_role = User::where('name', $request->driver)->first();
+            if($driver_role->hasRole('driver')) {
+                $driver = 'driver';
+                $deals = $deals->whereHas('transaction', function($query) use ($request) {
+                    $query->where('driver', $request->driver);
+                });
+            }else if($driver_role->hasRole('technician')) {
+                $driver = 'technician';
+                $deals = $deals->whereHas('item', function($query) {
+                    $query->where('product', '051');
+                });
+            }
+        }
+
+        if($request->custcategory) {
+            $custcategories = $request->custcategory;
+            if (count($custcategories) == 1) {
+                $custcategories = [$custcategories];
+            }
+            if($request->exclude_custcategory) {
+                $deals = $deals->whereHas('transaction', function($query) use ($custcategories) {
+                    $query->whereHas('person', function($query) use ($custcategories) {
+                        $query->whereNotIn('custcategory_id', $custcategories);
+                    });
+                });
+            }else {
+                $deals = $deals->whereHas('transaction', function($query) use ($custcategories) {
+                    $query->whereHas('person', function($query) use ($custcategories) {
+                        $query->whereIn('custcategory_id', $custcategories);
+                    });
+                });
+            }
+        }
+
+        if($request->custcategory_group) {
+            $custcategory_groups = $request->custcategory_group;
+            if (count($custcategory_groups) == 1) {
+                $custcategory_groups = [$custcategory_groups];
+            }
+            if($request->exclude_custcategory_group) {
+                $deals = $deals->whereNotIn('custcategory_groups.id', $custcategory_groups);
+            }else {
+                $deals = $deals->whereIn('custcategory_groups.id', $custcategory_groups);
+            }
+
+            if($request->exclude_custcategory_group) {
+                $deals = $deals->whereHas('person', function($query) use ($custcategory_groups) {
+                    $query->whereHas('custcategory', function($query) use ($custcategory_groups) {
+                        $query->whereNotIn('custcategory_group_id', $custcategory_groups);
+                    });
+                });
+            }else {
+                $deals = $deals->whereHas('person', function($query) use ($custcategory_groups) {
+                    $query->whereHas('custcategory', function($query) use ($custcategory_groups) {
+                        $query->whereIn('custcategory_group_id', $custcategory_groups);
+                    });
+                });
+            }
+        }
+
+        if($request->status) {
+            if($request->status == 'Delivered') {
+                $deals = $deals->whereHas('transaction', function($query) {
+                    $query->whereIn('status', ['Delivered', 'Verified Owe', 'Verified Paid']);
+                });
+            }else {
+                $deals = $deals->whereHas('transaction', function($query) use ($request) {
+                    $query->where('status', $request->status);
+                });
+            }
+        }
+
+        return $deals;
     }
 }
