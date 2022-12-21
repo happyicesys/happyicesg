@@ -213,7 +213,7 @@
                         </td>
                         <td class="col-md-1 text-center">@{{ transaction.delivery_date | delDate: "yyyy-MM-dd"}}</td>
                         <td class="col-md-1 text-center">
-                            @{{ transaction.gst ? transaction.total * 107/100 : transaction.total | currency: ""}}
+                            @{{ transaction.gst ? transaction.total * (100 + transaction.gst_rate)/100 : transaction.total | currency: ""}}
                         </td>
                         <td class="col-md-1 text-center">@{{ transaction.total_qty }}</td>
                         {{-- pay status --}}

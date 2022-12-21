@@ -122,7 +122,7 @@ Deals
                                     <td class="col-md-1 text-center">@{{ transaction.delivery_date }}</td>
                                     {{-- <td class="col-md-1 text-center">@{{ transaction.total }}</td> --}}
                                     <td class="col-md-1 text-center">
-                                        @{{ transaction.person.profile.gst ? transaction.total * 107/100 : transaction.total | currency: "" }}
+                                        @{{ transaction.person.profile.gst ? transaction.total * (100 + transaction.gst_rate)/100 : transaction.total | currency: "" }}
                                     </td>
                                     <td class="col-md-1 text-center">@{{ transaction.total_qty }}</td>
                                     {{-- pay status --}}
