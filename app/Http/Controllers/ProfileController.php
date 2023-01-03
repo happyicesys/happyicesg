@@ -116,20 +116,20 @@ class ProfileController extends Controller
             $people = Person::where('profile_id', $profile->id)->get();
 
             foreach ($people as $person) {
-                $person->is_gst_inclusive = request('is_gst_inclusive');
+                // $person->is_gst_inclusive = request('is_gst_inclusive');
                 $person->gst_rate = request('gst_rate');
                 $person->save();
             }
         }
 
-        if($profile->is_gst_inclusive != $is_gst_inclusive ){
-            $people = $profile->people;
+        // if($profile->is_gst_inclusive != $is_gst_inclusive ){
+        //     $people = $profile->people;
 
-            foreach($people as $person) {
-                $person->is_gst_inclusive = $is_gst_inclusive;
-                $person->save();
-            }
-        }
+        //     foreach($people as $person) {
+        //         $person->is_gst_inclusive = $is_gst_inclusive;
+        //         $person->save();
+        //     }
+        // }
 
         $input = request()->all();
         $profile->update($input);
