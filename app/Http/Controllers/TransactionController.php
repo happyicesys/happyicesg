@@ -321,6 +321,9 @@ class TransactionController extends Controller
         $request->merge(['name' => $person->name]);
         $request->merge(['contact' => $person->contact]);
         $request->merge(['person_remark' => $person->remark]);
+        $request->merge(array('gst' => $person->profile->gst));
+        $request->merge(array('is_gst_inclusive' => $person->is_gst_inclusive ));
+        $request->merge(array('gst_rate' => $person->gst_rate));
 
 
         // temporary hard code to set haagen daz as DO
