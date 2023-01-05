@@ -892,9 +892,9 @@ class TransactionController extends Controller
 
         $request->merge(array('person_id' => $request->input('person_copyid')));
         $request->merge(array('updated_by' => Auth::user()->name));
-        $request->merge(array('gst' => $transaction->person->profile->gst));
-        $request->merge(array('is_gst_inclusive' => $transaction->person->is_gst_inclusive));
-        $request->merge(array('gst_rate' => $transaction->person->gst_rate));
+        // $request->merge(array('gst' => $transaction->person->profile->gst));
+        // $request->merge(array('is_gst_inclusive' => $transaction->is_gst_inclusive ? $transaction->person->is_gst_inclusive));
+        // $request->merge(array('gst_rate' => $transaction->person->gst_rate));
         $request->merge(array('person_id' => $transaction->person->id));
         $transaction->update($request->all());
 
