@@ -1251,9 +1251,9 @@ class TransactionController extends Controller
             $replicated_transaction->po_no = null;
         }
         $replicated_transaction->updated_by = auth()->user()->name;
-        $replicated_transaction->gst = $transaction->gst;
-        $replicated_transaction->is_gst_inclusive = $transaction->is_gst_inclusive;
-        $replicated_transaction->gst_rate = $transaction->gst_rate;
+        $replicated_transaction->gst = $transaction->person->profile->gst;
+        $replicated_transaction->is_gst_inclusive = $transaction->person->is_gst_inclusive;
+        $replicated_transaction->gst_rate = $transaction->person->gst_rate;
         $replicated_transaction->save();
 
         // replicate pricelist
