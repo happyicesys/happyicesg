@@ -98,7 +98,7 @@ class VendingController extends Controller
                 $transaction->bill_address = $person->bill_address;
                 $transaction->total = -$person->subtotal_payout;
                 $transaction->is_vending_generate = 1;
-                $transaction->gst = $person->gst;
+                $transaction->gst = $person->profile->gst;
                 $transaction->is_gst_inclusive = $person->is_gst_inclusive;
                 $transaction->gst_rate = $person->gst_rate;
                 $daysdiff = Carbon::parse($person->begin_date)->diffInDays(Carbon::parse($person->end_date)) + 1;

@@ -2954,7 +2954,9 @@ class TransactionController extends Controller
         $serviceItem = ServiceItem::findOrFail($serviceId);
 
         $attachment = Attachment::findOrFail($attachmentId);
-        Storage::delete($attachment->url);
+        if(!Attachment::where('url', $attachment->url)->get()) {
+            Storage::delete($attachment->url);
+        }
         $attachment->delete();
 
         if(!$serviceItem->desc and !$serviceItem->attachments()->exists()) {
