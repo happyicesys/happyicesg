@@ -164,6 +164,9 @@ class OperationWorksheetController extends Controller
                         'order_date' => Carbon::today(),
                         'name' => $person->attn_name,
                         'contact' => $person->contact,
+                        'gst' => $person->profile->gst,
+                        'is_gst_inclusive' => $person->is_gst_inclusive,
+                        'gst_rate' => $person->gst_rate,
                     ]);
 
                     $prevOpsDate = Operationdate::where('person_id', $person->person_id)->whereDate('delivery_date', '=', $date)->first();

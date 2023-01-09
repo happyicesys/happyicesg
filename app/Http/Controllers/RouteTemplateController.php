@@ -124,6 +124,9 @@ class RouteTemplateController extends Controller
                             'order_date' => Carbon::today(),
                             'name' => $person->name,
                             'contact' => $person->contact,
+                            'gst' => $person->profile->gst,
+                            'is_gst_inclusive' => $person->is_gst_inclusive,
+                            'gst_rate' => $person->gst_rate,
                         ]);
 
                         $prevOpsDate = Operationdate::where('person_id', $person->id)->whereDate('delivery_date', '=', $invoiceDate)->first();
