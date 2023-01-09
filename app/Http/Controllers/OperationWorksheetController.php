@@ -149,25 +149,25 @@ class OperationWorksheetController extends Controller
         foreach($people as $indexpeople => $person) {
             foreach($alldata[$indexpeople] as $data) {
                 if($data['color'] === 'Yellow') {
-                    $transaction = Transaction::create([
-                        'delivery_date' => $date,
-                        'person_id' => $person->person_id,
-                        'status' => 'Pending',
-                        'pay_status' => 'Owe',
-                        'updated_by' => auth()->user()->name,
-                        'created_by' => auth()->user()->id,
-                        'del_postcode' => $person->del_postcode,
-                        'del_address' => $person->del_address,
-                        'del_lat' => $person->del_lat,
-                        'del_lng' => $person->del_lng,
-                        'driver' => $driver,
-                        'order_date' => Carbon::today(),
-                        'name' => $person->attn_name,
-                        'contact' => $person->contact,
-                        'gst' => $person->profile->gst,
-                        'is_gst_inclusive' => $person->is_gst_inclusive,
-                        'gst_rate' => $person->gst_rate,
-                    ]);
+                    $transaction = new Transaction();
+                    $transaction->delivery_date = $date;
+                    $transaction->person_id = $person->person_id;
+                    $transaction->status = 'Pending';
+                    $transaction->pay_status = 'Owe';
+                    $transaction->updated_by = auth()->user()->name;
+                    $transaction->created_by = auth()->user()->id;
+                    $transaction->del_postcode = $person->del_postcode;
+                    $transaction->del_address = $person->del_address;
+                    $transaction->del_lat = $person->del_lat;
+                    $transaction->del_lng = $person->del_lng;
+                    $transaction->driver = $driver;
+                    $transaction->order_date = Carbon::today();
+                    $transaction->name = $person->attn_name;
+                    $transaction->contact = $person->contact;
+                    $transaction->gst = $person->profile->gst;
+                    $transaction->is_gst_inclusive = $person->is_gst_inclusive;
+                    $transaction->gst_rate = $person->gst_rate;
+                    $transaction->save();
 
                     $prevOpsDate = Operationdate::where('person_id', $person->person_id)->whereDate('delivery_date', '=', $date)->first();
 

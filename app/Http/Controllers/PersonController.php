@@ -1040,24 +1040,27 @@ class PersonController extends Controller
         $status = $data['status'];
         $person = Person::findOrFail($person_id);
 
-        $transaction = Transaction::create([
-            'delivery_date' => $date,
-            'person_id' => $person->id,
-            'status' => 'Confirmed',
-            'pay_status' => $isService == 'true' ? 'Paid' : 'Owe',
-            'updated_by' => auth()->user()->name,
-            'created_by' => auth()->user()->id,
-            'del_postcode' => $person->del_postcode,
-            'del_address' => $person->del_address,
-            'del_lat' => $person->del_lat,
-            'del_lng' => $person->del_lng,
-            'driver' => $driver ? $driver : null,
-            'transremark' => $transremark,
-            'order_date' => Carbon::today(),
-            'is_service' => $isService == 'true' ? 1 : 0,
-            'name' => $person->name,
-            'contact' => $person->contact,
-        ]);
+        $transaction = new Transaction();
+        $transaction->delivery_date = $date;
+        $transaction->person_id = $person->id;
+        $transaction->status = 'Confirmed';
+        $transaction->pay_status = $isService == 'true' ? 'Paid' : 'Owe';
+        $transaction->updated_by = auth()->user()->name;
+        $transaction->created_by = auth()->user()->id;
+        $transaction->del_postcode = $person->del_postcode;
+        $transaction->del_address = $person->del_address;
+        $transaction->del_lat = $person->del_lat;
+        $transaction->del_lng = $person->del_lng;
+        $transaction->driver = $driver ? $driver : null;
+        $transaction->transremark = $transremark;
+        $transaction->order_date = Carbon::today();
+        $transaction->is_service = $isService == 'true' ? 1 : 0;
+        $transaction->name = $person->name;
+        $transaction->contact = $person->contact;
+        $transaction->gst = $person->profile->gst;
+        $transaction->is_gst_inclusive = $person->is_gst_inclusive;
+        $transaction->gst_rate = $person->gst_rate;
+        $transaction->save();
 
         if($serviceNotices and $isService == 'true') {
             $serviceNoticesArr = explode("\n", $serviceNotices);

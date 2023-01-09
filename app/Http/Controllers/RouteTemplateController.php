@@ -108,26 +108,27 @@ class RouteTemplateController extends Controller
                     $routeTemplate = RouteTemplate::findOrFail($routeTemplate['id']);
                     foreach($routeTemplate->routeTemplateItems as $item) {
                         $person = Person::findOrFail($item->person_id);
-                        Transaction::create([
-                            'delivery_date' => $invoiceDate,
-                            'person_id' => $person->id,
-                            'sequence' => $item->sequence,
-                            'driver' => $driver,
-                            'status' => 'Pending',
-                            'pay_status' => 'Owe',
-                            'updated_by' => auth()->user()->name,
-                            'created_by' => auth()->user()->id,
-                            'del_postcode' => $person->del_postcode,
-                            'del_address' => $person->del_address,
-                            'del_lat' => $person->del_lat,
-                            'del_lng' => $person->del_lng,
-                            'order_date' => Carbon::today(),
-                            'name' => $person->name,
-                            'contact' => $person->contact,
-                            'gst' => $person->profile->gst,
-                            'is_gst_inclusive' => $person->is_gst_inclusive,
-                            'gst_rate' => $person->gst_rate,
-                        ]);
+
+                        $transaction = new Transaction();
+                        $transaction->delivery_date = $invoiceDate;
+                        $transaction->person_id = $person->id;
+                        $transaction->sequence = $item->sequence;
+                        $transaction->driver = $driver;
+                        $transaction->status = 'Pending';
+                        $transaction->pay_status = 'Owe';
+                        $transaction->updated_by = auth()->user()->name;
+                        $transaction->created_by = auth()->user()->id;
+                        $transaction->del_postcode = $person->del_postcode;
+                        $transaction->del_address = $person->del_address;
+                        $transaction->del_lat = $person->del_lat;
+                        $transaction->del_lng = $person->del_lng;
+                        $transaction->order_date = Carbon::today();
+                        $transaction->name = $person->name;
+                        $transaction->contact = $person->contact;
+                        $transaction->gst = $person->profile->gst;
+                        $transaction->is_gst_inclusive = $person->is_gst_inclusive;
+                        $transaction->gst_rate = $person->gst_rate;
+                        $transaction->save();
 
                         $prevOpsDate = Operationdate::where('person_id', $person->id)->whereDate('delivery_date', '=', $invoiceDate)->first();
 
