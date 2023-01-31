@@ -3033,6 +3033,7 @@ class TransactionController extends Controller
     // retrieve transactions data ()
     private function getTransactionsData()
     {
+        // dd('dude');
         $transactions = DB::table('transactions')
                         ->leftJoin('people', 'transactions.person_id', '=', 'people.id')
                         ->leftJoin('profiles', 'people.profile_id', '=', 'profiles.id')

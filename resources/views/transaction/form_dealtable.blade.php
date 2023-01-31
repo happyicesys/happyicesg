@@ -273,6 +273,8 @@
                                     <strong>Subtotal</strong>
                                 </td>
                                 <td></td>
+                                <td ng-if="!transaction.person.price_template">
+                                </td>
                                 <td colspan="@{{transaction.person.price_template_id ? uoms.length + 1 : '2'}}"></td>
                                 <td class="col-md-1 text-right">
                                     @{{subtotalModel}}
@@ -284,6 +286,8 @@
                                     <strong>GST ({{number_format($transaction->gst_rate)}}%)</strong>
                                 </td>
                                 <td></td>
+                                <td ng-if="!transaction.person.price_template">
+                                </td>
                                 <td colspan="@{{transaction.person.price_template_id ? uoms.length + 1 : '2'}}"></td>
                                 <td class="col-md-1 text-right">
                                     @{{taxModel}}
@@ -319,6 +323,8 @@
                                 </td>
                                 <td class="col-md-1 text-right">
                                     @{{transaction.total_qty}}
+                                </td>
+                                <td ng-if="!transaction.person.price_template">
                                 </td>
                                 <td class="col-md-1 text-right" ng-if="transaction.person.price_template" ng-repeat="uom in uoms">
                                     @{{ transaction.qty_json[uom.name] }}
