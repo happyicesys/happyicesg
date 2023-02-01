@@ -43,8 +43,9 @@ class VendingController extends Controller
         // initiate the page num when null given
         $pageNum = request('pageNum') ? request('pageNum') : 100;
 
-        $transactions = $this->getGenerateVendingInvoicePerson()['transactions'];
-        $notAvailPeople = $this->getGenerateVendingInvoicePerson()['notAvailPeople'];
+        $data = $this->getGenerateVendingInvoicePerson();
+        $transactions = $data['transactions'];
+        $notAvailPeople = $data['notAvailPeople'];
         // dd($transactions->get());
 
         $totals = $this->calVendingGenerateInvoiceIndex($transactions);
@@ -570,10 +571,7 @@ class VendingController extends Controller
                                             END)
                                         END
                                         AS begin_date'),
-                                        // CASE WHEN fvm_start.delivery_date
-                                        // THEN fvm_start.delivery_date
-                                        // ELSE fvm_first.delivery_date
-                                        // END)
+
                                     DB::raw('(CASE WHEN analog_start.analog_clock THEN analog_start.analog_clock ELSE analog_first.analog_clock END) AS begin_analog'),
                                     DB::raw('CASE WHEN people.commission_type = 1 THEN analog_end.delivery_date ELSE (CASE WHEN vend_received.max_delivery_date THEN vend_received.max_delivery_date ELSE "'.$this_month_end.'" END) END AS end_date'),
                                     'analog_end.analog_clock AS end_analog',
@@ -739,7 +737,7 @@ class VendingController extends Controller
                                         END
                                         ) AS subtotal_payout'
 
-                                            ),
+                                    ),
                                     DB::raw('(
                                             CASE WHEN
                                                 people.commission_type = 1
@@ -883,7 +881,6 @@ class VendingController extends Controller
         }
 
         $transactions = $transactions->groupBy('people.id');
-        // dd($transactions->get());
         $clonetrans = clone $transactions;
         $clonetrans = $clonetrans->get();
 
@@ -938,25 +935,16 @@ class VendingController extends Controller
         $total_gross_profit = 0;
 
         $query1 = clone $query;
-        $people = $query1->get();
-        foreach($people as $person) {
-            $total_sales += $person->sales;
-            $total_sales_figure += $person->subtotal_sales;
-            $total_profit_sharing += $person->subtotal_profit_sharing;
-            $total_rental += $person->vending_monthly_rental;
-            $total_utility += $person->utility_subsidy;
-            $total_payout += $person->subtotal_payout;
-            $total_gross_profit += $person->subtotal_gross_profit;
-        }
+        $people = collect($query1->get());
 
         $totals = [
-        	'total_sales' => $total_sales,
-            'total_sales_figure' => $total_sales_figure,
-        	'total_profit_sharing' => $total_profit_sharing,
-            'total_rental' => $total_rental,
-        	'total_utility' => $total_utility,
-        	'total_payout' => $total_payout,
-            'total_gross_profit' => $total_gross_profit,
+        	'total_sales' => $people->sum('sales'),
+            'total_sales_figure' => $people->sum('subtotal_sales'),
+        	'total_profit_sharing' => $people->sum('subtotal_profit_sharing'),
+            'total_rental' => $people->sum('vending_monthly_rental'),
+        	'total_utility' => $people->sum('utility_subsidy'),
+        	'total_payout' => $people->sum('subtotal_payout'),
+            'total_gross_profit' => $people->sum('subtotal_gross_profit'),
         ];
 
         return $totals;
