@@ -51,7 +51,6 @@ class DealController extends Controller
      */
     public function destroyAjax($deal_id)
     {
-
         $deal = Deal::findOrFail($deal_id);
         $this->dealDeleteSingle($deal);
         $transaction = Transaction::findOrFail($deal->transaction_id);

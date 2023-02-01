@@ -249,27 +249,27 @@ function transactionController($scope, $http) {
             }
         });
 
-        var canvas = document.querySelector("canvas");
+        // var canvas = document.querySelector("canvas");
 
-        var signaturePad = new SignaturePad(canvas, {
-            backgroundColor: 'rgba(255, 255, 255, 0)',
-            penColor: 'rgb(0, 0, 0)',
-            minWidth: 3
-        });
+        // var signaturePad = new SignaturePad(canvas, {
+        //     backgroundColor: 'rgba(255, 255, 255, 0)',
+        //     penColor: 'rgb(0, 0, 0)',
+        //     minWidth: 3
+        // });
 
 
-        $scope.submitSignature = function () {
-            var signdata = signaturePad.toDataURL();
-            $http.post('/transaction/signature/submit/' + $trans_id.val(), { 'data': signdata }).success(function (data) {
-                loadDealTable();
-            });
-            location.reload();
-        }
+        // $scope.submitSignature = function () {
+        //     var signdata = signaturePad.toDataURL();
+        //     $http.post('/transaction/signature/submit/' + $trans_id.val(), { 'data': signdata }).success(function (data) {
+        //         loadDealTable();
+        //     });
+        //     location.reload();
+        // }
 
-        $scope.clearSignature = function () {
-            // Clears the canvas
-            signaturePad.clear();
-        }
+        // $scope.clearSignature = function () {
+        //     // Clears the canvas
+        //     signaturePad.clear();
+        // }
     });
 
     $http.get('/person/data').success(function (people) {

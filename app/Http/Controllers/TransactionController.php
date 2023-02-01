@@ -505,7 +505,7 @@ class TransactionController extends Controller
                                                 ELSE transactions.total END) + (CASE WHEN transactions.delivery_fee>0 THEN transactions.delivery_fee ELSE 0 END), 2) AS total'),
                                 DB::raw('(CASE WHEN items.is_inventory = 1 THEN deals.qty ELSE 0 END) AS qty'),
                                 'transactions.pay_status','transactions.updated_by', 'transactions.updated_at', 'transactions.delivery_fee', 'transactions.id',
-                                'profiles.id as profile_id', 'transactions.gst', 'transactions.is_gst_inclusive', 'transactions.gst_rate', 'transactions.is_important', 'transactions.is_discard',
+                                'profiles.id as profile_id', 'transactions.gst', 'transactions.is_gst_inclusive', 'transactions.gst_rate', 'transactions.is_important', 'transactions.is_discard', 'transactions.vending_inventory_movement_type',
                                 DB::raw('
                                     ROUND(CASE WHEN deals.divisor > 1
                                     THEN (items.base_unit * deals.dividend/deals.divisor)
@@ -529,6 +529,10 @@ class TransactionController extends Controller
             if($deal->is_stock_action) {
                 $isStockAction = true;
             }
+        }
+        if(!$isStockAction) {
+            $transaction->vending_inventory_movement_type = null;
+            $transaction->save();
         }
 
         if($transaction->gst) {
@@ -2770,6 +2774,8 @@ class TransactionController extends Controller
                 $this->syncTransactionTotalAmountQty($transactionId);
                 break;
         }
+        $transaction->vending_inventory_movement_type = $inventoryMovementType;
+        $transaction->save();
 
         $this->transactionDealSyncOrder($transactionId);
     }

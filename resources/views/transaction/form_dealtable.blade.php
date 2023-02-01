@@ -10,6 +10,17 @@
                     @else
                     <h3 class="panel-title"><strong><del>Selected : {{$person->cust_id}} - {{$person->company}} ({{$person->name}})</del></strong></h3>
                     @endunless
+                    <span ng-if="transaction.vending_inventory_movement_type">
+                        <span class="label label-success" ng-if="transaction.vending_inventory_movement_type == 1">
+                            Stock In
+                        </span>
+                        <span class="label label-warning" ng-if="transaction.vending_inventory_movement_type == -1">
+                            Stock Return
+                        </span>
+                        <span class="label label-danger" ng-if="transaction.vending_inventory_movement_type == 0">
+                            Melted
+                        </span>
+                    </span>
                 </div>
                 @if($transaction->status == 'Confirmed' and ($transaction->person->is_vending or $transaction->person->is_dvm or $transaction->person->is_combi))
                     <div class="pull-right">
