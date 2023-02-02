@@ -357,6 +357,7 @@
                     <span ng-if="search.sortName == 'paid_at' && !search.sortBy" class="fa fa-caret-down"></span>
                     <span ng-if="search.sortName == 'paid_at' && search.sortBy" class="fa fa-caret-up"></span>
                 </th>
+                <th></th>
             </tr>
 
             <tbody>
@@ -411,6 +412,11 @@
                     </td>
                     {{-- pay status ended --}}
                     <td class="col-md-1 text-center">@{{ transaction.paid_at }}</td>
+                    <td>
+                        <a href="/transaction/download/@{{ transaction.id }}" class="btn btn-primary btn-sm btn-block" ng-if="transaction.status != 'Pending' && transaction.status != 'Cancelled'">
+                            <i class="fa fa-print" aria-hidden="true"></i>
+                        </a>
+                    </td>
                 </tr>
 
                 <tr ng-if="!alldata || alldata.length == 0">
