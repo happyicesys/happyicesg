@@ -102,12 +102,15 @@ class DailyreportController extends Controller
         $online_location_total = 0;
 
         $subtotal_query = clone $alldeals;
-        $subtotalArr = $subtotal_query->get();
-        $subtotalArr = $subtotalArr->where('submission_status', DriverLocation::STATUS_APPROVED);
+        $allSubtotalArr = $subtotal_query->get();
+        $subtotalArr = $allSubtotalArr->where('submission_status', DriverLocation::STATUS_APPROVED);
 
-        $extra_location_total = $subtotalArr->sum('extra_location_count');
-        $online_location_total = $subtotalArr->sum('online_location_count');
-        $subtotal = $subtotalArr->sum('total');
+        $extra_location_total = 0;
+        $location_total = $allSubtotalArr->sum('location_count');
+        $daily_limit_total = $allSubtotalArr->sum('daily_limit');
+        $extra_location_total = $location_total - $daily_limit_total;
+        $online_location_total = $allSubtotalArr->sum('online_location_count');
+        $subtotal = $allSubtotalArr->sum('total');
 
         if($request->driver) {
             $user = User::where('name', $request->driver)->first();
