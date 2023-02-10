@@ -289,6 +289,7 @@ Route::delete('/inventory/data/{id}', 'InventoryController@destroyAjax');
 Route::get('/inventory/data', 'InventoryController@getData');
 Route::resource('inventory', 'InventoryController');
 
+Route::get('/happyice', 'ClientController@officialWebsite');
 Route::get('/every-morning-healthy', 'ClientController@getEveryMorningHealthyPage');
 Route::get('/everymorninghealthy', 'ClientController@everyMorningHealthy');
 Route::any('/thankspurchase', 'ClientController@thanksYourPurchase');

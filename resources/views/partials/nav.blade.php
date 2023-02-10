@@ -8,7 +8,7 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="/">{{ config('app.name', 'Happyice') }}</a>
+            <a class="navbar-brand" href="/happyice">{{ config('app.name', 'Happyice') }}</a>
             @if(!auth()->guest() and !auth()->user()->hasRole('franchisee') and !auth()->user()->hasRole('watcher') and !auth()->user()->hasRole('subfranchisee'))
                 <a href="/transaction/create" class="btn btn-success btn-sm" style="margin: 10px 0px 0px 10px;">
                     <i class="fa fa-plus"></i>

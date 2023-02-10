@@ -675,6 +675,11 @@ class ClientController extends Controller
         return view('client.terms-and-conditions');
     }
 
+    public function officialWebsite()
+    {
+        return Redirect::to('https://happyice.com.sg');
+    }
+
     // return privacy policy page
     public function privacyPolicy()
     {
