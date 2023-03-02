@@ -1092,6 +1092,17 @@ class PersonController extends Controller
         return $transaction;
     }
 
+    public function getEditByVendCode($vend_code)
+    {
+        $person = Person::where('vend_code', $vend_code)->first();
+        if($person) {
+            return redirect('person/'.$person->id.'/edit');
+        }else {
+            Flash::error('VM not found');
+            return redirect('person');
+        }
+    }
+
     // conditional filter parser(Collection $query, Formrequest $request)
     private function searchPeopleFilter($people, $request)
     {

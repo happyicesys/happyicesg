@@ -394,6 +394,7 @@ Route::get('/api/person/persontags/{person_id}', 'PersonController@getPersonTags
 Route::post('/api/person/custtags', 'PersonController@getCustTagsIndexApi');
 Route::delete('/api/person/custtag/{id}/destroy', 'PersonController@deleteCustTagApi');
 Route::post('/api/person/custtagattach/{id}/unbind', 'PersonController@unbindCustTagAttachment');
+Route::get('/person/vend-code/{vendCode}', 'PersonController@getEditByVendCode');
 
 Route::post('/api/persontag/create', 'PersonController@createPersontagApi');
 Route::post('/api/persontagattaches/bind', 'PersonController@bindPersontagAttachesApi');
