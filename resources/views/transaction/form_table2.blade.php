@@ -27,7 +27,9 @@
 
     <div class="panel-body">
         <label for="priceTemplate" ng-if="transaction.person.price_template">
-            Binded Price Template: @{{transaction.person.price_template.name}}
+            <a href="/price-template/@{{transaction.person.price_template.id}}/edit">
+                Binded Price Template: @{{transaction.person.price_template.name}}
+            </a>
             <span ng-if="transaction.person.price_template.remarks">
                 &nbsp;@{{transaction.person.price_template.remarks}}
             </span>
