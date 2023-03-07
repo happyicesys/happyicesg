@@ -123,6 +123,11 @@
                             </option>
                         @endforeach
                     </select>
+                    @if($person->price_template_id)
+                        <a href="/price-template/{{$person->price_template_id}}/edit">
+                            Binded Price Template: {{$person->priceTemplate->name}}
+                        </a>
+                    @endif
                 </div>
 
                 <div class="row">

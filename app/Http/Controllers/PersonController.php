@@ -234,8 +234,15 @@ class PersonController extends Controller
 
     public function editApi($id)
     {
-        $person = Person::with('custcategory')->findOrFail($id);
-        return $person;
+        $client = new Client();
+        $clientUrl = "https://sys.happyice.com.sg/api/v1/binded-vends";
+        $response = json_decode($client->get($clientUrl)->getBody()->getContents());
+
+        $people = Person::with('custcategory')->findOrFail($id);
+        return [
+            'bindedVends' => $response,
+            'people' => $people,
+        ];
     }
 
     // return files api by given person id(int $person_id)

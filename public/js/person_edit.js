@@ -239,9 +239,9 @@ function personEditController($scope, $http) {
     function getPersonApi() {
         $http.post('/api/person/edit/' + $('#person_id').val()).success(function (data) {
             $scope.form = {
-                ...data,
-                commission_type: $scope.commissionOptions.find(x => x.id === data.commission_type),
-                commission_package: $scope.commissionPackages.find(x => x.id === data.commission_package),
+                ...data.people,
+                commission_type: $scope.commissionOptions.find(x => x.id === data.people.commission_type),
+                commission_package: $scope.commissionPackages.find(x => x.id === data.people.commission_package),
             };
             toggleVendingFields();
             togglePwpRateField();
