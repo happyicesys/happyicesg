@@ -3061,6 +3061,8 @@ class TransactionController extends Controller
                                     'transactions.po_no', 'transactions.name', 'transactions.contact', 'transactions.del_address',
                                     'transactions.bill_address', 'transactions.bill_postcode', 'transactions.billing_country_id', 'transactions.delivery_country_id',
                                     'transactions.del_lat', 'transactions.del_lng', 'transactions.is_important', 'transactions.transremark', 'transactions.sequence', 'transactions.is_discard', 'transactions.is_service',
+                                    DB::raw('DATE(transactions.order_date) AS order_date'),
+                                    'transactions.created_at',
                                     DB::raw('DATE(transactions.delivery_date) AS del_date'),
                                     DB::raw('ROUND((CASE WHEN transactions.gst=1 THEN (
                                                 CASE

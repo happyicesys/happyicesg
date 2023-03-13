@@ -714,9 +714,9 @@ Job Assign
                         {{-- hidden table for excel export --}}
                         <tr style="background-color: #8BD5FC">
                             @if(!auth()->user()->hasRole('driver') and !auth()->user()->hasRole('technician'))
-                            <th colspan="17">
+                            <th colspan="18">
                             @else
-                            <th colspan="13">
+                            <th colspan="14">
                             @endif
                                 @{{driver.name}}
                                 @if(!auth()->user()->hasRole('driver') and !auth()->user()->hasRole('technician'))
@@ -896,16 +896,19 @@ Job Assign
                                 <span ng-if="search.sortName == 'pay_status' && !search.sortBy" class="fa fa-caret-down"></span>
                                 <span ng-if="search.sortName == 'pay_status' && search.sortBy" class="fa fa-caret-up"></span>
                             </th>
-                            @if(!auth()->user()->hasRole('driver') and !auth()->user()->hasRole('technician'))
                             <th class="col-md-1 text-center">
-                                <a href="" ng-click="sortTable('updated_by', driverkey)">
-                                Last Modified By
-                                <span ng-if="search.sortName == 'updated_by' && !search.sortBy" class="fa fa-caret-down"></span>
-                                <span ng-if="search.sortName == 'updated_by' && search.sortBy" class="fa fa-caret-up"></span>
+                                <a href="" ng-click="sortTable('order_date', driverkey)">
+                                Order Date
+                                <span ng-if="search.sortName == 'order_date' && !search.sortBy" class="fa fa-caret-down"></span>
+                                <span ng-if="search.sortName == 'order_date' && search.sortBy" class="fa fa-caret-up"></span>
                             </th>
                             <th class="col-md-1 text-center">
+                                Delivery Date
+                            </th>
+                            @if(!auth()->user()->hasRole('driver') and !auth()->user()->hasRole('technician'))
+                            <th class="col-md-1 text-center">
                                 <a href="" ng-click="sortTable('updated_at', driverkey)">
-                                Last Modified Time
+                                Last Modified
                                 <span ng-if="search.sortName == 'updated_at' && !search.sortBy" class="fa fa-caret-down"></span>
                                 <span ng-if="search.sortName == 'updated_at' && search.sortBy" class="fa fa-caret-up"></span>
                             </th>
@@ -1048,9 +1051,20 @@ Job Assign
                                     @{{ transaction.pay_status }}
                                 </td>
                                 @if(!auth()->user()->hasRole('driver') and !auth()->user()->hasRole('technician'))
-                                <td class="col-md-1 text-center">@{{ transaction.updated_by}}</td>
-                                <td class="col-md-1 text-center">@{{ transaction.updated_at}}</td>
-                                <td class="col-md-1 text-center">@{{ transaction.creator_name }}</td>
+                                <td class="col-md-1 text-center">
+                                    @{{ transaction.order_date }}
+                                </td>
+                                <td class="col-md-1 text-center">
+                                    @{{ transaction.del_date }}
+                                </td>
+                                <td class="col-md-1 text-center">
+                                    @{{ transaction.updated_by}} <br>
+                                    @{{ transaction.updated_at}}
+                                </td>
+                                <td class="col-md-1 text-center">
+                                    @{{ transaction.creator_name }} <br>
+                                    @{{ transaction.created_at}}
+                                </td>
                                 @endif
                             </tr>
                             <tr ng-if="!driver.transactions || driver.transactions.length == 0">
