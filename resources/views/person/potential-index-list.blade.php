@@ -222,7 +222,7 @@
                     @endif
                     <button type="button" class="btn btn-sm btn-info" data-toggle="modal" data-target="#mapModal" ng-click="onMapClicked(null, null, 1)" ng-if="alldata.length > 0"><i class="fa fa-map-o"></i> Generate Map</button>
                     <button type="button" class="btn btn-sm btn-info" data-toggle="modal" data-target="#mapModal" ng-click="onMapClicked(null, null, 2)" ng-if="alldata.length > 0"><i class="fa fa-map-o"></i> Map with ID & Name</button>
-                    @if(!auth()->user()->hasRole('driver') and !auth()->user()->hasRole('technician') and !auth()->user()->hasRole('event') and !auth()->user()->hasRole('event_plus'))
+                    @if(!auth()->user()->hasRole('driver') and !auth()->user()->hasRole('technician') and !auth()->user()->hasRole('event') and !auth()->user()->hasRole('event_plus') and !auth()->user()->hasRole('salesperson'))
                         <button class="btn btn-sm btn-primary" ng-click="onBatchFunctionClicked($event)">
                             Batch Function
                             <span ng-if="!showBatchFunctionPanel" class="fa fa-caret-down"></span>

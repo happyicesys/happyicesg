@@ -511,7 +511,7 @@ Job Assign
                 <div class="row">
                     <div class="col-md-12 col-sm-12 col-xs-12">
                         <div class="btn-group hidden-xs">
-                            @if(!auth()->user()->hasRole('event') and !auth()->user()->hasRole('event_plus'))
+                            @if(!auth()->user()->hasRole('event') and !auth()->user()->hasRole('event_plus') and !auth()->user()->hasRole('salesperson'))
                                 <button class="btn btn-sm btn-primary" ng-click="exportData($event)">Export All Excel</button>
                             @endif
                             <button type="button" class="btn btn-sm btn-info" data-toggle="modal" data-target="#mapModal" ng-click="onMapClicked()" ng-if="drivers.length > 0"><i class="fa fa-map-o"></i> Generate Map</button>
@@ -525,11 +525,13 @@ Job Assign
                                 </span>
                             </button>
 
+                            @if(!auth()->user()->hasRole('salesperson'))
                             <button class="btn btn-sm btn-primary" ng-click="onBatchFunctionClicked($event)">
                                 Batch Function
                                 <span ng-if="!showBatchFunctionPanel" class="fa fa-caret-down"></span>
                                 <span ng-if="showBatchFunctionPanel" class="fa fa-caret-up"></span>
                             </button>
+                            @endif
 
                             <button class="btn btn-sm btn-info" ng-click="onRouteTemplateClicked($event)">
                                 Save Route Template

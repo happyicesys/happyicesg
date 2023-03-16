@@ -32,7 +32,9 @@
             <div class="panel-heading">
                 <ul class="nav nav-pills nav-justified" role="tablist">
                     <li class="active"><a href="#list" role="tab" data-toggle="tab">Customer List</a></li>
+                    @if(!auth()->user()->hasRole('salesperson'))
                     <li><a href="#creation" role="tab" data-toggle="tab">Acc Holder</a></li>
+                    @endif
                 </ul>
             </div>
             <div class="panel-body">

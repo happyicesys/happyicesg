@@ -208,7 +208,7 @@
                 <div class="col-md-12">
                     <div class="pull-left">
                         <div class="btn-group">
-                            @if(!auth()->user()->hasRole('franchisee') and !auth()->user()->hasRole('watcher') and !auth()->user()->hasRole('subfranchisee') and !auth()->user()->hasRole('event') and !auth()->user()->hasRole('event_plus'))
+                            @if(!auth()->user()->hasRole('franchisee') and !auth()->user()->hasRole('watcher') and !auth()->user()->hasRole('subfranchisee') and !auth()->user()->hasRole('event') and !auth()->user()->hasRole('event_plus') and !auth()->user()->hasRole('salesperson'))
                                 @if(auth()->user()->hasRole('driver') or auth()->user()->hasRole('technician') or auth()->user()->hasRole('merchandiser') or auth()->user()->hasRole('merchandiser_plus'))
                                     <button class="btn btn-danger" data-toggle="modal" data-target="#cancelConfirmationModal">
                                         Cancel Invoice
@@ -233,7 +233,7 @@
                 </div>
             </div>
             <div class="visible-xs">
-                @if(!auth()->user()->hasRole('franchisee') and !auth()->user()->hasRole('watcher') and !auth()->user()->hasRole('subfranchisee') and !auth()->user()->hasRole('event') and !auth()->user()->hasRole('event_plus'))
+                @if(!auth()->user()->hasRole('franchisee') and !auth()->user()->hasRole('watcher') and !auth()->user()->hasRole('subfranchisee') and !auth()->user()->hasRole('event') and !auth()->user()->hasRole('event_plus') and !auth()->user()->hasRole('salesperson'))
                     @if(auth()->user()->hasRole('driver') or auth()->user()->hasRole('technician') or auth()->user()->hasRole('merchandiser') or auth()->user()->hasRole('merchandiser_plus'))
                         <button class="btn btn-danger btn-block" data-toggle="modal" data-target="#cancelConfirmationModal">
                             Cancel Invoice
@@ -256,7 +256,7 @@
                 <div class="col-md-12">
                     <div class="pull-left">
                         <div class="btn-group">
-                            @if(!auth()->user()->hasRole('franchisee') and !auth()->user()->hasRole('watcher') and !auth()->user()->hasRole('subfranchisee') and !auth()->user()->hasRole('event') and !auth()->user()->hasRole('event_plus'))
+                            @if(!auth()->user()->hasRole('franchisee') and !auth()->user()->hasRole('watcher') and !auth()->user()->hasRole('subfranchisee') and !auth()->user()->hasRole('event') and !auth()->user()->hasRole('event_plus') and !auth()->user()->hasRole('salesperson'))
                                 @unless(auth()->user()->hasRole('driver') and $transaction->deals()->exists())
                                     @if(auth()->user()->hasRole('driver') or auth()->user()->hasRole('technician') or auth()->user()->hasRole('merchandiser') or auth()->user()->hasRole('merchandiser_plus'))
                                         <button class="btn btn-danger" data-toggle="modal" data-target="#cancelConfirmationModal">
@@ -299,7 +299,7 @@
                 </div>
             </div>
             <div class="visible-xs">
-                @if(!auth()->user()->hasRole('franchisee') and !auth()->user()->hasRole('watcher') and !auth()->user()->hasRole('subfranchisee') and !auth()->user()->hasRole('event') and !auth()->user()->hasRole('event_plus'))
+                @if(!auth()->user()->hasRole('franchisee') and !auth()->user()->hasRole('watcher') and !auth()->user()->hasRole('subfranchisee') and !auth()->user()->hasRole('event') and !auth()->user()->hasRole('event_plus') and !auth()->user()->hasRole('salesperson'))
                     @unless(auth()->user()->hasRole('driver') and $transaction->deals()->exists())
                         @if(auth()->user()->hasRole('driver') or auth()->user()->hasRole('technician') or auth()->user()->hasRole('merchandiser') or auth()->user()->hasRole('merchandiser_plus'))
                             <button class="btn btn-danger btn-block" data-toggle="modal" data-target="#cancelConfirmationModal">
@@ -339,7 +339,7 @@
                 <div class="row">
                     <div class="pull-left">
                         <div class="btn-group">
-                            @if(!auth()->user()->hasRole('franchisee') and !auth()->user()->hasRole('watcher') and !auth()->user()->hasRole('subfranchisee') and !auth()->user()->hasRole('hd_user') and !auth()->user()->hasRole('event') and !auth()->user()->hasRole('event_plus'))
+                            @if(!auth()->user()->hasRole('franchisee') and !auth()->user()->hasRole('watcher') and !auth()->user()->hasRole('subfranchisee') and !auth()->user()->hasRole('hd_user') and !auth()->user()->hasRole('event') and !auth()->user()->hasRole('event_plus') and !auth()->user()->hasRole('salesperson'))
                                 @if(auth()->user()->hasRole('driver') or auth()->user()->hasRole('technician') or auth()->user()->hasRole('merchandiser') or auth()->user()->hasRole('merchandiser_plus'))
                                     <button class="btn btn-danger" data-toggle="modal" data-target="#cancelConfirmationModal">
                                         Cancel Invoice
@@ -375,7 +375,7 @@
                 </div>
             </div>
             <div class="visible-xs">
-                @if(!auth()->user()->hasRole('franchisee') and !auth()->user()->hasRole('watcher') and !auth()->user()->hasRole('subfranchisee') and !auth()->user()->hasRole('hd_user') and !auth()->user()->hasRole('event') and !auth()->user()->hasRole('event_plus'))
+                @if(!auth()->user()->hasRole('franchisee') and !auth()->user()->hasRole('watcher') and !auth()->user()->hasRole('subfranchisee') and !auth()->user()->hasRole('hd_user') and !auth()->user()->hasRole('event') and !auth()->user()->hasRole('event_plus') and !auth()->user()->hasRole('salesperson'))
                     @if(auth()->user()->hasRole('driver') or auth()->user()->hasRole('technician') or auth()->user()->hasRole('merchandiser') or auth()->user()->hasRole('merchandiser_plus'))
                         <button class="btn btn-danger btn-block" data-toggle="modal" data-target="#cancelConfirmationModal">
                             Cancel Invoice
@@ -436,7 +436,7 @@
                         <div class="btn-group">
                             @cannot('transaction_view')
                             @cannot('supervisor_view')
-                            @if(!auth()->user()->hasRole('franchisee')and !auth()->user()->hasRole('subfranchisee') and !auth()->user()->hasRole('watcher') and !auth()->user()->hasRole('hd_user') and !auth()->user()->hasRole('event') and !auth()->user()->hasRole('event_plus'))
+                            @if(!auth()->user()->hasRole('franchisee')and !auth()->user()->hasRole('subfranchisee') and !auth()->user()->hasRole('watcher') and !auth()->user()->hasRole('hd_user') and !auth()->user()->hasRole('event') and !auth()->user()->hasRole('event_plus') and !auth()->user()->hasRole('salesperson'))
                                 @if(auth()->user()->hasRole('driver') or auth()->user()->hasRole('technician') or auth()->user()->hasRole('merchandiser') or auth()->user()->hasRole('merchandiser_plus'))
                                     <button class="btn btn-danger" data-toggle="modal" data-target="#cancelConfirmationModal">
                                         Cancel Invoice
@@ -469,7 +469,7 @@
             <div class="visible-xs">
                     @cannot('transaction_view')
                     @cannot('supervisor_view')
-                    @if(!auth()->user()->hasRole('franchisee')and !auth()->user()->hasRole('subfranchisee') and !auth()->user()->hasRole('watcher') and !auth()->user()->hasRole('hd_user') and !auth()->user()->hasRole('event') and !auth()->user()->hasRole('event_plus'))
+                    @if(!auth()->user()->hasRole('franchisee')and !auth()->user()->hasRole('subfranchisee') and !auth()->user()->hasRole('watcher') and !auth()->user()->hasRole('hd_user') and !auth()->user()->hasRole('event') and !auth()->user()->hasRole('event_plus') and !auth()->user()->hasRole('salesperson'))
                         @if(auth()->user()->hasRole('driver') or auth()->user()->hasRole('technician') or auth()->user()->hasRole('merchandiser') or auth()->user()->hasRole('merchandiser_plus'))
                             <button class="btn btn-danger btn-block" data-toggle="modal" data-target="#cancelConfirmationModal">
                                 Cancel Invoice

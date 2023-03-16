@@ -56,7 +56,9 @@
                 $vending_access = false;
                 $route_template = false;
                 $potential_customer_access = true;
-                $staff_timetable_access = true;
+                $gt_sales_lead_access = true;
+                $staff_timetable_access = false;
+                $price_template_access = false;
 
                 if(auth()->guest()) {
                     $access = false;
@@ -65,6 +67,7 @@
                         $access = true;
                         $transaction_access = true;
                         $person_access = true;
+                        $price_template_access = true;
                         $personasset_access = true;
                         $hd_access = true;
                     }
@@ -84,6 +87,7 @@
                         $access = true;
                         $transaction_access = true;
                         $person_access = true;
+                        $price_template_access = true;
                         $franchisee_access = true;
                     }
 
@@ -115,22 +119,16 @@
 
                     if(auth()->user()->hasRole('salesperson')) {
                         $access = true;
-                        $transaction_access = true;
-                        $franchisee_access = true;
-                        $hd_access = true;
+                        $jobassign_access = true;
                         $person_access = true;
-                        $item_access = true;
-                        $report_access = true;
-                        // $dtd_access = true;
-                        $personmaintenance_access = true;
-                        $jobcard_access = true;
-                        $dailyreport_access = true;
+                        $gt_sales_lead_access = false;
                     }
 
                     if(auth()->user()->hasRole('account') or auth()->user()->hasRole('accountadmin')) {
                         $access = true;
                         $transaction_access = true;
                         $person_access = true;
+                        $price_template_access = true;
                         $item_access = true;
                         $report_access = true;
                         $detailrpt_access = true;
@@ -147,6 +145,7 @@
                         $transaction_access = true;
                         $jobassign_access = true;
                         $person_access = true;
+                        $price_template_access = true;
                         $item_access = true;
                         $report_access = true;
                         $detailrpt_access = true;
@@ -177,6 +176,7 @@
                         $access = true;
                         $jobassign_access = true;
                         $person_access = true;
+                        $price_template_access = true;
                         $item_access = true;
                         $report_access = true;
                         $detailrpt_access = true;
@@ -192,6 +192,7 @@
                         $access = true;
                         $transaction_access = true;
                         $person_access = true;
+                        $price_template_access = true;
                         $item_access = true;
                         $report_access = true;
                         $ecommerce_access = true;
@@ -213,6 +214,7 @@
                         $transaction_access = true;
                         $jobassign_access = true;
                         $person_access = true;
+                        $price_template_access = true;
                         $hd_access = true;
                         $personasset_access = true;
                         $item_access = true;
@@ -236,6 +238,7 @@
                         $access = true;
                         $transaction_access = true;
                         $person_access = true;
+                        $price_template_access = true;
                         $hd_access = true;
                         $personasset_access = true;
                         $item_access = true;
@@ -254,6 +257,7 @@
                         $transaction_access = true;
                         $jobassign_access = true;
                         $person_access = true;
+                        $price_template_access = true;
                         $detailrpt_access = true;
                     }
 
@@ -286,13 +290,15 @@
                     <li class="{{ Request::segment(1) == 'potential' ? 'active' : '' }}">
                         <a href="/potential"><i class="fa fa-address-card-o"></i> Potential Customer</a>
                     </li>
+                @endif
 
+                @if($gt_sales_lead_access)
                     <li class="{{ Request::segment(1) == 'potential-customer' ? 'active' : '' }}">
                         <a href="/potential-customer"><i class="fa fa-address-card-o"></i> GT Sales Lead</a>
                     </li>
                 @endif
 
-                @if($person_access)
+                @if($price_template_access)
                     <li class="{{ Request::segment(1) == 'price-template' ? 'active' : '' }}">
                         <a href="/price-template"><i class="fa fa-usd"></i> Price Template</a>
                     </li>
