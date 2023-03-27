@@ -599,6 +599,7 @@
                         <span ng-if="search.sortName == 'account_managers.name' && !search.sortBy" class="fa fa-caret-down"></span>
                         <span ng-if="search.sortName == 'account_managers.name' && search.sortBy" class="fa fa-caret-up"></span>
                     </th>
+                    @if(!auth()->user()->hasRole('salesperson'))
                     <th class="col-md-1 text-center">
                         <a href="" ng-click="sortTable('name')">
                         Att. To
@@ -611,6 +612,7 @@
                         <span ng-if="search.sortName == 'contact' && !search.sortBy" class="fa fa-caret-down"></span>
                         <span ng-if="search.sortName == 'contact' && search.sortBy" class="fa fa-caret-up"></span>
                     </th>
+                    @endif
                     <th class="col-md-3 text-center">
                         Delivery Add
                     </th>
@@ -695,6 +697,7 @@
                         <td class="col-md-1 text-center">
                             @{{ person.account_manager_name }}
                         </td>
+                        @if(!auth()->user()->hasRole('salesperson'))
                         <td class="col-md-1" style="max-width: 100px;">@{{ person.name }}</td>
                         <td class="col-md-1">
                             @{{ person.contact }}
@@ -702,6 +705,7 @@
                             / @{{ person.alt_contact }}
                             </span>
                         </td>
+                        @endif
                         <td class="col-md-2" style="max-width: 200px;">
                                 <button type="button" class="btn btn-sm btn-info" data-toggle="modal" data-target="#mapModal" ng-click="onMapClicked(person, $index, 1)"><i class="fa fa-map-o"></i></button>
                                 @{{ person.del_address }}

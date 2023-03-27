@@ -233,6 +233,7 @@
                     ]) !!}
                 </div>
 
+                @if(!auth()->user()->hasRole('salesperson') or (auth()->user()->hasRole('salesperson') and auth()->user()->id == $person->account_manager))
                 <div class="col-md-4 form-group">
                     {!! Form::label('name', 'Attn. Name', ['class'=>'control-label']) !!}
                     {!! Form::text('name', null, ['class'=>'form-control',
@@ -248,13 +249,14 @@
                     'readonly'=>'readonly'
                     ]) !!}
                 </div>
+                @endif
             @else
                 <div class="col-md-4 form-group">
                     {!! Form::label('po_no', 'PO #', ['class'=>'control-label']) !!}
                     {!! Form::text('po_no', null, ['class'=>'form-control',
                     'disabled'=> $disabled]) !!}
                 </div>
-
+                @if(!auth()->user()->hasRole('salesperson') or (auth()->user()->hasRole('salesperson') and auth()->user()->id == $person->account_manager))
                 <div class="col-md-4 form-group">
                     {!! Form::label('name', 'Attn. Name', ['class'=>'control-label']) !!}
                     {!! Form::text('name', null, ['class'=>'form-control',
@@ -266,6 +268,7 @@
                     {!! Form::text('contact', null, ['class'=>'form-control',
                     'disabled'=> $disabled]) !!}
                 </div>
+                @endif
             @endif
         </div>
         @endif

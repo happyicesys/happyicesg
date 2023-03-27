@@ -279,6 +279,7 @@
             <th class="col-md-1 text-center" style="min-width: 200px; max-width: 200px;">
                 Remarks
             </th>
+            @if(!auth()->user()->hasRole('salesperson'))
             <th class="col-md-1 text-center">
                 <a href="" ng-click="sortType = 'name'; sortReverse = !sortReverse">
                 Attn Name
@@ -291,6 +292,7 @@
                 <span ng-if="sortType == 'contact' && !sortReverse" class="fa fa-caret-down"></span>
                 <span ng-if="sortType == 'contact' && sortReverse" class="fa fa-caret-up"></span>
             </th>
+            @endif
             @if(!auth()->user()->hasRole('hd_user'))
             <th class="col-md-1 text-center">
                 <a href="" ng-click="sortType = 'delivery_date'; sortReverse = !sortReverse">
@@ -409,8 +411,10 @@
                     @{{ transaction.transremark}}
                     </pre>
                 </td> --}}
+                @if(!auth()->user()->hasRole('salesperson'))
                 <td class="col-md-1 text-center">@{{ transaction.name}}</td>
                 <td class="col-md-1 text-center">@{{ transaction.contact}}</td>
+                @endif
                 @if(!auth()->user()->hasRole('hd_user'))
                 <td class="col-md-1 text-center">@{{ transaction.del_date}}</td>
                 @endif
