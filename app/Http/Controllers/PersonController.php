@@ -1261,7 +1261,7 @@ class PersonController extends Controller
         ->whereNotNull('vend_code')
         ->where('vend_code', '!=', 0)
         ->select(
-            'people.id', 'people.id AS person_id', 'people.cust_id',
+            'people.id', 'people.id AS person_id', 'people.cust_id', 'people.vend_code',
             DB::raw(
                 '(SELECT DATE(a.delivery_date) FROM transactions a
                 WHERE a.person_id=people.id
