@@ -259,7 +259,7 @@ function personEditController($scope, $http) {
 
     // retrieve page w/wo search
     function getPage(pageNumber, first) {
-        $scope.spinner = true;
+        $scope.transactionSpinner = true;
         $http.post('/person/transac/' + $('#person_id').val() + '?page=' + pageNumber + '&init=' + first, $scope.search).success(function (data) {
             if (data.transactions.data) {
                 $scope.alldata = data.transactions.data;
@@ -282,7 +282,7 @@ function personEditController($scope, $http) {
             $scope.total_paid = data.total_paid;
             $scope.total_owe = data.total_owe;
             $scope.profileDealsGrossProfit = data.profileDealsGrossProfit;
-            $scope.spinner = false;
+            $scope.transactionSpinner = false;
         });
         $http.get('/api/person/persontags/' + $('#person_id').val()).success(function (data) {
             $scope.persontags_options = data;

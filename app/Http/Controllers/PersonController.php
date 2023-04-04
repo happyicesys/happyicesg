@@ -44,7 +44,10 @@ class PersonController extends Controller
     //auth-only login can see
     public function __construct()
     {
-        $this->middleware('auth', ['except' => 'retrieveCustomerMigration']);
+        $this->middleware('auth', ['except' => [
+            'retrieveCustomerMigration',
+            'getLastInvoiceDateApi'
+        ]]);
     }
 
     public function getPersonData($person_id)
@@ -1248,6 +1251,32 @@ class PersonController extends Controller
                     ->where('people.cust_id', 'NOT LIKE', 'D%')
                     ->orderBy('cust_id')
                     ->get();
+
+        return $people;
+    }
+
+    public function getLastInvoiceDateApi($custId = null)
+    {
+        $people = Person::query()
+        ->whereNotNull('vend_code')
+        ->where('vend_code', '!=', 0)
+        ->select(
+            'people.id', 'people.id AS person_id', 'people.cust_id',
+            DB::raw(
+                '(SELECT DATE(a.delivery_date) FROM transactions a
+                WHERE a.person_id=people.id
+                AND (a.status="Delivered" OR a.status="Verified Owe" OR a.status="Verified Paid")
+                AND a.is_service = false
+                AND a.total >= 0
+                ORDER BY a.delivery_date DESC, a.created_at DESC
+                LIMIT 1) AS last_delivery_date'
+            )
+        );
+
+        if($custId) {
+            $people = $people->where('people.cust_id', $custId);
+        }
+        $people = $people->orderBy('people.cust_id')->get();
 
         return $people;
     }

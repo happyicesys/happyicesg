@@ -161,6 +161,7 @@
             <button type="submit" class="btn btn-default" form="invbreakdown">Invoice Breakdown</button>
         @endif
         @endif
+        <i class="fa fa-spinner fa-2x fa-spin" ng-show="transactionSpinner"></i>
     </div>
     <div class="col-md-5 col-sm-5 col-xs-12" style="padding-top: 20px;">
         <div class="row">
