@@ -1260,6 +1260,7 @@ class PersonController extends Controller
         $people = Person::query()
         ->whereNotNull('vend_code')
         ->where('vend_code', '!=', 0)
+        ->where('active', '=', 'Yes')
         ->select(
             'people.id', 'people.id AS person_id', 'people.cust_id', 'people.vend_code',
             DB::raw(
@@ -1268,6 +1269,11 @@ class PersonController extends Controller
                 AND (a.status="Delivered" OR a.status="Verified Owe" OR a.status="Verified Paid")
                 AND a.is_service = false
                 AND a.total >= 0
+                AND NOT EXISTS
+                    (SELECT * FROM deals b
+                        WHERE b.transaction_id=a.id
+                        AND b.item_id=473
+                    )
                 ORDER BY a.delivery_date DESC, a.created_at DESC
                 LIMIT 1) AS last_delivery_date'
             )
