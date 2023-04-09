@@ -9,6 +9,7 @@
 @inject('persontags', 'App\Persontag')
 @inject('persontagattaches', 'App\Persontagattach')
 @inject('zones', 'App\Zone')
+@inject('locationTypes', 'App\LocationType')
 
 @php
     $disabled = false;
@@ -228,6 +229,18 @@
             {!! Form::label('zone_id', 'Zone', ['class'=>'control-label']) !!}
             {!! Form::select('zone_id',
                     [''=>null]+ $zones::orderBy('priority')->lists('name', 'id')->all(),
+                    null,
+                    ['class'=>'select form-control', 'disabled'=> $disabled])
+            !!}
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-4 col-sm-4 col-xs-12">
+        <div class="form-group">
+            {!! Form::label('location_type_id', 'Location Type', ['class'=>'control-label']) !!}
+            {!! Form::select('location_type_id',
+                    [''=>null]+ $locationTypes::orderBy('sequence')->lists('name', 'id')->all(),
                     null,
                     ['class'=>'select form-control', 'disabled'=> $disabled])
             !!}
