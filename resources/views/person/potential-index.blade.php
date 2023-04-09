@@ -6,6 +6,7 @@
 @inject('persontags', 'App\Persontag')
 @inject('users', 'App\User')
 @inject('zones', 'App\Zone')
+@inject('locationTypes', 'App\LocationType')
 
 @extends('template')
 <style>

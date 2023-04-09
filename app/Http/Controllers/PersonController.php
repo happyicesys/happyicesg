@@ -86,6 +86,7 @@ class PersonController extends Controller
         ->leftJoin('users AS account_managers', 'account_managers.id', '=', 'people.account_manager')
         ->leftJoin('zones', 'zones.id', '=', 'people.zone_id')
         ->leftJoin('users AS updater', 'updater.id', '=', 'people.updated_by')
+        ->leftJoin('location_types', 'location_types.id', '=', 'people.location_type_id')
         ->leftJoin($earliestTransaction, 'earliestTransaction.person_id', '=', 'people.id')
         ->select(
             'people.id', 'people.cust_id', 'people.company', 'people.name', 'people.contact', 'people.alt_contact', 'people.del_address', 'people.del_postcode', 'people.bill_postcode', 'people.active', 'people.payterm', 'people.del_lat', 'people.del_lng', 'people.remark',
@@ -95,7 +96,8 @@ class PersonController extends Controller
             'account_managers.name AS account_manager_name',
             'zones.name AS zone_name',
             'updater.name AS updated_by',
-            DB::raw('DATE(earliestTransaction.delivery_date) AS earliest_delivery_date')
+            DB::raw('DATE(earliestTransaction.delivery_date) AS earliest_delivery_date'),
+            'location_types.name AS location_type_name'
         );
 
         // reading whether search input is filled
@@ -978,6 +980,9 @@ class PersonController extends Controller
                             $value = null;
                         }
                         switch($name) {
+                            case 'locationType':
+                                $person->location_type_id = $value;
+                                break;
                             case 'custcategory':
                                 $person->custcategory_id = $value;
                                 break;
@@ -1111,6 +1116,12 @@ class PersonController extends Controller
             Flash::error('VM not found');
             return redirect('person');
         }
+    }
+
+    public function getLocationTypeApi()
+    {
+        $locationType = LocationType::all();
+        return $locationType;
     }
 
     // conditional filter parser(Collection $query, Formrequest $request)
@@ -1310,6 +1321,7 @@ class PersonController extends Controller
         $updatedAt = $request->updated_at;
         $updatedBy = $request->updated_by;
         $isPwp = $request->is_pwp;
+        $locationTypeId = $request->location_type_id;
 
         if ($cust_id) {
             if($strictCustId) {
@@ -1435,6 +1447,10 @@ class PersonController extends Controller
 
         if($isPwp != '') {
             $people = $people->where('people.is_pwp', $isPwp);
+        }
+
+        if($locationTypeId) {
+            $people = $people->where('people.location_type_id', $locationTypeId);
         }
 
         return $people;

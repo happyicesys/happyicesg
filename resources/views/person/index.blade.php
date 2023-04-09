@@ -7,6 +7,7 @@
 @inject('priceTemplates', 'App\PriceTemplate')
 @inject('users', 'App\User')
 @inject('zones', 'App\Zone')
+@inject('locationTypes', 'App\LocationType')
 
 @extends('template')
 <style>

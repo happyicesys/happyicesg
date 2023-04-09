@@ -335,8 +335,8 @@ class VendingController extends Controller
     {
         // indicate the month and year
         if(request('begin_date') or request('end_date')) {
-                $begin_date = request('begin_date');
-                $end_date = request('end_date');
+            $begin_date = request('begin_date');
+            $end_date = request('end_date');
             $this_month_start = $begin_date;
             $this_month_end = $end_date;
             $last_month_start = Carbon::parse($begin_date)->subMonth()->toDateString();

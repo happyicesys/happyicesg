@@ -43,6 +43,7 @@ function personController($scope, $http) {
         sortName: 'updated_at',
     }
     $scope.assignForm = {
+        locationType: '',
         name: '',
         custcategory: '',
         account_manager: '',
@@ -151,7 +152,10 @@ function personController($scope, $http) {
             // console.log(JSON.parse(JSON.stringify(data)));
             if (data.transactions.length > 0) {
                 alert('Invoices ' + data.transactions + ' created');
+            }else {
+                alert('Entries updated');
             }
+            location.reload();
         })
     }
 
@@ -467,5 +471,91 @@ function creationController($scope, $http) {
     }
 }
 
+function locationTypeController($scope, $http) {
+    $scope.alldata = [];
+    $scope.totalCount = 0;
+    $scope.totalPages = 0;
+    $scope.currentPage = 1;
+    $scope.itemsPerPage = 'All';
+    $scope.indexFrom = 0;
+    $scope.indexTo = 0;
+    $scope.sortBy = true;
+    $scope.sortName = '';
+    $scope.today = moment().format("YYYY-MM-DD");
+    $scope.showBatchFunctionPanel = false;
+    $scope.search = {
+        date_from: '',
+        date_to: '',
+        salesmen: [],
+        pageNum: 'All',
+    }
+    // init page load
+    getPage(1, true);
+
+    angular.element(document).ready(function () {
+        $('.select').select2();
+        $('.selectmultiple').select2({
+            placeholder: 'Choose one or many..'
+        });
+    });
+
+    $scope.exportData = function () {
+        var blob = new Blob(["\ufeff", document.getElementById('exportable').innerHTML], {
+            type: "application/vnd.ms-excel;charset=charset=utf-8"
+        });
+        var now = Date.now();
+        saveAs(blob, "Location Type" + now + ".xls");
+    };
+
+    // switching page
+    $scope.pageChanged = function (newPage) {
+        getPage(newPage, false);
+    };
+
+    $scope.pageNumChanged = function () {
+        $scope.search['pageNum'] = $scope.itemsPerPage
+        $scope.currentPage = 1
+        getPage(1, false)
+    };
+
+    $scope.sortTable = function (sortName) {
+        $scope.search.sortName = sortName;
+        $scope.search.sortBy = !$scope.search.sortBy;
+        getPage(1);
+    }
+
+    // search button transaction index
+    $scope.onSearchButtonClicked = function (event) {
+        event.preventDefault();
+        $scope.search.sortName = '';
+        $scope.search.sortBy = true;
+        getPage(1, false);
+    }
+
+    // when hitting search button
+    $scope.searchDB = function () {
+        $scope.search.edited = true;
+        $scope.search.sortName = '';
+        $scope.search.sortBy = true;
+        getPage(1, false);
+    }
+
+    $scope.merchandiserInit = function (userId) {
+        $scope.search.account_manager = userId;
+    }
+
+    // retrieve page w/wo search
+    function getPage(pageNumber, first) {
+
+        $scope.spinner = true;
+        $http.post('/api/person/location-type?page=' + pageNumber + '&init=' + first, $scope.search).success(function (data) {
+            $scope.alldata = data;
+            $scope.spinner = false;
+            $scope.search.edited = false;
+        });
+    }
+}
+
 app.controller('personController', personController);
 app.controller('creationController', creationController);
+app.controller('locationTypeController', locationTypeController);

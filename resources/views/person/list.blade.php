@@ -204,6 +204,17 @@
                         <option value="0">No</option>
                     </select>
                 </div>
+                <div class="form-group col-md-2 col-sm-4 col-xs-12">
+                    {!! Form::label('location_type_id', 'Location Type', ['class'=>'control-label search-title']) !!}
+                    <select name="location_type_id" id="location_type_id" class="select form-control" ng-model="search.location_type_id">
+                        <option value="">All</option>
+                        @foreach($locationTypes::orderBy('sequence')->get() as $locationType)
+                            <option value="{{$locationType->id}}">
+                                {{$locationType->name}}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
             </div>
 
 
@@ -275,6 +286,27 @@
         <div ng-show="showBatchFunctionPanel">
             <hr class="row">
             <div class="row">
+                <div class="col-md-12 col-sm-12 col-xs-12">
+                    <div class="col-md-6 col-sm-6 col-xs-12">
+                        <div class="form-group">
+                            {!! Form::label('locationType', 'Batch Assign Location Type', ['class'=>'control-label search-title']) !!}
+                            <select name="locationType" class="select form-control" ng-model="assignForm.locationType" ng-change="searchDB()">
+                                <option value="">None</option>
+                                @foreach($locationTypes::orderBy('sequence')->get() as $locationType)
+                                    <option value="{{$locationType->id}}">{{$locationType->name}}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-sm-6 col-xs-12">
+                        <div class="form-group">
+                        <label class="control-label"></label>
+                        <div class="btn-group-control">
+                            <button type="submit" class="btn btn-sm btn-info" ng-click="onBatchAssignClicked($event, 'locationType')" style="margin-top: 9px;"><i class="fa fa-arrow-circle-right" aria-hidden="true"></i> Assign Location Type</button>
+                        </div>
+                        </div>
+                    </div>
+                </div>
                 <div class="col-md-12 col-sm-12 col-xs-12">
                     <div class="col-md-6 col-sm-6 col-xs-12">
                         <div class="form-group">
@@ -664,6 +696,12 @@
                         <span ng-if="search.sortName == 'active' && !search.sortBy" class="fa fa-caret-down"></span>
                         <span ng-if="search.sortName == 'active' && search.sortBy" class="fa fa-caret-up"></span>
                     </th>
+                    <th class="col-md-1 text-center">
+                        <a href="" ng-click="sortTable('location_type_id')">
+                        Location Type
+                        <span ng-if="search.sortName == 'location_type_id' && !search.sortBy" class="fa fa-caret-down"></span>
+                        <span ng-if="search.sortName == 'location_type_id' && search.sortBy" class="fa fa-caret-up"></span>
+                    </th>
                 </tr>
 
                 <tbody>
@@ -741,6 +779,7 @@
                         <td class="col-md-1 text-center">@{{ person.updated_by }}</td>
                         <td class="col-md-1 text-center">@{{ person.created_at }}</td>
                         <td class="col-md-1 text-center">@{{ person.active }}</td>
+                        <td class="col-md-1 text-left">@{{ person.location_type_name }}</td>
                     </tr>
                     <tr ng-if="!alldata || alldata.length == 0">
                         <td colspan="18" class="text-center">No Records Found</td>

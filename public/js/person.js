@@ -43,6 +43,7 @@ function personController($scope, $http) {
     }
     $scope.assignForm = {
         name: '',
+        locationType: '',
         custcategory: '',
         account_manager: '',
         zone_id: '',
@@ -147,7 +148,10 @@ function personController($scope, $http) {
             $scope.checkall = false;
             if (data.transactions.length > 0) {
                 alert('Invoices ' + data.transactions + ' created');
+            }else {
+                alert('Entries updated');
             }
+            location.reload();
         })
     }
 
