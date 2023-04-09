@@ -1368,6 +1368,8 @@ class PersonController extends Controller
         $updatedBy = $request->updated_by;
         $isPwp = $request->is_pwp;
         $locationTypeId = $request->location_type_id;
+        $createdFrom = $request->created_from;
+        $createdTo = $request->created_to;
 
         if ($cust_id) {
             if($strictCustId) {
@@ -1497,6 +1499,14 @@ class PersonController extends Controller
 
         if($locationTypeId) {
             $people = $people->where('people.location_type_id', $locationTypeId);
+        }
+
+        if($createdFrom) {
+            $people = $people->whereDate('people.created_at', '>=', $createdFrom);
+        }
+
+        if($createdTo) {
+            $people = $people->whereDate('people.created_at', '<=', $createdTo);
         }
 
         return $people;

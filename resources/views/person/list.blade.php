@@ -215,6 +215,40 @@
                         @endforeach
                     </select>
                 </div>
+                <div class="form-group col-md-2 col-sm-4 col-xs-12">
+                    {!! Form::label('created_from', 'Created From', ['class'=>'control-label search-title']) !!}
+                    <div class="input-group">
+                      <datepicker>
+                          <input
+                              name = "created_from"
+                              type = "text"
+                              class = "form-control input-sm"
+                              placeholder = "Date From"
+                              ng-model = "search.created_from"
+                              ng-change = "dateChange('created_from', search.created_from)"
+                          />
+                      </datepicker>
+                      <span class="input-group-addon fa fa-backward" ng-click="onPrevSingleClicked('created_from', search.created_from)"></span>
+                      <span class="input-group-addon fa fa-forward" ng-click="onNextSingleClicked('created_from', search.created_from)"></span>
+                  </div>
+                </div>
+                <div class="form-group col-md-2 col-sm-4 col-xs-12">
+                  {!! Form::label('created_to', 'Created To', ['class'=>'control-label search-title']) !!}
+                  <div class="input-group">
+                    <datepicker>
+                        <input
+                            name = "created_to"
+                            type = "text"
+                            class = "form-control input-sm"
+                            placeholder = "Date To"
+                            ng-model = "search.created_to"
+                            ng-change = "dateChange('created_to', search.created_to)"
+                        />
+                    </datepicker>
+                    <span class="input-group-addon fa fa-backward" ng-click="onPrevSingleClicked('created_to', search.created_to)"></span>
+                    <span class="input-group-addon fa fa-forward" ng-click="onNextSingleClicked('created_to', search.created_to)"></span>
+                  </div>
+                </div>
             </div>
 
 

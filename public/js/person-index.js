@@ -170,14 +170,30 @@ function personController($scope, $http) {
             $scope.search[scopeName] = moment(new Date(date)).format('YYYY-MM-DD');
         }
     }
+    $scope.dateChange = function (scope_from, date) {
+        if (date) {
+            $scope.search[scope_from] = moment(new Date(date)).format('YYYY-MM-DD');
+        }
+        $scope.searchDB();
+    }
 
     $scope.onPrevSingleClicked = function (scope_name, date) {
         $scope.search[scope_name] = date ? moment(new Date(date)).subtract(1, 'days').format('YYYY-MM-DD') : moment().format('YYYY-MM-DD');
+        $scope.searchDB();
     }
 
     $scope.onNextSingleClicked = function (scope_name, date) {
         $scope.search[scope_name] = date ? moment(new Date(date)).add(1, 'days').format('YYYY-MM-DD') : moment().format('YYYY-MM-DD');
+        $scope.searchDB();
     }
+
+    // $scope.onPrevSingleClicked = function (scope_name, date) {
+    //     $scope.search[scope_name] = date ? moment(new Date(date)).subtract(1, 'days').format('YYYY-MM-DD') : moment().format('YYYY-MM-DD');
+    // }
+
+    // $scope.onNextSingleClicked = function (scope_name, date) {
+    //     $scope.search[scope_name] = date ? moment(new Date(date)).add(1, 'days').format('YYYY-MM-DD') : moment().format('YYYY-MM-DD');
+    // }
 
     $scope.onMapClicked = function (singleperson = null, index = null, type = null) {
         var url = window.location.href;
@@ -547,20 +563,17 @@ function locationTypeController($scope, $http) {
     $scope.dateChange = function (scope_from, date) {
         if (date) {
             $scope.search[scope_from] = moment(new Date(date)).format('YYYY-MM-DD');
-            $scope.compareDateChange(scope_from);
         }
         $scope.searchDB();
     }
 
     $scope.onPrevSingleClicked = function (scope_name, date) {
         $scope.search[scope_name] = date ? moment(new Date(date)).subtract(1, 'days').format('YYYY-MM-DD') : moment().format('YYYY-MM-DD');
-        $scope.compareDateChange(scope_name);
         $scope.searchDB();
     }
 
     $scope.onNextSingleClicked = function (scope_name, date) {
         $scope.search[scope_name] = date ? moment(new Date(date)).add(1, 'days').format('YYYY-MM-DD') : moment().format('YYYY-MM-DD');
-        $scope.compareDateChange(scope_name);
         $scope.searchDB();
     }
 
