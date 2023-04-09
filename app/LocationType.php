@@ -12,8 +12,13 @@ class LocationType extends Model
         'remarks',
     ];
 
-    public function people()
+    public function potentialCustomers()
     {
-        return $this->hasMany(Person::class);
+        return $this->hasMany(Person::class)->where('active', 'Potential');
+    }
+
+    public function confirmedCustomers()
+    {
+        return $this->hasMany(Person::class)->where('active', 'Yes');
     }
 }

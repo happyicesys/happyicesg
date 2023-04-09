@@ -55,7 +55,7 @@ class DatabaseSeeder extends Seeder
         // $this->call(UomSeeder::class);
         // $this->call(ItemUomSeeder::class);
         // $this->call(PriceTemplateItemUomSeeder::class);
-        $this->call(LocationTypeSeeder::class);
+        // $this->call(LocationTypeSeeder::class);
         Model::reguard();
     }
 }

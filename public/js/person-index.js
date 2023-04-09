@@ -484,11 +484,12 @@ function locationTypeController($scope, $http) {
     $scope.today = moment().format("YYYY-MM-DD");
     $scope.showBatchFunctionPanel = false;
     $scope.search = {
-        date_from: '',
-        date_to: '',
-        salesmen: [],
+        date_from: $scope.today,
+        date_to: $scope.today,
+        account_manager: [],
         pageNum: 'All',
     }
+    $scope.totals = []
     // init page load
     getPage(1, true);
 
@@ -537,11 +538,30 @@ function locationTypeController($scope, $http) {
         $scope.search.edited = true;
         $scope.search.sortName = '';
         $scope.search.sortBy = true;
-        getPage(1, false);
     }
 
     $scope.merchandiserInit = function (userId) {
         $scope.search.account_manager = userId;
+    }
+
+    $scope.dateChange = function (scope_from, date) {
+        if (date) {
+            $scope.search[scope_from] = moment(new Date(date)).format('YYYY-MM-DD');
+            $scope.compareDateChange(scope_from);
+        }
+        $scope.searchDB();
+    }
+
+    $scope.onPrevSingleClicked = function (scope_name, date) {
+        $scope.search[scope_name] = date ? moment(new Date(date)).subtract(1, 'days').format('YYYY-MM-DD') : moment().format('YYYY-MM-DD');
+        $scope.compareDateChange(scope_name);
+        $scope.searchDB();
+    }
+
+    $scope.onNextSingleClicked = function (scope_name, date) {
+        $scope.search[scope_name] = date ? moment(new Date(date)).add(1, 'days').format('YYYY-MM-DD') : moment().format('YYYY-MM-DD');
+        $scope.compareDateChange(scope_name);
+        $scope.searchDB();
     }
 
     // retrieve page w/wo search
@@ -549,7 +569,21 @@ function locationTypeController($scope, $http) {
 
         $scope.spinner = true;
         $http.post('/api/person/location-type?page=' + pageNumber + '&init=' + first, $scope.search).success(function (data) {
-            $scope.alldata = data;
+            if (data.locationTypes.data) {
+                $scope.alldata = data.locationTypes.data;
+                $scope.totalCount = data.locationTypes.total;
+                $scope.currentPage = data.locationTypes.current_page;
+                $scope.indexFrom = data.locationTypes.from;
+                $scope.indexTo = data.locationTypes.to;
+                $scope.totals = data.totals;
+            } else {
+                $scope.alldata = data.locationTypes;
+                $scope.totalCount = data.locationTypes.length;
+                $scope.currentPage = 1;
+                $scope.indexFrom = 1;
+                $scope.indexTo = data.locationTypes.length;
+                $scope.totals = data.totals;
+            }
             $scope.spinner = false;
             $scope.search.edited = false;
         });

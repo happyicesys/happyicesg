@@ -28,6 +28,7 @@ use App\Personmaintenance;
 use App\OutletVisit;
 use App\HasMonthOptions;
 use App\ServiceItem;
+use App\LocationType;
 use Auth;
 use DB;
 use App\HasProfileAccess;
@@ -1118,10 +1119,55 @@ class PersonController extends Controller
         }
     }
 
-    public function getLocationTypeApi()
+    public function getLocationTypeApi(Request $request)
     {
-        $locationType = LocationType::all();
-        return $locationType;
+        $locationTypes = LocationType::withCount([
+                        'potentialCustomers' => function($query) use ($request) {
+                            if($request->date_from) {
+                                $dateFrom = $request->date_from;
+                                $query->where('created_at', '>=', $dateFrom);
+                            }
+                            if($request->date_to) {
+                                $dateTo = $request->date_to;
+                                $query->where('created_at', '<=', $dateTo);
+                            }
+                            if($request->account_manager) {
+                                $accountManager = $request->account_manager;
+                                if (count($accountManager) == 1) {
+                                    $accountManager = [$accountManager];
+                                }
+                                $query->whereIn('account_manager', $accountManager);
+                            }
+                        },
+                        'confirmedCustomers' => function($query) use ($request) {
+                            if($request->date_from) {
+                                $dateFrom = $request->date_from;
+                                $query->where('created_at', '>=', $dateFrom);
+                            }
+                            if($request->date_to) {
+                                $dateTo = $request->date_to;
+                                $query->where('created_at', '<=', $dateTo);
+                            }
+                            if($request->account_manager) {
+                                $accountManager = $request->account_manager;
+                                if (count($accountManager) == 1) {
+                                    $accountManager = [$accountManager];
+                                }
+                                $query->whereIn('account_manager', $accountManager);
+                            }
+                        },
+                        ])
+                        ->orderBy('sequence')
+                        ->get();
+
+        $totals = [
+            'potentialCustomers' => (clone $locationTypes)->sum('potential_customers_count'),
+            'confirmedCustomers' => (clone $locationTypes)->sum('confirmed_customers_count'),
+        ];
+        return [
+            'locationTypes' => $locationTypes,
+            'totals' => $totals,
+        ];
     }
 
     // conditional filter parser(Collection $query, Formrequest $request)

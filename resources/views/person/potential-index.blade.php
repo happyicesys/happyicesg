@@ -27,6 +27,7 @@
             <div class="panel-heading">
                 <ul class="nav nav-pills nav-justified" role="tablist">
                     <li class="active"><a href="#list" role="tab" data-toggle="tab">Customer List</a></li>
+                    <li><a href="#location-type-list" role="tab" data-toggle="tab">Location Type List</a></li>
                     {{-- <li><a href="#creation" role="tab" data-toggle="tab">Acc Holder</a></li> --}}
                 </ul>
             </div>
@@ -34,6 +35,9 @@
                 <div class="tab-content">
                     <div class="tab-pane active" id="list" ng-controller="personController">
                         @include('person.potential-index-list')
+                    </div>
+                    <div class="tab-pane" id="location-type-list" ng-controller="locationTypeController">
+                        @include('person.location-type-list')
                     </div>
                     {{-- <div class="tab-pane" id="creation" ng-controller="creationController">
                         @include('person.creation')
