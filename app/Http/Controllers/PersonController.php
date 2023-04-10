@@ -1125,11 +1125,11 @@ class PersonController extends Controller
                         'potentialCustomers' => function($query) use ($request) {
                             if($request->date_from) {
                                 $dateFrom = $request->date_from;
-                                $query->where('created_at', '>=', $dateFrom);
+                                $query->whereDate('created_at', '>=', $dateFrom);
                             }
                             if($request->date_to) {
                                 $dateTo = $request->date_to;
-                                $query->where('created_at', '<=', $dateTo);
+                                $query->whereDate('created_at', '<=', $dateTo);
                             }
                             if($request->account_manager) {
                                 $accountManager = $request->account_manager;
@@ -1142,11 +1142,11 @@ class PersonController extends Controller
                         'confirmedCustomers' => function($query) use ($request) {
                             if($request->date_from) {
                                 $dateFrom = $request->date_from;
-                                $query->where('created_at', '>=', $dateFrom);
+                                $query->whereDate('created_at', '>=', $dateFrom);
                             }
                             if($request->date_to) {
                                 $dateTo = $request->date_to;
-                                $query->where('created_at', '<=', $dateTo);
+                                $query->whereDate('created_at', '<=', $dateTo);
                             }
                             if($request->account_manager) {
                                 $accountManager = $request->account_manager;
@@ -1498,8 +1498,12 @@ class PersonController extends Controller
             $people = $people->where('people.is_pwp', $isPwp);
         }
 
-        if($locationTypeId) {
-            $people = $people->whereIn('people.location_type_id', $locationTypeId);
+        if($locationTypeId != '') {
+            if(in_array('-1', $locationTypeId)) {
+                $people = $people->whereNull('people.location_type_id');
+            }else {
+                $people = $people->whereIn('people.location_type_id', $locationTypeId);
+            }
         }
 
         if($createdFrom) {

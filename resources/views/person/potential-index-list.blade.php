@@ -209,6 +209,7 @@
                     {!! Form::label('location_type_id', 'Location Type', ['class'=>'control-label search-title']) !!}
                     <select name="location_type_id" id="location_type_id" class="selectmultiple form-control" ng-model="search.location_type_id" multiple>
                         {{-- <option value="">All</option> --}}
+                        <option value="-1">-- Unassigned --</option>
                         @foreach($locationTypes::orderBy('sequence')->get() as $locationType)
                             <option value="{{$locationType->id}}">
                                 {{$locationType->name}}
