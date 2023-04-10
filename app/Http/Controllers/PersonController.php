@@ -1370,6 +1370,7 @@ class PersonController extends Controller
         $locationTypeId = $request->location_type_id;
         $createdFrom = $request->created_from;
         $createdTo = $request->created_to;
+        $customerTypes = $request->customer_types;
 
         if ($cust_id) {
             if($strictCustId) {
@@ -1498,7 +1499,7 @@ class PersonController extends Controller
         }
 
         if($locationTypeId) {
-            $people = $people->where('people.location_type_id', $locationTypeId);
+            $people = $people->whereIn('people.location_type_id', $locationTypeId);
         }
 
         if($createdFrom) {
@@ -1507,6 +1508,21 @@ class PersonController extends Controller
 
         if($createdTo) {
             $people = $people->whereDate('people.created_at', '<=', $createdTo);
+        }
+
+        if($customerTypes) {
+            $people = $people->where(function($query) use ($customerTypes) {
+                foreach($customerTypes as $customerType) {
+                    switch($customerType) {
+                        case 'is_vending':
+                        case 'is_dvm':
+                        case 'is_combi':
+                        case 'is_subsidiary':
+                            $query->orWhere($customerType, 1);
+                            break;
+                    }
+                }
+            });
         }
 
         return $people;
