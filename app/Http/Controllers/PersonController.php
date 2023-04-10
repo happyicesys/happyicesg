@@ -1518,6 +1518,9 @@ class PersonController extends Controller
             $people = $people->where(function($query) use ($customerTypes) {
                 foreach($customerTypes as $customerType) {
                     switch($customerType) {
+                        case 'vm':
+                            $query->orWhere('is_vending', 1)->orWhere('is_dvm', 1)->orWhere('is_combi', 1);
+                            break;
                         case 'is_vending':
                         case 'is_dvm':
                         case 'is_combi':

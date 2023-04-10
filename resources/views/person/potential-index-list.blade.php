@@ -254,6 +254,7 @@
                 <div class="form-group col-md-2 col-sm-4 col-xs-12">
                     {!! Form::label('customer_types', 'Types', ['class'=>'control-label search-title']) !!}
                     <select name="customer_types" id="customer_types" class="selectmultiple form-control" ng-model="search.customer_types" multiple>
+                        <option value="vm">-- All VM --</option>
                         <option value="is_vending">FVM</option>
                         <option value="is_dvm">DVM</option>
                         <option value="is_combi">Combi</option>
