@@ -1500,7 +1500,9 @@ class PersonController extends Controller
 
         if($locationTypeId != '') {
             if(in_array('-1', $locationTypeId)) {
-                $people = $people->whereNull('people.location_type_id');
+                $people = $people->where(function($query) {
+                    $query->whereNull('people.location_type_id')->orWhere('people.location_type_id', 0);
+                });
             }else {
                 $people = $people->whereIn('people.location_type_id', $locationTypeId);
             }
