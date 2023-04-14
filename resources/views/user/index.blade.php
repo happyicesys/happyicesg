@@ -22,6 +22,7 @@
                 <li><a href="#cust_cat_group" role="tab" data-toggle="tab">Customer Category Group</a></li>
                 <li><a href="#cust_cat" role="tab" data-toggle="tab">Customer Category</a></li>
                 <li><a href="#cust_tags" role="tab" data-toggle="tab">Customer Tags</a></li>
+                <li><a href="#racking_config" role="tab" data-toggle="tab">Racking Config</a></li>
                 <li><a href="#truck" role="tab" data-toggle="tab">Truck</a></li>
                 <li><a href="#itemcategory" role="tab" data-toggle="tab">Item Category</a></li>
                 <li><a href="#itemGroup" role="tab" data-toggle="tab">Item Group</a></li>
@@ -385,6 +386,9 @@
 
             <div class="tab-pane" id="cust_tags" ng-controller="custTagsController">
                 @include('user.cust_tags_template')
+            </div>
+            <div class="tab-pane" id="racking_config" ng-controller="rackingConfigController">
+                @include('user.racking_config_template')
             </div>
 
             <div class="tab-pane" id="truck" ng-controller="truckController">

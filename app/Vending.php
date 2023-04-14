@@ -75,4 +75,9 @@ class Vending extends Model
     {
         return $this->belongsTo('App\CashlessTerminal');
     }
+
+    public function rackingConfig()
+    {
+        return $this->belongsTo('App\RackingConfig');
+    }
 }

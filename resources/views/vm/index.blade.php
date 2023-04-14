@@ -2,6 +2,7 @@
 @inject('people', 'App\Person')
 @inject('custcategories', 'App\Custcategory')
 @inject('franchisees', 'App\User')
+@inject('rackingConfigs', 'App\RackingConfig')
 
 @extends('template')
 @section('title')
@@ -103,6 +104,16 @@ Vending Machine
                                                     ])
                         !!}
                     </div>
+                    <div class="form-group col-md-3 col-sm-6 col-xs-12">
+                        {!! Form::label('racking_config_id', 'Racking Config', ['class'=>'control-label search-title']) !!}
+                        {!! Form::select('racking_config_id', [''=>'All']+$rackingConfigs::orderBy('name')->pluck('name', 'id')->all(), null,
+                            [
+                            'class'=>'select form-control',
+                            'ng-model'=>'search.racking_config_id',
+                            'ng-change'=>'searchDB()'
+                            ])
+                        !!}
+                    </div>
                 </div>
 
 
@@ -146,6 +157,12 @@ Vending Machine
                                 Type
                                 <span ng-if="search.sortName == 'type' && !search.sortBy" class="fa fa-caret-down"></span>
                                 <span ng-if="search.sortName == 'type' && search.sortBy" class="fa fa-caret-up"></span>
+                            </th>
+                            <th class="col-md-1 text-center">
+                                <a href="" ng-click="sortTable('racking_config_id')">
+                                Racking Config
+                                <span ng-if="search.sortName == 'racking_config_id' && !search.sortBy" class="fa fa-caret-down"></span>
+                                <span ng-if="search.sortName == 'racking_config_id' && search.sortBy" class="fa fa-caret-up"></span>
                             </th>
                             <th class="col-md-2 text-center">
                                 <a href="" ng-click="sortTable('telco_name')">
@@ -195,6 +212,10 @@ Vending Machine
                                 </td>
                                 <td class="col-md-1 text-center">
                                     @{{ vm.type }}
+                                </td>
+                                <td class="col-md-1 text-center">
+                                    @{{ vm.racking_config_name }} <br>
+                                    @{{ vm.racking_config_desc }}
                                 </td>
                                 <td class="col-md-2 text-left">
                                     <a href="/simcard/@{{vm.simcard_id}}/edit" ng-if="vm.simcard_id">

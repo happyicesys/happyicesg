@@ -212,9 +212,9 @@ class Person extends Baum\Node
         return $this->hasMany('App\Postcode');
     }
 
-    public function vendings()
+    public function vending()
     {
-        return $this->belongsToMany('App\Vending');
+        return $this->hasOne('App\Vending');
     }
 
     public function operationdates()
@@ -240,11 +240,6 @@ class Person extends Baum\Node
     public function personmaintenances()
     {
         return $this->hasMany('App\Personmaintenance');
-    }
-
-    public function vending()
-    {
-        return $this->hasOne('App\Vending');
     }
 
     public function personassets()

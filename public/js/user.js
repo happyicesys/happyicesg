@@ -773,6 +773,125 @@ function zoneController($scope, $http) {
     }
 }
 
+function rackingConfigController($scope, $http) {
+    // init the variables
+    $scope.alldata = [];
+    $scope.totalCount = 0;
+    $scope.totalPages = 0;
+    $scope.currentPage = 1;
+    $scope.itemsPerPage = 'All';
+    $scope.indexFrom = 0;
+    $scope.indexTo = 0;
+    $scope.search = {
+        name: '',
+        desc: '',
+        pageNum: 'All',
+        sortBy: true,
+        sortName: ''
+    }
+    $scope.form = {
+        name: '',
+        desc: '',
+    }
+    $scope.rackingConfig = [];
+    // init page load
+    getPage();
+
+    angular.element(document).ready(function () {
+        $('.select').select2({
+            placeholder: 'Select..'
+        });
+        $('.selectmultiple').select2({
+            placeholder: 'Choose one or many..'
+        });
+    });
+
+    $scope.exportData = function (event) {
+        event.preventDefault();
+        var blob = new Blob(["\ufeff", document.getElementById('exportable_racking_config').innerHTML], {
+            type: "application/vnd.ms-excel;charset=charset=utf-8"
+        });
+        var now = Date.now();
+        saveAs(blob, "Racking Config" + now + ".xls");
+    };
+
+    // switching page
+    $scope.pageChanged = function (newPage) {
+        getPage(newPage, false);
+    };
+
+    $scope.pageNumChanged = function () {
+        $scope.search['pageNum'] = $scope.itemsPerPage
+        $scope.currentPage = 1
+        getPage(1, false)
+    };
+
+    $scope.sortTable = function (sortName) {
+        $scope.search.sortName = sortName;
+        $scope.search.sortBy = !$scope.search.sortBy;
+        getPage(1, false);
+    }
+
+    // when hitting search button
+    $scope.searchDB = function () {
+        $scope.search.sortName = '';
+        $scope.search.sortBy = true;
+        getPage(1, false);
+    }
+
+    $scope.onRackingConfigDelete = function (data) {
+        var isConfirmDelete = confirm('Are you sure you want to delete the racking configs and its binding(s)?');
+        if (isConfirmDelete) {
+            $http({
+                method: 'DELETE',
+                url: '/racking-configs/data/' + data.id
+            })
+                .success(function (data) {
+                    getPage(1, false);
+                })
+                .error(function (data) {
+                    alert('Unable to delete');
+                })
+        } else {
+            return false;
+        }
+    }
+
+    $scope.onAttachmentModalClicked = function (event, rackingConfig) {
+        event.preventDefault();
+        $scope.rackingConfig = rackingConfig;
+    }
+
+    $scope.removeAttachment = function (event, rackingConfigId, attachmentId) {
+        event.preventDefault();
+        $http.post('/api/racking-configs/' + rackingConfigId + '/attachment/' + attachmentId + '/delete').success(function (data) {
+            getPage(1, false);
+            // location.reload();
+        });
+    }
+
+    // retrieve page w/wo search
+    function getPage(pageNumber, first) {
+        $scope.spinner = true;
+        $http.post('/racking-configs/data?page=' + pageNumber + '&init=' + first, $scope.search).success(function (data) {
+            if (data.rackingConfigs.data) {
+                $scope.alldata = data.rackingConfigs.data;
+                $scope.totalCount = data.rackingConfigs.total;
+                $scope.currentPage = data.rackingConfigs.current_page;
+                $scope.indexFrom = data.rackingConfigs.from;
+                $scope.indexTo = data.rackingConfigs.to;
+            } else {
+                $scope.alldata = data.rackingConfigs;
+                $scope.totalCount = data.rackingConfigs.length;
+                $scope.currentPage = 1;
+                $scope.indexFrom = 1;
+                $scope.indexTo = data.rackingConfigs.length;
+            }
+            $scope.spinner = false;
+        });
+    }
+}
+
 function repeatController($scope) {
     $scope.$watch('$index', function (index) {
         $scope.number = ($scope.$index + 1) + ($scope.currentPage - 1) * $scope.itemsPerPage;
@@ -821,6 +940,12 @@ function repeatController11($scope) {
     })
 }
 
+function repeatController12($scope) {
+    $scope.$watch('$index', function (index) {
+        $scope.number = ($scope.$index + 1) + ($scope.currentPage12 - 1) * $scope.itemsPerPage12;
+    })
+}
+
 app.controller('userController', userController);
 app.controller('custCategoryController', custCategoryController);
 app.controller('repeatController', repeatController);
@@ -837,6 +962,7 @@ app.controller('itemcategoryController', itemcategoryController);
 app.controller('itemGroupController', itemGroupController);
 app.controller('truckController', truckController);
 app.controller('zoneController', zoneController);
+app.controller('rackingConfigController', rackingConfigController);
 
 $(function () {
     $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {

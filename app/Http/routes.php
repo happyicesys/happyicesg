@@ -571,6 +571,16 @@ Route::delete('/user/{user_id}/removeprofile/{profile_id}', 'UserController@remo
 Route::post('/user/{user_id}/addcustcat', 'UserController@addCustcategoryIdByUser');
 Route::delete('/user/{user_id}/removecustcat/{custcategoryId}', 'UserController@removeCustcategoryIdByUser');
 
+// Route::get('/api/racking-configs/user/{userId}/{type}', 'RackingConfigController@getCustcategoryByUserIdApi');
+Route::post('/racking-configs/create', 'RackingConfigController@createRackingConfigApi');
+Route::get('/api/racking-configs/{id}', 'RackingConfigController@getRackingConfigApi');
+Route::post('/racking-configs/data', 'RackingConfigController@getData');
+Route::delete('/racking-configs/data/{id}', 'RackingConfigController@destroyAjax');
+Route::post('/racking-configs/{id}/attachment/create', 'RackingConfigController@createAttachment');
+Route::delete('/racking-configs/{id}/attachment/{attachmentId}/delete', 'RackingConfigController@removeAttachment');
+Route::post('/api/racking-configs/{id}/attachment/{attachmentId}/delete', 'RackingConfigController@removeAttachmentApi');
+Route::resource('racking-configs', 'RackingConfigController');
+
 Route::get('/role/data', 'RoleController@getData');
 Route::resource('role', 'RoleController');
 

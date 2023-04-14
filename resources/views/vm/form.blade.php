@@ -1,6 +1,7 @@
 @inject('people', 'App\Person')
 @inject('simcards', 'App\Simcard')
 @inject('cashlessTerminals', 'App\CashlessTerminal')
+@inject('rackingConfigs', 'App\RackingConfig')
 
 <div class="col-md-12 col-sm-12 col-xs-12">
     <div class="row">
@@ -34,6 +35,14 @@
             <div class="form-group">
                 {!! Form::label('cashless_terminal_id', 'Cashless Terminal', ['class'=>'control-label']) !!}
                 {!! Form::select('cashless_terminal_id', [''=>null] + $cashlessTerminals::select(DB::raw("CONCAT(terminal_id,' - ',provider_name) AS full, id"))->orderBy('provider_name')->lists('full', 'id')->all(),
+                            null,
+                            ['class'=>'select form-control']) !!}
+            </div>
+        </div>
+        <div class="col-md-6 col-sm-6 col-xs-12">
+            <div class="form-group">
+                {!! Form::label('racking_config_id', 'Racking Config', ['class'=>'control-label']) !!}
+                {!! Form::select('racking_config_id', [''=>null] + $rackingConfigs::orderBy('name')->lists('name', 'id')->all(),
                             null,
                             ['class'=>'select form-control']) !!}
             </div>

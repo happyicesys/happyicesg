@@ -324,13 +324,15 @@ class VMController extends Controller
             ->leftJoin('custcategories', 'people.custcategory_id', '=', 'custcategories.id')
             ->leftJoin('simcards', 'simcards.id', '=', 'vendings.simcard_id')
             ->leftJoin('cashless_terminals', 'cashless_terminals.id', '=', 'vendings.cashless_terminal_id')
+            ->leftJoin('racking_configs', 'racking_configs.id', '=', 'vendings.racking_config_id')
             ->select(
                 'people.cust_id', 'people.company', 'people.id as person_id',
                 'vendings.vend_id', 'vendings.serial_no', 'vendings.type', 'vendings.router', 'vendings.desc', 'vendings.updated_by', 'vendings.created_at', 'vendings.id', 'vendings.updated_at', 'vendings.id AS id',
                 'profiles.id as profile_id',
                 'custcategories.name as custcategory',
                 'simcards.phone_no', 'simcards.telco_name', 'simcards.simcard_no', 'simcards.id AS simcard_id',
-                'cashless_terminals.provider_name', 'cashless_terminals.terminal_id'
+                'cashless_terminals.provider_name', 'cashless_terminals.terminal_id',
+                'racking_configs.name as racking_config_name', 'racking_configs.id as racking_config_id', 'racking_configs.desc as racking_config_desc'
             );
 
         // reading whether search input is filled
@@ -369,6 +371,10 @@ class VMController extends Controller
         }
         if (request('custcategory')) {
             $vendings = $vendings->where('custcategories.id', request('custcategory'));
+        }
+
+        if(request('racking_config_id')) {
+            $vendings = $vendings->where('racking_configs.id', request('racking_config_id'));
         }
 
         if (request('sortName')) {
