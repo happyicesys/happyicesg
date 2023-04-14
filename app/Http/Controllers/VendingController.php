@@ -376,7 +376,6 @@ class VendingController extends Controller
                                 AND transactions.is_required_analog=1
                                 AND DATE(transactions.delivery_date)<'".$this_month_start."'
                                 GROUP BY people.id
-                                ORDER BY transactions.delivery_date DESC
                                 ) analog_start");
 
         $analog_first = DB::raw("(SELECT MIN(transactions.delivery_date) AS delivery_date, MIN(transactions.analog_clock) AS analog_clock, people.id AS person_id
@@ -390,7 +389,6 @@ class VendingController extends Controller
                                 AND DATE(transactions.delivery_date)>='".$this_month_start."'
                                 AND DATE(transactions.delivery_date)<='".$this_month_end."'
                                 GROUP BY people.id
-                                ORDER BY transactions.delivery_date DESC
                                 ) analog_first");
 
         $fvm_start = DB::raw("(SELECT MAX(transactions.delivery_date) AS delivery_date, people.id AS person_id
@@ -403,7 +401,6 @@ class VendingController extends Controller
                                 AND items.product_id='051'
                                 AND DATE(transactions.delivery_date)<'".$this_month_start."'
                                 GROUP BY people.id
-                                ORDER BY transactions.delivery_date DESC
                                 ) fvm_start");
 
         $cashless = DB::raw("(SELECT MAX(transactions.delivery_date) AS delivery_date, people.id AS person_id
@@ -416,7 +413,6 @@ class VendingController extends Controller
                                 AND items.product_id='051c'
                                 AND DATE(transactions.delivery_date)<'".$this_month_start."'
                                 GROUP BY people.id
-                                ORDER BY transactions.delivery_date DESC
                                 ) cashless");
 
         $fvm_first = DB::raw("(SELECT MIN(transactions.delivery_date) AS delivery_date, people.id AS person_id
@@ -429,7 +425,6 @@ class VendingController extends Controller
                                 AND items.product_id='051a'
                                 AND DATE(transactions.delivery_date)<='".$this_month_end."'
                                 GROUP BY people.id
-                                ORDER BY transactions.delivery_date DESC
                                 ) fvm_first");
 
         $analog_end = DB::raw("(SELECT MAX(transactions.delivery_date) AS delivery_date, MAX(transactions.analog_clock) AS analog_clock, people.id AS person_id
@@ -440,7 +435,6 @@ class VendingController extends Controller
                                 AND transactions.is_required_analog=1
                                 AND DATE(transactions.delivery_date)<='".$this_month_end."'
                                 GROUP BY people.id
-                                ORDER BY transactions.delivery_date DESC
                                 ) analog_end");
 
         $analog_lastmonth_start = DB::raw("(SELECT MAX(transactions.delivery_date) AS delivery_date, MAX(transactions.analog_clock) AS analog_clock, people.id AS person_id
@@ -451,7 +445,6 @@ class VendingController extends Controller
                                 AND transactions.is_required_analog=1
                                 AND DATE(transactions.delivery_date)<'".$last_month_start."'
                                 GROUP BY people.id
-                                ORDER BY transactions.delivery_date DESC
                                 ) analog_lastmonth_start");
 
         $analog_lastmonth_first = DB::raw("(SELECT MIN(transactions.delivery_date) AS delivery_date, MIN(transactions.analog_clock) AS analog_clock, people.id AS person_id
@@ -463,7 +456,6 @@ class VendingController extends Controller
                                 AND DATE(transactions.delivery_date)>='".$last_month_start."'
                                 AND DATE(transactions.delivery_date)<='".$last_month_end."'
                                 GROUP BY people.id
-                                ORDER BY transactions.delivery_date DESC
                                 ) analog_lastmonth_first");
 
         $analog_lastmonth_end = DB::raw("(SELECT MAX(transactions.delivery_date) AS delivery_date, MAX(transactions.analog_clock) AS analog_clock, people.id AS person_id
@@ -474,7 +466,6 @@ class VendingController extends Controller
                                 AND transactions.is_required_analog=1
                                 AND DATE(transactions.delivery_date)<='".$last_month_end."'
                                 GROUP BY people.id
-                                ORDER BY transactions.delivery_date DESC
                                 ) analog_lastmonth_end");
 
         $melted = DB::raw("(SELECT SUM(ABS(deals.amount)) AS melted_amount, people.id AS person_id
@@ -488,7 +479,6 @@ class VendingController extends Controller
                                 AND DATE(transactions.delivery_date)>= (SELECT x.delivery_date FROM transactions x WHERE DATE(x.delivery_date)<'".$this_month_start."' ORDER BY x.delivery_date DESC LIMIT 1)
                                 AND DATE(transactions.delivery_date)<='".$this_month_end."'
                                 GROUP BY people.id
-                                ORDER BY transactions.delivery_date DESC
                                 ) melted");
 
         $vend_received = DB::raw("(SELECT SUM(deals.amount) AS vend_received, MAX(transactions.delivery_date) AS max_delivery_date, MIN(transactions.delivery_date) AS min_delivery_date, people.id AS person_id
@@ -503,7 +493,6 @@ class VendingController extends Controller
                                 AND DATE(transactions.delivery_date)<='".$this_month_end."'
                                 AND deals.amount > 0
                                 GROUP BY people.id
-                                ORDER BY transactions.delivery_date DESC
                                 ) vend_received");
 
         $cashless_received = DB::raw("(SELECT SUM(deals.amount) AS cashless_received, MAX(transactions.delivery_date) AS max_delivery_date, MIN(transactions.delivery_date) AS min_delivery_date, people.id AS person_id
@@ -518,7 +507,6 @@ class VendingController extends Controller
                                 AND DATE(transactions.delivery_date)<='".$this_month_end."'
                                 AND deals.amount > 0
                                 GROUP BY people.id
-                                ORDER BY transactions.delivery_date DESC
                                 ) cashless_received");
 
         $sales_count = DB::raw("(SELECT SUM(transactions.sales_count) AS sales_count, people.id AS person_id
@@ -529,7 +517,6 @@ class VendingController extends Controller
                                 AND DATE(transactions.delivery_date)>='".$this_month_start."'
                                 AND DATE(transactions.delivery_date)<='".$this_month_end."'
                                 GROUP BY people.id
-                                ORDER BY transactions.delivery_date DESC
                                 ) sales_count");
 
         $transactions = DB::table('deals')
