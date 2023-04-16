@@ -407,6 +407,15 @@ class PersonController extends Controller
     public function destroy($id)
     {
         $person = Person::findOrFail($id);
+        $person->parent_id = null;
+        $person->save();
+        if($person->manageProfiles()->exists()) {
+            foreach($person->manageProfiles as $manageProfile) {
+                $manageProfile->parent_id = null;
+                $manageProfile->save();
+            }
+        }
+
         if($person->transactions()->exists()) {
             Flash::error('Transaction(s) found under this customer profile');
             return Redirect::action('PersonController@edit', $id);

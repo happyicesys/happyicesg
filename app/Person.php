@@ -207,6 +207,11 @@ class Person extends Baum\Node
         return $this->belongsTo('App\Person', 'parent_id');
     }
 
+    public function manageProfiles()
+    {
+        return $this->hasMany('App\Person', 'parent_id');
+    }
+
     public function postcodes()
     {
         return $this->hasMany('App\Postcode');
