@@ -302,6 +302,9 @@ class ItemController extends Controller
         if($request->name) {
             $items = $items->where('name', 'LIKE', '%'.$request->name.'%');
         }
+        if($request->is_inventory != '') {
+            $items = $items->where('is_inventory', '=', $request->is_inventory);
+        }
         if($request->sortName){
             $items = $items->orderBy($request->sortName, $request->sortBy ? 'asc' : 'desc');
         }else {

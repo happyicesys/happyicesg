@@ -340,6 +340,7 @@ function unitcostController($scope, $http) {
         product_id: '',
         name: '',
         profile_id: '',
+        is_inventory: '',
         sortName: '',
         sortBy: true
     }

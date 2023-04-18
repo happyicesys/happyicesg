@@ -23,6 +23,16 @@
                         ])
                     !!}
                 </div>
+                <div class="form-group col-md-2 col-sm-4 col-xs-6">
+                    {!! Form::label('is_inventory', 'Inventory?', ['class'=>'control-label search-title']) !!}
+                    {!! Form::select('is_inventory', [''=>'All', '1' => 'Yes', '0' => 'No'], null,
+                        [
+                        'class'=>'select form-control',
+                        'ng-model'=>'search.is_inventory',
+                        'ng-change'=>'searchDB()'
+                        ])
+                    !!}
+                </div>
             </div>
         </div>
         {!! Form::close() !!}
