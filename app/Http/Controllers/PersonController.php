@@ -47,7 +47,8 @@ class PersonController extends Controller
     {
         $this->middleware('auth', ['except' => [
             'retrieveCustomerMigration',
-            'getLastInvoiceDateApi'
+            'getLastInvoiceDateApi',
+            'syncLocationTypeWithSys'
         ]]);
     }
 
@@ -1304,6 +1305,7 @@ class PersonController extends Controller
                         'cashlessTerminal',
                         'custcategory',
                         'custcategory.custcategoryGroup',
+                        'locationType',
                         'profile',
                         'profile.currency',
                         'zone'
@@ -1317,6 +1319,13 @@ class PersonController extends Controller
                     ->where('people.cust_id', 'NOT LIKE', 'D%')
                     ->orderBy('cust_id')
                     ->get();
+
+        return $people;
+    }
+
+    public function syncLocationTypeWithSys()
+    {
+        $people = Person::with(['locationType', 'custcategory'])->whereNotNull('vend_code')->where('vend_code', '!=', 0)->get();
 
         return $people;
     }
