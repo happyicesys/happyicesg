@@ -425,6 +425,7 @@ Route::delete('/api/profile/{profile_id}/destroy', 'ProfileController@destroyApi
 Route::resource('profile', 'ProfileController');
 
 
+Route::get('/api/items/unitcosts/profile/{profile_id}', 'ItemController@getUnitcostsWithItemsByProfileApi');
 Route::get('/api/items/migrate', 'ItemController@retrieveItems');
 Route::post('/api/items', 'ItemController@getItemsApi');
 Route::post('/item/active/{item_id}', 'ItemController@setActiveState');

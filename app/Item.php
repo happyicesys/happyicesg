@@ -76,6 +76,11 @@ class Item extends Model
         return $this->hasOne('App\Fprice');
     }
 
+    public function unitcosts()
+    {
+        return $this->hasMany('App\Unitcost');
+    }
+
     // scopes
     public function scopeIsInventory($query, $value)
     {

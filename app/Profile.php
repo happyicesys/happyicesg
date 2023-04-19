@@ -37,6 +37,11 @@ class Profile extends Model
         return $this->belongsTo('App\Currency');
     }
 
+    public function unitcosts()
+    {
+        return $this->hasMany('App\Unitcost');
+    }
+
     // getter and setter
 /*     public function setGstRateAttribute($value)
     {

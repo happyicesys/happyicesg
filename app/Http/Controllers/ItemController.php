@@ -31,7 +31,10 @@ class ItemController extends Controller
     //auth-only login can see
     public function __construct()
     {
-        $this->middleware('auth', ['except' => 'retrieveItems']);
+        $this->middleware('auth', ['except' => [
+            'retrieveItems',
+            'getUnitcostsWithItemsByProfileApi',
+        ]]);
     }
 
     // item index page items api
@@ -546,6 +549,20 @@ class ItemController extends Controller
                     ->get();
 
         return $items;
+    }
+
+    public function getUnitcostsWithItemsByProfileApi($profileId)
+    {
+        $profile = Profile::with([
+            'unitcosts.item' => function($query) {
+                $query->where('is_inventory', true);
+            },
+            'unitcosts.item.itemUoms' => function($query) {
+                $query->where('is_transacted_unit', true);
+            },
+        ])->find($profileId);
+
+        return $profile;
     }
 
     // export unit cost excel(Collection $profiles, Collection $items, Collection $unitcosts)
