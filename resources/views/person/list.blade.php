@@ -259,6 +259,8 @@
                         <option value="is_dvm">DVM</option>
                         <option value="is_combi">Combi</option>
                         <option value="is_subsidiary">Freezer(Supermarket)</option>
+                        <option value="is_non_freezer_point">Non Freezer Point</option>
+                        <option value="na">-- N/A --</option>
                     </select>
                 </div>
             </div>

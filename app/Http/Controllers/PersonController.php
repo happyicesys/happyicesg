@@ -1541,10 +1541,19 @@ class PersonController extends Controller
                         case 'vm':
                             $query->orWhere('is_vending', 1)->orWhere('is_dvm', 1)->orWhere('is_combi', 1);
                             break;
+                        case 'na':
+                            $query
+                                ->where('is_vending', 0)
+                                ->where('is_dvm', 0)
+                                ->where('is_combi', 0)
+                                ->where('is_subsidiary', 0)
+                                ->where('is_non_freezer_point', 0);
+                            break;
                         case 'is_vending':
                         case 'is_dvm':
                         case 'is_combi':
                         case 'is_subsidiary':
+                        case 'is_non_freezer_point':
                             $query->orWhere($customerType, 1);
                             break;
                     }
