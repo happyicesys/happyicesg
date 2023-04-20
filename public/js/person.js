@@ -220,12 +220,14 @@ function personController($scope, $http) {
                 '</b>' +
                 // '<br>' +
                 // '<span style="font-size:13px">' + '<b>' + singleperson.del_postcode + '</b>' + '</span>' + ' ' + singleperson.del_address +
-                '</span>';
+                '</span>' +
+                '<br>' +
+                '<br>' +
+                '<span style="font-size:14px">' + '<b>' + '<a target="_blank" href="https://maps.google.com/?q=' + singleperson.del_lat + ',' + singleperson.del_lng + '">' + 'View on Google Map' + '</a>' + '</b>' + '</span>';
 
             var infowindow = new google.maps.InfoWindow({
                 content: contentString
             });
-            // console.log(singleperson)
             $http.get('https://developers.onemap.sg/commonapi/search?searchVal=' + singleperson.del_postcode + '&returnGeom=Y&getAddrDetails=Y').success(function (data) {
                 let coord = {
                     transaction_id: singleperson.id,
@@ -272,19 +274,7 @@ function personController($scope, $http) {
         } else {
             $scope.coordsArr = [];
             $scope.alldata.forEach(function (person, key) {
-                let custString = person.cust_id + ' - ' + person.company + ' - ' + person.custcategory;
-                var contentString = '<span style=font-size:10px;>' +
-                    '<b>' +
-                    custString +
-                    '</b>' +
-                    // '<br>' +
-                    // '<span style="font-size:13px">' + '<b>' + person.del_postcode + '</b>' + '</span>' + ' ' + person.del_address +
-                    '</span>';
 
-                var infowindow = new google.maps.InfoWindow({
-                    content: contentString
-                });
-                // console.log(person)
                 if (!person.del_lat && !person.del_lng) {
                     $http.get('https://developers.onemap.sg/commonapi/search?searchVal=' + person.del_postcode + '&returnGeom=Y&getAddrDetails=Y').success(function (data) {
                         let coord = {
@@ -299,6 +289,22 @@ function personController($scope, $http) {
                         });
                     });
                 }
+
+                let custString = person.cust_id + ' - ' + person.company + ' - ' + person.custcategory;
+                var contentString = '<span style=font-size:10px;>' +
+                    '<b>' +
+                    custString +
+                    '</b>' +
+                    // '<br>' +
+                    // '<span style="font-size:13px">' + '<b>' + person.del_postcode + '</b>' + '</span>' + ' ' + person.del_address +
+                    '</span>' +
+                    '<br>' +
+                    '<br>' +
+                    '<span style="font-size:14px">' + '<b>' + '<a target="_blank" href="https://maps.google.com/?q=' + person.del_lat + ',' + person.del_lng + '">' + 'View on Google Map' + '</a>' + '</b>' + '</span>';
+
+                var infowindow = new google.maps.InfoWindow({
+                    content: contentString
+                });
 
                 let url = map_icon_base + MAP_ICON_FILE[person.map_icon_file]
                 var pos = new google.maps.LatLng(person.del_lat, person.del_lng);

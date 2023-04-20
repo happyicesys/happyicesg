@@ -535,17 +535,7 @@ function transController($scope, $http, $window) {
         var markers = [];
 
         if (singleperson) {
-            var contentString = '<span style=font-size:10px;>' +
-                '<span style="font-size:13px">' + '<b>' + singleperson.del_postcode + '; ' + singleperson.custcategory + '</b>' + '</span>' +
-                '<br>' +
-                '<b>' + singleperson.id + '</b>' + ', ' + singleperson.cust_id + ', ' + singleperson.company +
-                '<br>' +
-                singleperson.del_address;
-
-            var infowindow = new google.maps.InfoWindow({
-                content: contentString
-            });
-            // console.log(singleperson)
+            // single map
             $http.get('https://developers.onemap.sg/commonapi/search?searchVal=' + singleperson.del_postcode + '&returnGeom=Y&getAddrDetails=Y').success(function (data) {
                 let coord = {
                     transaction_id: singleperson.id,
@@ -576,21 +566,24 @@ function transController($scope, $http, $window) {
                 $http.post('/api/person/storelatlng/' + singleperson.person_id, coord).success(function (data) {
                 });
             });
+            var contentString = '<span style=font-size:10px;>' +
+                '<span style="font-size:13px">' + '<b>' + singleperson.del_postcode + '; ' + singleperson.custcategory + '</b>' + '</span>' +
+                '<br>' +
+                '<b>' + singleperson.id + '</b>' + ', ' + singleperson.cust_id + ', ' + singleperson.company +
+                '<br>' +
+                singleperson.del_address +
+                '<br>' +
+                '<br>' +
+                '<span style="font-size:14px">' + '<b>' + '<a target="_blank" href="https://maps.google.com/?q=' + singleperson.del_lat + ',' + singleperson.del_lng + '">' + 'View on Google Map' + '</a>' + '</b>' + '</span>';
+
+            var infowindow = new google.maps.InfoWindow({
+                content: contentString
+            });
         } else {
             if (driverkey !== null) {
+                // map by driver
                 $scope.coordsArr = [];
                 angular.forEach($scope.drivers[driverkey].transactions, function (person, pkey) {
-                    var contentString = '<span style=font-size:10px;>' +
-                        '<span style="font-size:13px">' + '<b>' + person.del_postcode + '; ' + person.custcategory + '</b>' + '</span>' +
-                        '<br>' +
-                        '<b>' + person.id + '</b>' + ', ' + person.cust_id + ', ' + person.company +
-                        '<br>' +
-                        person.del_address;
-
-                    var infowindow = new google.maps.InfoWindow({
-                        content: contentString
-                    });
-
                     if (!person.del_lat && !person.del_lng) {
                         $http.get('https://developers.onemap.sg/commonapi/search?searchVal=' + person.del_postcode + '&returnGeom=Y&getAddrDetails=Y').success(function (data) {
                             let coord = {
@@ -605,6 +598,20 @@ function transController($scope, $http, $window) {
                             });
                         });
                     }
+
+                    var contentString = '<span style=font-size:10px;>' +
+                        '<span style="font-size:13px">' + '<b>' + person.del_postcode + '; ' + person.custcategory + '</b>' + '</span>' +
+                        '<br>' +
+                        '<b>' + person.id + '</b>' + ', ' + person.cust_id + ', ' + person.company +
+                        '<br>' +
+                        person.del_address +
+                        '<br>' +
+                        '<br>' +
+                        '<span style="font-size:14px">' + '<b>' + '<a target="_blank" href="https://maps.google.com/?q=' + person.del_lat + ',' + person.del_lng + '">' + 'View on Google Map' + '</a>' + '</b>' + '</span>';
+
+                    var infowindow = new google.maps.InfoWindow({
+                        content: contentString
+                    });
 
                     let url = map_icon_base + MAP_ICON_FILE[person.map_icon_file]
                     var pos = new google.maps.LatLng(person.del_lat, person.del_lng);
@@ -625,20 +632,10 @@ function transController($scope, $http, $window) {
                 });
 
             } else {
+                // all map
                 $scope.coordsArr = [];
                 angular.forEach($scope.drivers, function (driver, dkey) {
                     angular.forEach($scope.drivers[dkey].transactions, function (person, pkey) {
-                        var contentString = '<span style=font-size:10px;>' +
-                            '<span style="font-size:13px">' + '<b>#' + person.sequence + ', ' + person.del_postcode + '</span>' + '</b>' +
-                            '<br>' +
-                            '<b>' + person.id + '</b>' + ' ' + person.cust_id + ', ' + person.company +
-                            '<br>' +
-                            person.del_address;
-
-                        var infowindow = new google.maps.InfoWindow({
-                            content: contentString
-                        });
-
                         if (!person.del_lat && !person.del_lng) {
                             $http.get('https://developers.onemap.sg/commonapi/search?searchVal=' + person.del_postcode + '&returnGeom=Y&getAddrDetails=Y').success(function (data) {
                                 let coord = {
@@ -653,6 +650,20 @@ function transController($scope, $http, $window) {
                                 });
                             });
                         }
+
+                        var contentString = '<span style=font-size:10px;>' +
+                        '<span style="font-size:13px">' + '<b>#' + person.sequence + ', ' + person.del_postcode + '</span>' + '</b>' +
+                        '<br>' +
+                        '<b>' + person.id + '</b>' + ' ' + person.cust_id + ', ' + person.company +
+                        '<br>' +
+                        person.del_address +
+                        '<br>' +
+                        '<br>' +
+                        '<span style="font-size:14px">' + '<b>' + '<a target="_blank" href="https://maps.google.com/?q=' + person.del_lat + ',' + person.del_lng + '">' + 'View on Google Map' + '</a>' + '</b>' + '</span>';
+
+                        var infowindow = new google.maps.InfoWindow({
+                            content: contentString
+                        });
 
                         let url = map_icon_base + MAP_ICON_FILE[person.map_icon_file]
                         var pos = new google.maps.LatLng(person.del_lat, person.del_lng);
