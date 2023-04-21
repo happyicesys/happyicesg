@@ -93,14 +93,14 @@ class VMController extends Controller
     {
         $input = $request->all();
 
-        // dd($input);
         $vending = Vending::findOrFail($id);
-
         $request->merge(array('updated_by' => Auth::user()->name));
-
         $vending->update($input);
 
-        return redirect('vm');
+        // return redirect('vm');
+        return redirect()->action(
+            'VMController@editVending', ['id' => $vending->id]
+        );
     }
 
     // get cashless index page

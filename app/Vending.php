@@ -48,6 +48,7 @@ class Vending extends Model
     protected $fillable = [
         'vend_id', 'serial_no', 'type', 'router', 'desc',
         'person_id', 'updated_by', 'simcard_id', 'cashless_terminal_id',
+        'racking_config_id',
     ];
 
     // relationships
