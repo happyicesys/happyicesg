@@ -370,13 +370,13 @@ class PersonController extends Controller
         $person->update($input);
 
         // serial number validation for vending
-        if ($person->serial_number) {
-            $this->validate($request, [
-                'serial_number' => 'unique:people,serial_number,' . $person->id
-            ], [
-                'serial_number.unique' => 'The Serial Number has been taken'
-            ]);
-        }
+        // if ($person->serial_number) {
+        //     $this->validate($request, [
+        //         'serial_number' => 'unique:people,serial_number,' . $person->id
+        //     ], [
+        //         'serial_number.unique' => 'The Serial Number has been taken'
+        //     ]);
+        // }
 
         if($person->is_parent) {
             $person->parent_id = null;
