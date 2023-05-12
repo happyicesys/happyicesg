@@ -356,6 +356,7 @@ Route::post('/api/route-template/generate', 'RouteTemplateController@generateTem
 Route::post('/api/route-template/jobassign/create', 'RouteTemplateController@createRouteTemplateFromJobassignApi');
 Route::delete('/api/route-template/delete/{id}', 'RouteTemplateController@deleteRouteTemplateApi');
 
+Route::get('/api/people/vend-codes', 'PersonController@getPeopleByVendCode');
 Route::get('/api/person/migrate', 'PersonController@retrieveCustomerMigration');
 Route::get('/api/person/location-type', 'PersonController@syncLocationTypeWithSys');
 Route::post('/api/person/edit/{id}', 'PersonController@editApi');

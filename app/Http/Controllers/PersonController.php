@@ -48,6 +48,7 @@ class PersonController extends Controller
         $this->middleware('auth', ['except' => [
             'retrieveCustomerMigration',
             'getLastInvoiceDateApi',
+            'getPeopleByVendCode',
             'syncLocationTypeWithSys'
         ]]);
     }
@@ -1351,6 +1352,20 @@ class PersonController extends Controller
                     )
                 ORDER BY a.delivery_date DESC, a.created_at DESC
                 LIMIT 1) AS last_delivery_date'
+            ),
+            DB::raw(
+                '(SELECT DATE(a.delivery_date) FROM transactions a
+                WHERE a.person_id=people.id
+                AND a.status="Confirmed"
+                AND a.is_service = false
+                AND a.total >= 0
+                AND NOT EXISTS
+                    (SELECT * FROM deals b
+                        WHERE b.transaction_id=a.id
+                        AND b.item_id=473
+                    )
+                ORDER BY a.delivery_date DESC, a.created_at DESC
+                LIMIT 1) AS next_delivery_date'
             )
         );
 
@@ -1359,6 +1374,20 @@ class PersonController extends Controller
         }
         $people = $people->orderBy('people.cust_id')->get();
 
+        return $people;
+    }
+
+    public function getPeopleByVendCode(Request $request)
+    {
+        $vendCodes = $request->vendCodes;
+        $vendCodeArr = [];
+        if(strpos($vendCodes, ',') !== false) {
+            $vendCodeArr = explode(',', $vendCodes);
+        }else {
+            $vendCodeArr = [$vendCodes];
+        }
+
+        $people = Person::whereIn('vend_code', $vendCodeArr)->get();
         return $people;
     }
 
