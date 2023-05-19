@@ -1359,6 +1359,7 @@ class PersonController extends Controller
                 AND a.status="Confirmed"
                 AND a.is_service = false
                 AND a.total >= 0
+                AND a.delivery_date >= CURDATE()
                 AND NOT EXISTS
                     (SELECT * FROM deals b
                         WHERE b.transaction_id=a.id
