@@ -1354,6 +1354,20 @@ class PersonController extends Controller
                 LIMIT 1) AS last_delivery_date'
             ),
             DB::raw(
+                '(SELECT driver FROM transactions a
+                WHERE a.person_id=people.id
+                AND (a.status="Delivered" OR a.status="Verified Owe" OR a.status="Verified Paid")
+                AND a.is_service = false
+                AND a.total >= 0
+                AND NOT EXISTS
+                    (SELECT * FROM deals b
+                        WHERE b.transaction_id=a.id
+                        AND b.item_id=473
+                    )
+                ORDER BY a.delivery_date DESC, a.created_at DESC
+                LIMIT 1) AS last_delivery_driver'
+            ),
+            DB::raw(
                 '(SELECT DATE(a.delivery_date) FROM transactions a
                 WHERE a.person_id=people.id
                 AND a.status="Confirmed"
