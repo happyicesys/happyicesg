@@ -12,7 +12,9 @@ Customers
             <div class="panel-heading">
                 <ul class="nav nav-pills nav-justified" role="tablist">
                     <li class="active"><a href="#cust_profile" role="tab" data-toggle="tab"> Customer Profile</a></li>
-                    <li><a href="#cust_trans" role="tab" data-toggle="tab"> Customer Transaction</a></li>
+                    @if(Auth::user()->hasRole('admin'))
+                        <li><a href="#cust_trans" role="tab" data-toggle="tab"> Customer Transaction</a></li>
+                    @endif
                 </ul>
             </div>
             <div class="panel-body">
