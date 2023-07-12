@@ -208,8 +208,8 @@
 <div class="row">
     <div class="col-md-4 col-sm-4 col-xs-12">
         <div class="form-group">
-            {!! Form::label('custcategory_id', 'Customer Category', ['class'=>'control-label']) !!}
-            {!! Form::select('custcategory_id', [null=>''] + $custcategories::orderBy('name')->pluck('name', 'id')->all(), null, ['class'=>'select form-control', 'disabled'=>$disabled]) !!}
+            {!! Form::label('custcategory_id', 'Customer Category (Group)', ['class'=>'control-label']) !!}
+            {!! Form::select('custcategory_id', [null=>''] + $custcategories::leftJoin('custcategory_groups', 'custcategory_groups.id', '=', 'custcategories.custcategory_group_id')->orderBy('custcategories.name')->select(DB::raw("CONCAT(custcategories.name,' (',custcategory_groups.name,')') AS full, id"))->lists('full', 'id')->all(), null, ['class'=>'select form-control', 'disabled'=>$disabled]) !!}
         </div>
     </div>
 
