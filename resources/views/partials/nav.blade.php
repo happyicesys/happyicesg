@@ -164,6 +164,8 @@
                         $transaction_access = true;
                         // $jobassign_access = true;
                         $person_access = true;
+                        $potential_customer_access = false;
+                        $sales_lead_access = false;
                         // $item_access = true;
                         // $detailrpt_access = true;
                         // $dailyreport_access = true;
