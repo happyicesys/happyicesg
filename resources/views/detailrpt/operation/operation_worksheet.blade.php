@@ -519,9 +519,9 @@
                             @{{person.last1.transaction.total_qty}}
                             <br>
                             @{{person.last1.transaction.total}}
+                            <br>
+                            <i class="fa fa-wrench" aria-hidden="true" style="color:red; cursor:pointer;" ng-if="person.last1.transaction.is_service"></i>
                         </span>
-                        <i class="fa fa-wrench" aria-hidden="true" style="color:red; cursor:pointer;" ng-if="person.last1.transaction.is_service"></i>
-                        <i class="fa fa-wrench" aria-hidden="true" style="color:grey; cursor:pointer;" ng-if="!person.last1.transaction.is_service"></i>
                     </td>
                     <td class="col-md-1 text-center td_edit" style="min-width: 70px;" ng-repeat="data in alldata[$index]" ng-click="changeColor(data, $parent.$index, $index)" ng-style="{'background-color': getBackgroundColor(data, $parent.$index, $index)}">
                         &nbsp;@{{data.qty[0]['qty']}}
