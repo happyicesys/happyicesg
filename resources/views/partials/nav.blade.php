@@ -162,14 +162,14 @@
                     if(auth()->user()->hasRole('merchandiser') or auth()->user()->hasRole('merchandiser_plus')) {
                         $access = true;
                         $transaction_access = true;
-                        $jobassign_access = true;
+                        // $jobassign_access = true;
                         $person_access = true;
-                        $item_access = true;
-                        $detailrpt_access = true;
-                        $dailyreport_access = true;
-                        $ecommerce_access = true;
-                        $operation_access = true;
-                        $personmaintenance_access = true;
+                        // $item_access = true;
+                        // $detailrpt_access = true;
+                        // $dailyreport_access = true;
+                        // $ecommerce_access = true;
+                        // $operation_access = true;
+                        // $personmaintenance_access = true;
                     }
 
                     if(auth()->user()->hasRole('driver-supervisor')) {
