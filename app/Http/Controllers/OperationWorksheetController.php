@@ -1125,7 +1125,8 @@ class OperationWorksheetController extends Controller
                                 THEN total*((100+x.gst_rate)/100)
                                 ELSE x.total
                                 END) ELSE x.total END) + (CASE WHEN x.delivery_fee>0 THEN x.delivery_fee ELSE 0 END)) AS total'),
-                        DB::raw('ROUND(x.total_qty, 1) AS total_qty')
+                        DB::raw('ROUND(x.total_qty, 1) AS total_qty'),
+                        'is_service'
                     )
                     ->groupBy('x.id')
             // dd($transaction->get());

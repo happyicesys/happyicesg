@@ -1027,9 +1027,18 @@ Job Assign
                                 </td>
                                 <td class="col-md-1 text-center" ng-if="transaction.status == 'Cancelled'">
                                     <span style="color: white; background-color: red;" > @{{ transaction.status }} </span>
-                                    <p ng-if="transaction.cancel_reason_remarks">
+                                    <span ng-if="transaction.cancel_reason_option == 1">
+                                        (Customer cancel 客户取消单)
+                                    </span>
+                                    <span ng-if="transaction.cancel_reason_option == 2">
+                                        (Supervisor cancel 主管取消单)
+                                    </span>
+                                    <span ng-if="transaction.cancel_reason_option == 3">
+                                        (Wrong invoice/SN 开错单)
+                                    </span>
+                                    <span ng-if="transaction.cancel_reason_option == 4">
                                         @{{ transaction.cancel_reason_remarks }}
-                                    </p>
+                                    </span>
                                 </td>
                                 {{-- status by color ended --}}
                                 <td class="col-md-1 text-center">
