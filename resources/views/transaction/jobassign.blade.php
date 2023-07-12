@@ -1027,6 +1027,9 @@ Job Assign
                                 </td>
                                 <td class="col-md-1 text-center" ng-if="transaction.status == 'Cancelled'">
                                     <span style="color: white; background-color: red;" > @{{ transaction.status }} </span>
+                                    <p ng-if="transaction.cancel_reason_remarks">
+                                        @{{ transaction.cancel_reason_remarks }}
+                                    </p>
                                 </td>
                                 {{-- status by color ended --}}
                                 <td class="col-md-1 text-center">
