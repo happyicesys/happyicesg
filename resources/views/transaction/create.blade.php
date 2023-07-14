@@ -22,12 +22,13 @@
                         {!! Form::label('person_id', 'Customer', ['class'=>'control-label']) !!}
                         {!! Form::select('person_id',
                             [''=>null] +
-                                $people::whereHas('profile', function($q){
+                                $people::leftJoin('custcategories', 'custcategories.id', '=', 'people.custcategory_id')
+                                ->whereHas('profile', function($q){
                                     $q->filterUserProfile();
                                 })
                                 ->filterFranchiseePeople()
                                 ->filterUserCustcategory()
-                                ->select(DB::raw("CONCAT(cust_id,' - ',company) AS full, id"))
+                                ->select(DB::raw("CONCAT(cust_id,' - ',company) AS full, people.id AS id"))
                                 ->orderBy('cust_id')
                                 ->whereIn('active', ['Yes'])
                                 ->where('cust_id', 'NOT LIKE', 'H%')
