@@ -486,6 +486,7 @@ class PersonController extends Controller
                 'transactions.gst',
                 'transactions.gst_rate',
                 'transactions.transremark',
+                'transactions.cancel_reason_option', 'transactions.cancel_reason_remarks',
                 'people.is_vending',
                 'people.is_dvm',
                 DB::raw('DATE(deliveryorders.delivery_date1) AS delivery_date1'),
