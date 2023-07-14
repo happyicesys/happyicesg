@@ -2,7 +2,6 @@
 
 namespace App;
 
-use App\Traits\HasCustcategoryAccess;
 use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
 // use Illuminate\Database\Eloquent\SoftDeletes;
@@ -10,7 +9,6 @@ use Baum;
 
 class Person extends Baum\Node
 {
-    use HasCustcategoryAccess;
 
     // commission_package
     // 1 = Both utility and comm
@@ -447,6 +445,30 @@ class Person extends Baum\Node
         }
 
         return $query->whereIn('people.id', $peopleIdArr);
+    }
+
+    public function scopeFilterUserCustcategory($query)
+    {
+        $custcategoryIdArr = [];
+
+        $user_custcategories = auth()->user()->custcategories;
+
+        if(count($user_custcategories) === 0) {
+            $user_custcategories = Custcategory::all();
+        }
+
+        foreach($user_custcategories as $user_custcategory) {
+            array_push($custcategoryIdArr, $user_custcategory->id);
+        }
+
+        if(auth()->user()->hasRole('admin')) {
+            return $query->where(function($query) use ($custcategoryIdArr){
+                $query->whereIn('custcategories.id', $custcategoryIdArr)
+                    ->orWhereNull('custcategory_id');
+            });
+        }
+
+        return $query->whereIn('custcategories.id', $custcategoryIdArr);
     }
 
 }
