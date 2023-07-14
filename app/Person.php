@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Traits\HasCustcategoryAccess;
 use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
 // use Illuminate\Database\Eloquent\SoftDeletes;
@@ -9,6 +10,7 @@ use Baum;
 
 class Person extends Baum\Node
 {
+    use HasCustcategoryAccess;
 
     // commission_package
     // 1 = Both utility and comm
