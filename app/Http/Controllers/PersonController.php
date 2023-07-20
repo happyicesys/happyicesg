@@ -49,6 +49,7 @@ class PersonController extends Controller
             'retrieveCustomerMigration',
             'getLastInvoiceDateApi',
             'getPeopleByVendCode',
+            'getVendsApi',
             'syncLocationTypeWithSys'
         ]]);
     }
@@ -1182,6 +1183,33 @@ class PersonController extends Controller
         ];
     }
 
+    public function getVendsApi(Request $request)
+    {
+        // $vendId = $request->vendId;
+
+        // $people = Person::with([
+        //     'custcategory' => function($query) {
+        //         $query->select('id', 'name', 'custcategory_group_id');
+        //     },
+        //     'custcategory.custcategorygroup' => {
+        //         $query->select('id', 'name', 'custcategory_group_id');
+        //     },
+
+        // ]);
+
+        // if($vendId) {
+        //     $people = $people->where('id', $vendId);
+        // }
+
+        // where(function($query) {
+        //     $query->where('is_vending', 1)->orWhere('is_dvm', 1)->orWhere('is_combi', 1);
+        // })
+
+
+
+
+    }
+
     // conditional filter parser(Collection $query, Formrequest $request)
     private function searchPeopleFilter($people, $request)
     {
@@ -1319,6 +1347,9 @@ class PersonController extends Controller
             $people = $people->where('custcategory_id', '<>', 43)
                     ->where('people.cust_id', 'NOT LIKE', 'H%')
                     ->where('people.cust_id', 'NOT LIKE', 'D%')
+                    ->where(function($query) {
+                        $query->where('is_vending', 1)->orWhere('is_dvm', 1)->orWhere('is_combi', 1);
+                    })
                     ->orderBy('cust_id')
                     ->get();
 
