@@ -1346,8 +1346,11 @@ class PersonController extends Controller
             'custcategory.custcategoryGroup' => function($query) {
                 $query->select('id', 'name', 'desc');
             },
-            'firstTransaction' => function($query) {
-                $query->select('id', 'person_id', 'delivery_date', 'status', 'total');
+            'transactions' => function($query) {
+                $query
+                ->latest()
+                ->select('id', 'person_id', 'delivery_date', 'status', 'total')
+                ->limit(1);
             },
             'locationType' => function($query) {
                 $query->select('id', 'name', 'remarks', 'sequence');
