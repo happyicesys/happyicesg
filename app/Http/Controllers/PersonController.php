@@ -1373,7 +1373,7 @@ class PersonController extends Controller
         ])
         ->leftJoin($firstTransaction, 'firstTransaction.person_id', '=', 'people.id')
         ->select(
-            'id',
+            'people.id',
             'account_manager',
             'bank_id',
             'billing_country_id',
