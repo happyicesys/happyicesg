@@ -154,7 +154,7 @@ class Person extends Baum\Node
 
     public function firstTransaction()
     {
-        return $this->hasOne('App\Transaction')->oldest()->first();
+        return $this->hasOne('App\Transaction')->oldest();
     }
 
     public function area()
