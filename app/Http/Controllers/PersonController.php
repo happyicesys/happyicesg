@@ -1328,18 +1328,73 @@ class PersonController extends Controller
     public function retrieveCustomerMigration($personId = null)
     {
         $people = Person::with([
-                        'accountManager',
-                        'bank',
-                        'billingCountry',
-                        'deliveryCountry',
-                        'cashlessTerminal',
-                        'custcategory',
-                        'custcategory.custcategoryGroup',
-                        'locationType',
-                        'profile',
-                        'profile.currency',
-                        'zone'
-        ]);
+            'accountManager',
+            'bank' => function($query) {
+                $query->select('id', 'name');
+            },
+            'billingCountry' => function($query) {
+                $query->select('id', 'name');
+            },
+            'deliveryCountry' => function($query) {
+                $query->select('id', 'name');
+            },
+            'cashlessTerminal',
+            'custcategory' => function($query) {
+                $query->select('id', 'name', 'classname', 'desc', 'map_icon_file', 'custcategory_group_id');
+            },
+            'custcategory.custcategoryGroup' => function($query) {
+                $query->select('id', 'name', 'classname', 'desc');
+            },
+            'locationType' => function($query) {
+                $query->select('id', 'name', 'remarks', 'sequence');
+            },
+            'profile' => function($query) {
+                $query->select('id', 'name', 'currency_id', 'acronym', 'roc_no', 'attn', 'contact', 'gst', 'is_gst_inclusive');
+            },
+            'profile.currency' => function($query) {
+                $query->select('id', 'currency_name');
+            },
+            'zone' => function($query) {
+                $query->select('id', 'name', 'priority');
+            },
+        ])
+        ->select(
+            'id',
+            'bank_id',
+            'billing_country_id',
+            'delivery_country_id',
+            'custcategory_id',
+            'location_type_id',
+            'profile_id',
+            'zone_id',
+            'vend_code',
+            'active',
+            'payterm',
+            'bill_postcode',
+            'cust_id',
+            'company',
+            'account_number',
+            'remark',
+            'operation_note',
+            'created_at',
+            'bill_postcode',
+            'bill_address',
+            'del_postcode',
+            'del_address',
+            'is_dvm',
+            'is_vending',
+            'is_combi',
+            'cooperate_method',
+            'commission_type',
+            'commission_package',
+            'vending_piece_price',
+            'vending_monthly_rental',
+            'vending_profit_sharing',
+            'vending_monthly_utilities',
+            'vending_clocker_adjustment',
+            'is_pwp',
+            'pwp_adj_rate'
+        );
 
         if($personId) {
             $people = $people->where('id', $personId);
