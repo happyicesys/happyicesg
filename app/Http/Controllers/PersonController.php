@@ -1401,8 +1401,8 @@ class PersonController extends Controller
             'vending_monthly_utilities',
             'vending_clocker_adjustment',
             'is_pwp',
-            'pwp_adj_rate',
-            DB::raw('SELECT delivery_date FROM transactions WHERE person_id=people.id ORDER BY delivery_date ASC LIMIT 1 AS first_delivery_date')
+            'pwp_adj_rate'
+            // DB::raw('SELECT delivery_date FROM transactions WHERE person_id=people.id ORDER BY delivery_date ASC LIMIT 1 AS first_delivery_date')
         );
 
         if($personId) {
