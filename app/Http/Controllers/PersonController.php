@@ -1328,7 +1328,9 @@ class PersonController extends Controller
     public function retrieveCustomerMigration($personId = null)
     {
         $people = Person::with([
-            'accountManager',
+            'accountManager' => function($query) {
+                $query->select('id', 'name', 'username');
+            },
             'bank' => function($query) {
                 $query->select('id', 'name');
             },
@@ -1338,12 +1340,14 @@ class PersonController extends Controller
             'deliveryCountry' => function($query) {
                 $query->select('id', 'name');
             },
-            'cashlessTerminal',
             'custcategory' => function($query) {
                 $query->select('id', 'name', 'desc', 'map_icon_file', 'custcategory_group_id');
             },
             'custcategory.custcategoryGroup' => function($query) {
                 $query->select('id', 'name', 'desc');
+            },
+            'firstTransaction' => function($query) {
+                $query->select('id', 'person_id', 'delivery_date', 'status', 'total');
             },
             'locationType' => function($query) {
                 $query->select('id', 'name', 'remarks', 'sequence');
@@ -1360,6 +1364,7 @@ class PersonController extends Controller
         ])
         ->select(
             'id',
+            'account_manager',
             'bank_id',
             'billing_country_id',
             'delivery_country_id',
