@@ -1327,6 +1327,12 @@ class PersonController extends Controller
 
     public function retrieveCustomerMigration($personId = null)
     {
+        $firstTransaction = DB::raw("(
+            SELECT delivery_date, id, person_id FROM transactions
+            GROUP BY person_id
+            ORDER BY delivery_date ASC
+        ) firstTransaction");
+
         $people = Person::with([
             'accountManager' => function($query) {
                 $query->select('id', 'name', 'username');
@@ -1365,6 +1371,7 @@ class PersonController extends Controller
                 $query->select('id', 'name', 'priority');
             },
         ])
+        ->leftJoin($firstTransaction, 'firstTransaction.person_id', '=', 'people.id')
         ->select(
             'id',
             'account_manager',
@@ -1401,8 +1408,8 @@ class PersonController extends Controller
             'vending_monthly_utilities',
             'vending_clocker_adjustment',
             'is_pwp',
-            'pwp_adj_rate'
-            // DB::raw('SELECT delivery_date FROM transactions WHERE person_id=people.id ORDER BY delivery_date ASC LIMIT 1 AS first_delivery_date')
+            'pwp_adj_rate',
+            DB::raw('DATE(firstTransaction.delivery_date) AS first_transaction_date')
         );
 
         if($personId) {
