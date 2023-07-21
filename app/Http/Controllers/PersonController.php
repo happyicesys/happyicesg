@@ -1340,10 +1340,10 @@ class PersonController extends Controller
             },
             'cashlessTerminal',
             'custcategory' => function($query) {
-                $query->select('id', 'name', 'classname', 'desc', 'map_icon_file', 'custcategory_group_id');
+                $query->select('id', 'name', 'desc', 'map_icon_file', 'custcategory_group_id');
             },
             'custcategory.custcategoryGroup' => function($query) {
-                $query->select('id', 'name', 'classname', 'desc');
+                $query->select('id', 'name', 'desc');
             },
             'locationType' => function($query) {
                 $query->select('id', 'name', 'remarks', 'sequence');
