@@ -1409,7 +1409,8 @@ class PersonController extends Controller
             'vending_clocker_adjustment',
             'is_pwp',
             'pwp_adj_rate',
-            DB::raw('DATE(firstTransaction.delivery_date) AS first_transaction_date')
+            DB::raw('DATE(firstTransaction.delivery_date) AS first_transaction_date'),
+            'people.created_at'
         );
 
         if($personId) {
