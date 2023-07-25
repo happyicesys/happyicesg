@@ -1410,6 +1410,7 @@ class PersonController extends Controller
             'is_pwp',
             'pwp_adj_rate',
             DB::raw('DATE(firstTransaction.delivery_date) AS first_transaction_date'),
+            'firstTransaction.id AS first_transaction_id',
             'people.created_at'
         );
 
