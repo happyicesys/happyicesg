@@ -1475,7 +1475,7 @@ class PersonController extends Controller
             DB::raw(
                 '(SELECT DATE(a.delivery_date) FROM transactions a
                 WHERE a.person_id=people.id
-                AND a.status="Confirmed"
+                AND (a.status="Confirmed" or a.status="Pending")
                 AND a.is_service = false
                 AND a.total >= 0
                 AND a.delivery_date >= CURDATE()
