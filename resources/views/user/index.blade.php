@@ -50,9 +50,9 @@
                             </div>
 
                             <div class="pull-right">
-                                @can('create_user')
+                                @if(Auth::user()->hasRole('admin'))
                                 <a href="/user/create" class="btn btn-success">+ New {{ $USER_TITLE }}</a>
-                                @endcan
+                                @endif
                             </div>
                         </div>
                     </div>
