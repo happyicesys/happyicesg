@@ -107,8 +107,10 @@
         <div class="panel-body">
             {!! Form::model($person,['id'=>'form_person', 'method'=>'PATCH','action'=>['PersonController@update', $person->id], 'onsubmit'=>'return storeDeliveryLatLng()']) !!}
                 @include('person.form')
-                @if(($person->is_vending === 1 or $person->is_dvm) and !auth()->user()->hasRole('watcher') and !auth()->user()->hasRole('subfranchisee'))
-                    @include('person.vending')
+                @if(($person->is_vend) and !auth()->user()->hasRole('watcher') and !auth()->user()->hasRole('subfranchisee'))
+                    <div ng-if="form.is_vend">
+                        @include('person.vending')
+                    </div>
                 @endif
                 <div class="form-group">
                     {!! Form::label('price_template_id', 'Price Template', ['class'=>'control-label']) !!}

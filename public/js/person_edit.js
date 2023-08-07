@@ -71,6 +71,7 @@ function personEditController($scope, $http) {
         key_lock_number: '',
         serial_no: '',
         is_parent: '',
+        is_vend: '',
     }
     $scope.commissionOptions = [
         {

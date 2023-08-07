@@ -246,34 +246,31 @@
             !!}
         </div>
     </div>
-    <div class="col-md-4 col-sm-4 col-xs-12">
+    <div class="col-md-12 col-sm-12 col-xs-6">
         <div class="form-group">
-            {!! Form::label('is_vend', 'Is Vending Machine (Link to sys.happyice)', ['class'=>'control-label']) !!}
-            {!! Form::select('is_vend',
-                    ['1' => 'Yes', '2' => 'No'],
-                    null,
-                    ['class'=>'select form-control', 'disabled'=> $disabled])
-            !!}
+            {!! Form::checkbox('is_vend', $person->is_vend, null, ['ng-model'=>'form.is_vend', 'ng-true-value'=>1, 'ng-false-value'=>0]) !!}
+            {!! Form::label('is_vend', 'Is Vending Machine? (Accessible from sys)', ['class'=>'control-label', 'style'=>'padding-left:5px;']) !!}
         </div>
     </div>
 </div>
+<hr>
 
 <div class="row" style="padding: 15px 0px 15px 0px;">
-    <div class="col-md-4 col-sm-4 col-xs-6">
+    <div class="col-md-4 col-sm-4 col-xs-6" ng-if="form.is_vend">
         <div class="form-group">
             <input type="radio" name="type" value="is_dvm" {{$person->is_dvm ? 'checked' : null}} {{$disabled ? 'disabled' : null}}>
             {!! Form::label('is_dvm', 'Direct Vending Machine', ['class'=>'control-label', 'style'=>'padding-left:5px;']) !!}
         </div>
     </div>
 
-    <div class="col-md-4 col-sm-4 col-xs-6">
+    <div class="col-md-4 col-sm-4 col-xs-6"  ng-if="form.is_vend">
         <div class="form-group">
             <input type="radio" name="type" value="is_vending" {{$person->is_vending ? 'checked' : null}} {{$disabled ? 'disabled' : null}}>
             {!! Form::label('is_vending', 'Fun Vending Machine', ['class'=>'control-label', 'style'=>'padding-left:5px;', 'ng-model'=>'form.is_vending']) !!}
         </div>
     </div>
 
-    <div class="col-md-4 col-sm-4 col-xs-6">
+    <div class="col-md-4 col-sm-4 col-xs-6"  ng-if="form.is_vend">
         <div class="form-group">
             <input type="radio" name="type" value="is_combi" {{$person->is_combi ? 'checked' : null}} {{$disabled ? 'disabled' : null}}>
             {!! Form::label('is_combi', 'Combi', ['class'=>'control-label', 'style'=>'padding-left:5px;']) !!}

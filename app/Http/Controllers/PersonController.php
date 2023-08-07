@@ -216,6 +216,7 @@ class PersonController extends Controller
         $person->is_gst_inclusive = $person->profile->is_gst_inclusive;
         $person->gst_rate = $person->profile->gst_rate;
         $person->account_manager = auth()->user()->id;
+        $person->code = preg_replace('/[^0-9]/', '', $person->cust_id);
         $person->save();
 
         return Redirect::action('PersonController@edit', $person->id);
@@ -304,6 +305,7 @@ class PersonController extends Controller
         }
 
         $request->merge(array('is_parent' => $request->has('is_parent') == 'true' ? 1 : 0));
+        $request->merge(array('is_vend' => $request->has('is_vend') == 'true' ? 1 : 0));
         $request->merge(array('is_stock_balance_count_required' => $request->has('is_stock_balance_count_required') == 'true' ? 1 : 0));
 
         $person = Person::findOrFail($id);
@@ -367,6 +369,7 @@ class PersonController extends Controller
         }
 
         $request->merge(['updated_by' => auth()->user()->id]);
+        $request->merge(['code' => preg_replace('/[^0-9]/', '', $request->cust_id)]);
         $input = $request->all();
         unset($input['type']);
         $person->update($input);
