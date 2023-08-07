@@ -246,6 +246,16 @@
             !!}
         </div>
     </div>
+    <div class="col-md-4 col-sm-4 col-xs-12">
+        <div class="form-group">
+            {!! Form::label('is_vend', 'Is Vending Machine (Link to sys.happyice)', ['class'=>'control-label']) !!}
+            {!! Form::select('is_vend',
+                    ['1' => 'Yes', '2' => 'No'],
+                    null,
+                    ['class'=>'select form-control', 'disabled'=> $disabled])
+            !!}
+        </div>
+    </div>
 </div>
 
 <div class="row" style="padding: 15px 0px 15px 0px;">
