@@ -1189,7 +1189,8 @@ class PersonController extends Controller
     public function getVendsApi(Request $request)
     {
 
-        $vendId = $request->vendId;
+        $inVendId = $request->inVendId;
+        $notInVendId = $request->notInVendId;
 
         $firstTransaction = DB::raw("(
             SELECT delivery_date, id, person_id FROM transactions
@@ -1200,12 +1201,6 @@ class PersonController extends Controller
         $people = Person::with([
             'accountManager' => function($query) {
                 $query->select('id', 'name', 'username');
-            },
-            'bank' => function($query) {
-                $query->select('id', 'name');
-            },
-            'billingCountry' => function($query) {
-                $query->select('id', 'name');
             },
             'deliveryCountry' => function($query) {
                 $query->select('id', 'name');
@@ -1225,57 +1220,41 @@ class PersonController extends Controller
             'profile.currency' => function($query) {
                 $query->select('id', 'currency_name');
             },
-            'zone' => function($query) {
-                $query->select('id', 'name', 'priority');
-            },
         ])
         ->leftJoin($firstTransaction, 'firstTransaction.person_id', '=', 'people.id')
         ->select(
             'people.id',
             'account_manager',
-            'bank_id',
-            'billing_country_id',
             'delivery_country_id',
             'custcategory_id',
             'location_type_id',
             'profile_id',
-            'zone_id',
             'vend_code',
             'active',
-            'payterm',
             'bill_postcode',
             'cust_id',
             'company',
-            'account_number',
             'remark',
             'operation_note',
             'created_at',
-            'bill_postcode',
-            'bill_address',
             'del_postcode',
             'del_address',
             'is_dvm',
             'is_vending',
             'is_combi',
-            'cooperate_method',
-            'commission_type',
-            'commission_package',
-            'vending_piece_price',
-            'vending_monthly_rental',
-            'vending_profit_sharing',
-            'vending_monthly_utilities',
-            'vending_clocker_adjustment',
-            'is_pwp',
-            'pwp_adj_rate',
             DB::raw('DATE(firstTransaction.delivery_date) AS first_transaction_date'),
             'firstTransaction.id AS first_transaction_id',
             'people.created_at'
         );
 
-        if($vendId) {
+        if($inVendId) {
             $people = $people->whereIn('id', $vendId);
         }
-        $people = $people->where('is_vend')
+        if($notInVendId) {
+            $people = $people->whereNotIn('id', $notInVendId);
+        }
+
+        $people = $people->where('is_vend', true)
             ->orderBy('cust_id', 'asc')
             ->get();
 

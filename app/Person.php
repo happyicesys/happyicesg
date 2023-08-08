@@ -78,7 +78,8 @@ class Person extends Baum\Node
         'account_number' => 'Account Number',
         'bill_postcode' => 'Billing Postcode',
         'updated_by' => 'Updated By',
-        'code' => 'Code'
+        'code' => 'Code',
+        'first_transaction_id' => 'First Transaction ID',
     );
 
     protected $fillable = [
@@ -94,7 +95,7 @@ class Person extends Baum\Node
     'bank_id', 'account_number', 'key_lock_number', 'commission_package', 'bill_postcode', 'is_combi', 'is_non_freezer_point', 'cooperate_method',
     'updated_by', 'price_template_id', 'is_pwp', 'pwp_adj_rate', 'billing_country_id', 'delivery_country_id',
     'is_stock_balance_count_required', 'is_analog_clocker_required', 'unit_number', 'vend_code',
-    'is_parent', 'location_type_id', 'is_vend', 'code'
+    'is_parent', 'location_type_id', 'is_vend', 'code', 'first_transaction_id'
     ];
 
     protected $dates = ['deleted_at'];
@@ -156,7 +157,7 @@ class Person extends Baum\Node
 
     public function firstTransaction()
     {
-        return $this->hasOne('App\Transaction')->oldest();
+        return $this->belongsTo('App\Transaction', 'first_transaction_id');
     }
 
     public function area()

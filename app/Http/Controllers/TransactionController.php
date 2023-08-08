@@ -957,6 +957,12 @@ class TransactionController extends Controller
             $this->syncDeal($transaction, $dealsArr, 1);
         }else if($transaction->status === 'Delivered' or $transaction->status === 'Verified Owe' or $transaction->status === 'Verified Paid'){
             $this->syncDeal($transaction, $dealsArr, 2);
+
+            // set first transaction id in person
+            if(count($transaction->person->transactions) == 1) {
+                $transaction->person->first_transaction_id = $transaction->id;
+                $transaction->person->save();
+            }
         }
 
         if($transaction->person->cust_id[0] === 'D'){
