@@ -406,6 +406,7 @@ Route::get('/potential', 'PersonController@potentialIndex');
 Route::post('/api/vends', 'PersonController@getVendsApi');
 
 
+
 Route::get('/potential-customer', 'PotentialCustomerController@index');
 Route::post('/api/potential-customer', 'PotentialCustomerController@getDataApi');
 Route::post('/api/potential-customer/store-update', 'PotentialCustomerController@storeUpdateApi');

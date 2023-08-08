@@ -1188,29 +1188,98 @@ class PersonController extends Controller
 
     public function getVendsApi(Request $request)
     {
-        // $vendId = $request->vendId;
 
-        // $people = Person::with([
-        //     'custcategory' => function($query) {
-        //         $query->select('id', 'name', 'custcategory_group_id');
-        //     },
-        //     'custcategory.custcategorygroup' => {
-        //         $query->select('id', 'name', 'custcategory_group_id');
-        //     },
+        $vendId = $request->vendId;
 
-        // ]);
+        $firstTransaction = DB::raw("(
+            SELECT delivery_date, id, person_id FROM transactions
+            GROUP BY person_id
+            ORDER BY delivery_date ASC
+        ) firstTransaction");
 
-        // if($vendId) {
-        //     $people = $people->where('id', $vendId);
-        // }
+        $people = Person::with([
+            'accountManager' => function($query) {
+                $query->select('id', 'name', 'username');
+            },
+            'bank' => function($query) {
+                $query->select('id', 'name');
+            },
+            'billingCountry' => function($query) {
+                $query->select('id', 'name');
+            },
+            'deliveryCountry' => function($query) {
+                $query->select('id', 'name');
+            },
+            'custcategory' => function($query) {
+                $query->select('id', 'name', 'desc', 'map_icon_file', 'custcategory_group_id');
+            },
+            'custcategory.custcategoryGroup' => function($query) {
+                $query->select('id', 'name', 'desc');
+            },
+            'locationType' => function($query) {
+                $query->select('id', 'name', 'remarks', 'sequence');
+            },
+            'profile' => function($query) {
+                $query->select('id', 'name', 'currency_id', 'acronym', 'roc_no', 'attn', 'contact', 'gst', 'is_gst_inclusive');
+            },
+            'profile.currency' => function($query) {
+                $query->select('id', 'currency_name');
+            },
+            'zone' => function($query) {
+                $query->select('id', 'name', 'priority');
+            },
+        ])
+        ->leftJoin($firstTransaction, 'firstTransaction.person_id', '=', 'people.id')
+        ->select(
+            'people.id',
+            'account_manager',
+            'bank_id',
+            'billing_country_id',
+            'delivery_country_id',
+            'custcategory_id',
+            'location_type_id',
+            'profile_id',
+            'zone_id',
+            'vend_code',
+            'active',
+            'payterm',
+            'bill_postcode',
+            'cust_id',
+            'company',
+            'account_number',
+            'remark',
+            'operation_note',
+            'created_at',
+            'bill_postcode',
+            'bill_address',
+            'del_postcode',
+            'del_address',
+            'is_dvm',
+            'is_vending',
+            'is_combi',
+            'cooperate_method',
+            'commission_type',
+            'commission_package',
+            'vending_piece_price',
+            'vending_monthly_rental',
+            'vending_profit_sharing',
+            'vending_monthly_utilities',
+            'vending_clocker_adjustment',
+            'is_pwp',
+            'pwp_adj_rate',
+            DB::raw('DATE(firstTransaction.delivery_date) AS first_transaction_date'),
+            'firstTransaction.id AS first_transaction_id',
+            'people.created_at'
+        );
 
-        // where(function($query) {
-        //     $query->where('is_vending', 1)->orWhere('is_dvm', 1)->orWhere('is_combi', 1);
-        // })
+        if($vendId) {
+            $people = $people->whereIn('id', $vendId);
+        }
+        $people = $people->where('is_vend')
+            ->orderBy('cust_id', 'asc')
+            ->get();
 
-
-
-
+        return $people;
     }
 
     // conditional filter parser(Collection $query, Formrequest $request)
