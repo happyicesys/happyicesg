@@ -403,7 +403,7 @@ Route::post('/api/person/creation', 'PersonController@getCreationApi');
 Route::get('/api/people/last-invoice-date', 'PersonController@getLastInvoiceDateApi');
 Route::post('/api/person/location-type', 'PersonController@getLocationTypeApi');
 Route::get('/potential', 'PersonController@potentialIndex');
-Route::get('/api/vends', 'PersonController@getVendsApi');
+Route::get('/api/vends/{type?}', 'PersonController@getVendsApi');
 
 
 

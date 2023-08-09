@@ -1191,7 +1191,7 @@ class PersonController extends Controller
         ];
     }
 
-    public function getVendsApi(Request $request)
+    public function getVendsApi(Request $request, $type = null)
     {
 
         $inVendId = $request->inVendId;
@@ -1222,30 +1222,39 @@ class PersonController extends Controller
             'profile.currency' => function($query) {
                 $query->select('id', 'currency_name');
             },
-        ])
-        ->select(
-            'people.id',
-            'account_manager',
-            'delivery_country_id',
-            'custcategory_id',
-            'location_type_id',
-            'profile_id',
-            'vend_code',
-            'active',
-            'bill_postcode',
-            'cust_id',
-            'company',
-            'remark',
-            'operation_note',
-            'created_at',
-            'del_postcode',
-            'del_address',
-            'is_dvm',
-            'is_vending',
-            'is_combi',
-            'first_transaction_id',
-            'people.created_at'
-        );
+        ]);
+
+        if($type == 'simple') {
+            $people = $people->select(
+                'people.id',
+                'cust_id',
+                'company',
+            );
+        }else if($type == 'full') {
+            $people = $people->select(
+                'people.id',
+                'account_manager',
+                'delivery_country_id',
+                'custcategory_id',
+                'location_type_id',
+                'profile_id',
+                'vend_code',
+                'active',
+                'bill_postcode',
+                'cust_id',
+                'company',
+                'remark',
+                'operation_note',
+                'created_at',
+                'del_postcode',
+                'del_address',
+                'is_dvm',
+                'is_vending',
+                'is_combi',
+                'first_transaction_id',
+                'people.created_at'
+            );
+        }
 
         if($inVendId) {
             $people = $people->whereIn('id', $vendId);
