@@ -1254,8 +1254,8 @@ class PersonController extends Controller
             $people = $people->whereNotIn('id', $notInVendId);
         }
 
-        $people = $people->where('is_vend', true)
-            // ->orderBy('cust_id', 'asc')
+        $people = $people
+            ->where('is_sys', true)
             ->get();
 
         return $people;
