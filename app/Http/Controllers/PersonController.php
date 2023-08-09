@@ -1191,7 +1191,7 @@ class PersonController extends Controller
         ];
     }
 
-    public function getVendsApi(Request $request, $type = null)
+    public function getVendsApi(Request $request, $type = 'simple')
     {
 
         $inVendId = $request->inVendId;
