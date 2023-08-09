@@ -1256,6 +1256,7 @@ class PersonController extends Controller
 
         $people = $people
             ->where('is_sys', true)
+            ->orderBy('cust_id', 'asc')
             ->get();
 
         return $people;
