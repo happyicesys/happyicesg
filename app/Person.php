@@ -68,6 +68,7 @@ class Person extends Baum\Node
         'operation_note' => 'Operation Note',
         'is_gst_inclusive' => 'GST inclusive',
         'is_vend' => 'Is Vending Machine',
+        'is_sys' => 'Is Conencting to sys',
         'gst_rate' => 'GST Rate',
         'serial_number' => 'Serial Number',
         'terminal_id' => 'Cashless Terminal ID',
@@ -95,7 +96,7 @@ class Person extends Baum\Node
     'bank_id', 'account_number', 'key_lock_number', 'commission_package', 'bill_postcode', 'is_combi', 'is_non_freezer_point', 'cooperate_method',
     'updated_by', 'price_template_id', 'is_pwp', 'pwp_adj_rate', 'billing_country_id', 'delivery_country_id',
     'is_stock_balance_count_required', 'is_analog_clocker_required', 'unit_number', 'vend_code',
-    'is_parent', 'location_type_id', 'is_vend', 'code', 'first_transaction_id'
+    'is_parent', 'location_type_id', 'is_vend', 'code', 'first_transaction_id', 'is_sys',
     ];
 
     protected $dates = ['deleted_at'];

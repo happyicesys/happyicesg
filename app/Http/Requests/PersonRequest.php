@@ -33,7 +33,8 @@ class PersonRequest extends Request
             'alt_contact'=>array('regex:/^([0-9\s\-\+\(\)]*)$/'),
             'postcode' => 'numeric',
             'cost_rate' => 'numeric',
-            'key_lock_number' => 'numeric'
+            'key_lock_number' => 'numeric',
+            'is_vend' => 'required',
         ];
     }
 
@@ -50,6 +51,7 @@ class PersonRequest extends Request
             'postcode.numeric' => 'The postcode must be in numbers',
             'cost_rate.numeric' => 'Cost rate must be in numbers',
             'key_lock_number.numeric' => 'Key Lock Number must be in numbers',
+            'is_vend.required' => 'Please select the Is Vending Machine option',
         ];
     }
 }

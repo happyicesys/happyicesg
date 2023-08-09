@@ -132,6 +132,12 @@ function personEditController($scope, $http) {
             var data = e.params.data['id'];
             togglePwpRateField();
         });
+
+        toggleIsVendField();
+        $('#is_vend').on('select2:select', function (e) {
+            var data = e.params.data['id'];
+            toggleIsVendField();
+        });
     });
     $scope.onDeliveryFromChanged = function (date) {
         if (date) {
@@ -236,6 +242,15 @@ function personEditController($scope, $http) {
         }
     }
 
+    function toggleIsVendField() {
+        let isPwp = $('#is_vend').val();
+        if (isPwp == 1) {
+            $('.isVendDiv').show();
+        } else {
+            $('.isVendDiv').hide();
+        }
+    }
+
     // retrieve single person data
     function getPersonApi() {
         $http.post('/api/person/edit/' + $('#person_id').val()).success(function (data) {
@@ -246,6 +261,7 @@ function personEditController($scope, $http) {
             };
             toggleVendingFields();
             togglePwpRateField();
+            toggleIsVendField();
 
             // $('.select').select2({
             //     placeholder: 'Select..',

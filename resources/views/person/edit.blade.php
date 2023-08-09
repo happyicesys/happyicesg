@@ -107,8 +107,8 @@
         <div class="panel-body">
             {!! Form::model($person,['id'=>'form_person', 'method'=>'PATCH','action'=>['PersonController@update', $person->id], 'onsubmit'=>'return storeDeliveryLatLng()']) !!}
                 @include('person.form')
-                @if(($person->is_vend) and !auth()->user()->hasRole('watcher') and !auth()->user()->hasRole('subfranchisee'))
-                    <div ng-if="form.is_vend">
+                @if(!auth()->user()->hasRole('watcher') and !auth()->user()->hasRole('subfranchisee'))
+                    <div class="isVendDiv">
                         @include('person.vending')
                     </div>
                 @endif

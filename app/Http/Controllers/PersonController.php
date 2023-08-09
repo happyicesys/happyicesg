@@ -305,7 +305,7 @@ class PersonController extends Controller
         }
 
         $request->merge(array('is_parent' => $request->has('is_parent') == 'true' ? 1 : 0));
-        $request->merge(array('is_vend' => $request->has('is_vend') == 'true' ? 1 : 0));
+        $request->merge(array('is_sys' => $request->has('is_sys') == 'true' ? 1 : 0));
         $request->merge(array('is_stock_balance_count_required' => $request->has('is_stock_balance_count_required') == 'true' ? 1 : 0));
 
         $person = Person::findOrFail($id);
@@ -366,6 +366,11 @@ class PersonController extends Controller
                 $vending->person_id = null;
                 $vending->save();
             }
+        }
+
+        if($request->is_vend == '0') {
+            $request->merge(['is_sys' => 0]);
+            // dd($request->all());
         }
 
         $request->merge(['updated_by' => auth()->user()->id]);
@@ -1192,12 +1197,6 @@ class PersonController extends Controller
         $inVendId = $request->inVendId;
         $notInVendId = $request->notInVendId;
 
-        $firstTransaction = DB::raw("(
-            SELECT delivery_date, id, person_id FROM transactions
-            GROUP BY person_id
-            ORDER BY delivery_date ASC
-        ) firstTransaction");
-
         $people = Person::with([
             'accountManager' => function($query) {
                 $query->select('id', 'name', 'username');
@@ -1211,6 +1210,9 @@ class PersonController extends Controller
             'custcategory.custcategoryGroup' => function($query) {
                 $query->select('id', 'name', 'desc');
             },
+            'firstTransaction' => function($query) {
+                $query->select('id', 'person_id', 'delivery_date');
+            },
             'locationType' => function($query) {
                 $query->select('id', 'name', 'remarks', 'sequence');
             },
@@ -1221,7 +1223,6 @@ class PersonController extends Controller
                 $query->select('id', 'currency_name');
             },
         ])
-        ->leftJoin($firstTransaction, 'firstTransaction.person_id', '=', 'people.id')
         ->select(
             'people.id',
             'account_manager',
@@ -1242,8 +1243,7 @@ class PersonController extends Controller
             'is_dvm',
             'is_vending',
             'is_combi',
-            DB::raw('DATE(firstTransaction.delivery_date) AS first_transaction_date'),
-            'firstTransaction.id AS first_transaction_id',
+            'first_transaction_id',
             'people.created_at'
         );
 
@@ -1255,7 +1255,7 @@ class PersonController extends Controller
         }
 
         $people = $people->where('is_vend', true)
-            ->orderBy('cust_id', 'asc')
+            // ->orderBy('cust_id', 'asc')
             ->get();
 
         return $people;
