@@ -1197,64 +1197,36 @@ class PersonController extends Controller
         $inVendId = $request->inVendId;
         $notInVendId = $request->notInVendId;
 
-        $people = Person::with([
-            'accountManager' => function($query) {
-                $query->select('id', 'name', 'username');
-            },
-            'deliveryCountry' => function($query) {
-                $query->select('id', 'name');
-            },
-            'custcategory' => function($query) {
-                $query->select('id', 'name', 'desc', 'map_icon_file', 'custcategory_group_id');
-            },
-            'custcategory.custcategoryGroup' => function($query) {
-                $query->select('id', 'name', 'desc');
-            },
-            'firstTransaction' => function($query) {
-                $query->select('id', 'person_id', 'delivery_date');
-            },
-            'locationType' => function($query) {
-                $query->select('id', 'name', 'remarks', 'sequence');
-            },
-            'profile' => function($query) {
-                $query->select('id', 'name', 'currency_id', 'acronym', 'roc_no', 'attn', 'contact', 'gst', 'is_gst_inclusive');
-            },
-            'profile.currency' => function($query) {
-                $query->select('id', 'currency_name');
-            },
-        ]);
-
-        if($type == 'simple') {
-            $people = $people->select(
-                'people.id',
-                'cust_id',
-                'company',
-            );
-        }else if($type == 'full') {
-            $people = $people->select(
-                'people.id',
-                'account_manager',
-                'delivery_country_id',
-                'custcategory_id',
-                'location_type_id',
-                'profile_id',
-                'vend_code',
-                'active',
-                'bill_postcode',
-                'cust_id',
-                'company',
-                'remark',
-                'operation_note',
-                'created_at',
-                'del_postcode',
-                'del_address',
-                'is_dvm',
-                'is_vending',
-                'is_combi',
-                'first_transaction_id',
-                'people.created_at'
-            );
+        $people = Person::query();
+        if($type == 'full') {
+            $people = $people->with([
+                'accountManager' => function($query) {
+                    $query->select('id', 'name', 'username');
+                },
+                'deliveryCountry' => function($query) {
+                    $query->select('id', 'name');
+                },
+                'custcategory' => function($query) {
+                    $query->select('id', 'name', 'desc', 'map_icon_file', 'custcategory_group_id');
+                },
+                'custcategory.custcategoryGroup' => function($query) {
+                    $query->select('id', 'name', 'desc');
+                },
+                'firstTransaction' => function($query) {
+                    $query->select('id', 'person_id', 'delivery_date');
+                },
+                'locationType' => function($query) {
+                    $query->select('id', 'name', 'remarks', 'sequence');
+                },
+                'profile' => function($query) {
+                    $query->select('id', 'name', 'currency_id', 'acronym', 'roc_no', 'attn', 'contact', 'gst', 'is_gst_inclusive');
+                },
+                'profile.currency' => function($query) {
+                    $query->select('id', 'currency_name');
+                }
+            ]);
         }
+
 
         if($inVendId) {
             $people = $people->whereIn('id', $vendId);
@@ -1265,8 +1237,41 @@ class PersonController extends Controller
 
         $people = $people
             ->where('is_sys', true)
-            ->orderBy('cust_id', 'asc')
-            ->get();
+            ->orderBy('cust_id', 'asc');
+
+            if($type == 'simple') {
+                $people = $people->select(
+                    'people.id',
+                    'cust_id',
+                    'company'
+                );
+                $people = $people->get('id', 'cust_id', 'company');
+            }else if($type == 'full') {
+                $people = $people->select(
+                    'people.id',
+                    'account_manager',
+                    'delivery_country_id',
+                    'custcategory_id',
+                    'location_type_id',
+                    'profile_id',
+                    'vend_code',
+                    'active',
+                    'bill_postcode',
+                    'cust_id',
+                    'company',
+                    'remark',
+                    'operation_note',
+                    'created_at',
+                    'del_postcode',
+                    'del_address',
+                    'is_dvm',
+                    'is_vending',
+                    'is_combi',
+                    'first_transaction_id',
+                    'people.created_at'
+                );
+                $people = $people->get();
+            }
 
         return $people;
     }
