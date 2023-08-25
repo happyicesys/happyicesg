@@ -411,8 +411,8 @@ class PersonController extends Controller
         $client = new Client();
         $clientUrl = "https://sys.happyice.com.sg/api/v1/customer/migrate";
         // $clientUrl = "http://mark1.test/api/v1/customer/migrate";
-        $clientRequest = $client->post($clientUrl, ['form_params' => $this->retrieveCustomerMigration($person->id)->toArray()]);
-
+        // dd($this->retrieveCustomerMigration($person->id)->toArray()[0]);
+        $clientRequest = $client->post($clientUrl, ['form_params' => $this->retrieveCustomerMigration($person->id)->toArray()[0]]);
         return Redirect::action('PersonController@edit', $person->id);
     }
 
@@ -428,6 +428,7 @@ class PersonController extends Controller
             }
         }
 
+        // dd($person->transactions()->exists(), $person->transactions);
         if($person->transactions()->exists()) {
             Flash::error('Transaction(s) found under this customer profile');
             return Redirect::action('PersonController@edit', $id);
