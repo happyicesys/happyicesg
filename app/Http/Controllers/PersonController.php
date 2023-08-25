@@ -409,7 +409,8 @@ class PersonController extends Controller
 
         if($this->retrieveCustomerMigration($person->id)->toArray()) {
             $client = new Client();
-            $clientUrl = "http://sys.happyice.com.sg/api/v1/customer/migrate";
+            $clientUrl = "https://sys.happyice.com.sg/api/v1/customer/migrate";
+            // $clientUrl = "http://mark1.test/api/v1/customer/migrate";
             $clientRequest = $client->post($clientUrl, ['form_params' => $this->retrieveCustomerMigration($person->id)->toArray()[0]]);
         }
 
