@@ -1874,6 +1874,25 @@ class TransactionController extends Controller
         return $drivers; */
     }
 
+    public function deleteAllSequencesApi()
+    {
+        $drivers = request('drivers');
+        $driverkey = request('driverkey');
+
+        if($drivers) {
+            // $assignindex = 1;
+            foreach($drivers[$driverkey]['transactions'] as $index => $transaction) {
+                $trans = Transaction::findOrFail($transaction['id']);
+                $trans->sequence = null;
+                $trans->save();
+                $drivers[$driverkey]['transactions'][$index]['sequence'] = null;
+                // dd($transaction, $transaction['sequence']);
+                // $assignindex ++;
+            }
+        }
+        return $drivers;
+    }
+
     // refresh individual driver array job assign
     public function jobAssignRefreshDriver(Request $request)
     {

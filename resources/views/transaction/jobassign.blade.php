@@ -734,6 +734,10 @@ Job Assign
                                     <button class="btn btn-xs btn-default" ng-click="onInitTransactionsSequence($event, driverkey)">
                                         Re-number
                                     </button>
+                                    <button type="button" class="btn btn-xs btn-warning" ng-click="onDriverRefreshClicked($event, driverkey)"><i class="fa fa-refresh" aria-hidden="true"></i> Sort</button>
+                                    <button class="btn btn-xs btn-default" ng-click="onDeleteAllSequences($event, driverkey)">
+                                        Clear All Numbers
+                                    </button>
                                 @endif
                                 <button class="btn btn-xs btn-primary" ng-click="onExportPdfClicked($event, 2, driver.name)">
                                     <i class="fa fa-file-pdf-o" aria-hidden="true"></i>

@@ -331,6 +331,17 @@ function transController($scope, $http, $window) {
         }
     }
 
+    $scope.onDeleteAllSequences = function (event, driverkey) {
+        event.preventDefault();
+        let isConfirm = confirm('Are you sure to delete all sequences?')
+        if (isConfirm) {
+            $http.post('/api/transaction/delete-all-sequences', { driverkey: driverkey, drivers: $scope.drivers }).success(function (data) {
+                $scope.drivers = data;
+                $scope.form.checkall = false;
+            });
+        }
+    }
+
     $scope.onDriverRowToggleClicked = function (event, driverkey) {
         event.preventDefault();
         $scope.drivers[driverkey].showrow = !$scope.drivers[driverkey].showrow;
