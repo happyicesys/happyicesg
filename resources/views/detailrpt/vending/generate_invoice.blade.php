@@ -28,7 +28,7 @@
                 </select>
             </div>
         </div>
-        <div class="col-md-4 col-sm-6 col-xs-12">
+        {{-- <div class="col-md-4 col-sm-6 col-xs-12">
             <div class="form-group">
                 {!! Form::label('cust_id', 'ID', ['class'=>'control-label search-title']) !!}
                 {!! Form::text('cust_id', null,
@@ -39,6 +39,25 @@
                                             ])
                 !!}
             </div>
+        </div> --}}
+
+        <div class="form-group col-md-4 col-sm-6 col-xs-12">
+            {!! Form::label('id', 'ID', ['class'=>'control-label search-title']) !!}
+            <label class="pull-right">
+                <input type="checkbox" name="strictCustId" ng-model="search.strictCustId">
+                <span style="margin-top: 5px; margin-right: 5px;">
+                    Strict
+                </span>
+            </label>
+            {!! Form::text('id', null,
+                                        [
+                                            'class'=>'form-control input-sm',
+                                            'ng-model'=>'search.cust_id',
+                                            'ng-change'=>'searchDB()',
+                                            'placeholder'=>'Cust ID',
+                                            'ng-model-options'=>'{ debounce: 700 }'
+                                        ])
+            !!}
         </div>
     </div>
     <div class="row">
@@ -106,7 +125,7 @@
         <div class="col-md-4 col-sm-6 col-xs-12">
             <div class="form-group">
                 {!! Form::label('is_rental', 'Coorperate Method', ['class'=>'control-label search-title']) !!}
-                {!! Form::select('is_rental', [''=>'All', '2'=>'Rental Based', '1'=>'Profit Sharing'], null,
+                {!! Form::select('is_rental', [''=>'All', '2'=>'Rental Based', '1'=>'Profit Sharing', '3' => 'Free Placement'], null,
                     [
                     'class'=>'select form-control',
                     'ng-model'=>'search.is_rental'

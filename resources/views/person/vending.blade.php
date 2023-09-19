@@ -9,6 +9,11 @@
                 @include('person._assignVending')
             </assignVending>
         </div> --}}
+
+        <div class="form-group">
+            {!! Form::checkbox('is_commission_report', $person->is_commission_report, null, []) !!}
+            {!! Form::label('is_commission_report', '', ['class'=>'control-label', 'style'=>'padding-left:5px;']) !!}
+        </div>
         <div class="form-group">
             {!! Form::label('vend_code', 'Vend ID#', ['class'=>'control-label']) !!}
             {!! Form::text('vend_code', null, ['class'=>'form-control']) !!}
@@ -17,7 +22,7 @@
 
         <div class="form-group">
             {!! Form::label('cooperate_method', 'Cooperate Method', ['class'=>'control-label']) !!}
-            {!! Form::select('cooperate_method', ['1'=>'Profit Sharing', '2'=>'Rentals'], null, ['class'=>'selectnotclear form-control', 'id'=>'cooperate_method', 'disabled'=>$disabled]) !!}
+            {!! Form::select('cooperate_method', ['1'=>'Profit Sharing', '2'=>'Rentals', '3' => 'Free Placement'], null, ['class'=>'selectnotclear form-control', 'id'=>'cooperate_method', 'disabled'=>$disabled]) !!}
         </div>
 
         <div class="row commissionDiv">

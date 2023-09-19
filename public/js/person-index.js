@@ -39,6 +39,7 @@ function personController($scope, $http) {
         edited: false,
         updated_by: '',
         updated_at: '',
+        is_vend: '',
         sortBy: false,
         sortName: 'updated_at',
     }

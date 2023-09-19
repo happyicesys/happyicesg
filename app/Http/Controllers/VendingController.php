@@ -211,8 +211,15 @@ class VendingController extends Controller
         					->whereDate('transactions.delivery_date', '>=', $current_month->startOfMonth()->toDateString())
         					->whereDate('transactions.delivery_date', '<=', $current_month->endOfMonth()->toDateString());
         }
+        // if($cust_id){
+        //     $transactions = $transactions->where('people.cust_id', 'LIKE', '%'.$cust_id.'%');
+        // }
         if($cust_id){
-            $transactions = $transactions->where('people.cust_id', 'LIKE', '%'.$cust_id.'%');
+            if(request('strictCustId')) {
+                $transactions = $transactions->where('people.cust_id', 'LIKE', request('cust_id').'%');
+            }else {
+                $transactions = $transactions->where('people.cust_id', 'LIKE', '%'.request('cust_id').'%');
+            }
         }
         if($id_prefix) {
             $transactions = $transactions->where('people.cust_id', 'LIKE', $id_prefix.'%');

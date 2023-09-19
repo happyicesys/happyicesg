@@ -263,6 +263,14 @@
                         <option value="na">-- N/A --</option>
                     </select>
                 </div>
+                <div class="form-group col-md-2 col-sm-4 col-xs-12">
+                    {!! Form::label('is_vend', 'Is Vending Machine?', ['class'=>'control-label']) !!}
+                    <select name="is_vend" class="select form-control" ng-model="search.is_vend">
+                        <option value="">All</option>
+                        <option value="1">Yes</option>
+                        <option value="0">No</option>
+                    </select>
+                </div>
             </div>
 
 

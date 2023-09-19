@@ -94,7 +94,7 @@ class PersonController extends Controller
         ->leftJoin($earliestTransaction, 'earliestTransaction.person_id', '=', 'people.id')
         ->select(
             'people.id', 'people.cust_id', 'people.company', 'people.name', 'people.contact', 'people.alt_contact', 'people.del_address', 'people.del_postcode', 'people.bill_postcode', 'people.active', 'people.payterm', 'people.del_lat', 'people.del_lng', 'people.remark',
-            DB::raw('DATE(people.created_at) AS created_at'), 'people.updated_at', 'people.serial_number', 'people.delivery_country_id', 'people.billing_country_id', 'people.unit_number',
+            DB::raw('DATE(people.created_at) AS created_at'), 'people.updated_at', 'people.serial_number', 'people.delivery_country_id', 'people.billing_country_id', 'people.unit_number', 'people.is_commission_report',
             'custcategories.name as custcategory_name', 'custcategories.map_icon_file', 'custcategory_groups.name AS custcategory_group_name',
             'profiles.id AS profile_id', 'profiles.name AS profile_name',
             'account_managers.name AS account_manager_name',
@@ -307,6 +307,7 @@ class PersonController extends Controller
         $request->merge(array('is_parent' => $request->has('is_parent') == 'true' ? 1 : 0));
         $request->merge(array('is_sys' => $request->has('is_sys') == 'true' ? 1 : 0));
         $request->merge(array('is_stock_balance_count_required' => $request->has('is_stock_balance_count_required') == 'true' ? 1 : 0));
+        $request->merge(array('is_commission_report' => $request->has('is_commission_report') == 'true' ? 1 : 0));
 
         $person = Person::findOrFail($id);
 
@@ -1607,6 +1608,7 @@ class PersonController extends Controller
         $createdFrom = $request->created_from;
         $createdTo = $request->created_to;
         $customerTypes = $request->customer_types;
+        $isVend = $request->is_vend;
 
         if ($cust_id) {
             if($strictCustId) {
@@ -1779,6 +1781,10 @@ class PersonController extends Controller
             });
         }
 
+        if($isVend != '') {
+            $people = $people->where('people.is_vend', $isVend);
+        }
+
         return $people;
     }
 
@@ -1794,6 +1800,7 @@ class PersonController extends Controller
         $driver = $request->driver;
         $po_no = $request->po_no;
         $is_service = $request->is_service;
+        $is_vend = $request->is_vend;
 
         if($id) {
             $transactions = $transactions->where('transactions.id', 'LIKE', '%' . $id . '%');
@@ -1824,6 +1831,9 @@ class PersonController extends Controller
         }
         if($is_service) {
             $transactions = $transactions->where('transactions.is_service', $is_service == 'true' ? 1 : 0);
+        }
+        if($is_vend) {
+            $transactions = $transaction->where('people.is_vend', $is_vend);
         }
         return $transactions;
     }
