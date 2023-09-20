@@ -864,8 +864,10 @@ class VendingController extends Controller
         $transactions = $transactions
                         ->where('transactions.is_required_analog', 1)
                         ->where(function($query) {
-                            $query->where('people.is_vending', 1)
-                                    ->orWhere('people.is_dvm', 1);
+                            // $query->where('people.is_vending', 1)
+                                    // ->orWhere('people.is_dvm', 1);
+                                    $query->where('people.is_vend', 1)
+                                        ->where('people.is_commission_report', 1);
                         });
 
         if(request('sortName')) {

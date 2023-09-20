@@ -12,7 +12,7 @@
 
         <div class="form-group">
             {!! Form::checkbox('is_commission_report', $person->is_commission_report, null, []) !!}
-            {!! Form::label('is_commission_report', '', ['class'=>'control-label', 'style'=>'padding-left:5px;']) !!}
+            {!! Form::label('To Generate Commission Report', '', ['class'=>'control-label', 'style'=>'padding-left:5px;']) !!}
         </div>
         <div class="form-group">
             {!! Form::label('vend_code', 'Vend ID#', ['class'=>'control-label']) !!}
