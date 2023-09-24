@@ -257,37 +257,10 @@
             !!}
         </div>
     </div>
-    <div class="col-md-4 col-sm-4 col-xs-12 isVendDiv">
-        <div class="form-group" style="padding-top: 25px;">
-            {!! Form::checkbox('is_sys', $person->is_sys, null, []) !!}
-            {!! Form::label('is_sys', 'Connect to sys.happyice?', ['class'=>'control-label', 'style'=>'padding-left:5px;']) !!}
-        </div>
-    </div>
-
 </div>
 <hr>
 
 <div class="row" style="padding: 15px 0px 15px 0px;">
-    <div class="col-md-4 col-sm-4 col-xs-6 isVendDiv">
-        <div class="form-group">
-            <input type="radio" name="type" value="is_dvm" {{$person->is_dvm ? 'checked' : null}} {{$disabled ? 'disabled' : null}}>
-            {!! Form::label('is_dvm', 'Direct Vending Machine', ['class'=>'control-label', 'style'=>'padding-left:5px;']) !!}
-        </div>
-    </div>
-
-    <div class="col-md-4 col-sm-4 col-xs-6 isVendDiv">
-        <div class="form-group">
-            <input type="radio" name="type" value="is_vending" {{$person->is_vending ? 'checked' : null}} {{$disabled ? 'disabled' : null}}>
-            {!! Form::label('is_vending', 'Fun Vending Machine', ['class'=>'control-label', 'style'=>'padding-left:5px;', 'ng-model'=>'form.is_vending']) !!}
-        </div>
-    </div>
-
-    <div class="col-md-4 col-sm-4 col-xs-6 isVendDiv">
-        <div class="form-group">
-            <input type="radio" name="type" value="is_combi" {{$person->is_combi ? 'checked' : null}} {{$disabled ? 'disabled' : null}}>
-            {!! Form::label('is_combi', 'Combi', ['class'=>'control-label', 'style'=>'padding-left:5px;']) !!}
-        </div>
-    </div>
     <div class="col-md-4 col-sm-4 col-xs-6">
         <div class="form-group">
             <input type="radio" name="type" value="is_subsidiary" {{$person->is_subsidiary ? 'checked' : null}} {{$disabled ? 'disabled' : null}}>

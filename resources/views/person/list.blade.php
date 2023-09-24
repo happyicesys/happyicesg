@@ -702,7 +702,10 @@
                     </th>
                     @endif
                     <th class="col-md-3 text-center">
+                        <a href="" ng-click="sortTable('del_address')">
                         Delivery Add
+                        <span ng-if="search.sortName == 'del_address' && !search.sortBy" class="fa fa-caret-down"></span>
+                        <span ng-if="search.sortName == 'del_address' && search.sortBy" class="fa fa-caret-up"></span>
                     </th>
                     <th class="col-md-1 text-center">
                         <a href="" ng-click="sortTable('del_postcode')">

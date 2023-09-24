@@ -9,16 +9,48 @@
                 @include('person._assignVending')
             </assignVending>
         </div> --}}
+        <div class="row">
+            <div class="col-md-4 col-sm-4 col-xs-6 isVendDiv">
+                <div class="form-group">
+                    <input type="radio" name="type" value="is_dvm" {{$person->is_dvm ? 'checked' : null}} {{$disabled ? 'disabled' : null}}>
+                    {!! Form::label('is_dvm', 'Direct Vending Machine', ['class'=>'control-label', 'style'=>'padding-left:5px;']) !!}
+                </div>
+            </div>
 
-        <div class="form-group">
-            {!! Form::checkbox('is_commission_report', $person->is_commission_report, null, []) !!}
-            {!! Form::label('To Generate Commission Report', '', ['class'=>'control-label', 'style'=>'padding-left:5px;']) !!}
+            <div class="col-md-4 col-sm-4 col-xs-6 isVendDiv">
+                <div class="form-group">
+                    <input type="radio" name="type" value="is_vending" {{$person->is_vending ? 'checked' : null}} {{$disabled ? 'disabled' : null}}>
+                    {!! Form::label('is_vending', 'Fun Vending Machine', ['class'=>'control-label', 'style'=>'padding-left:5px;', 'ng-model'=>'form.is_vending']) !!}
+                </div>
+            </div>
+
+            <div class="col-md-4 col-sm-4 col-xs-6 isVendDiv">
+                <div class="form-group">
+                    <input type="radio" name="type" value="is_combi" {{$person->is_combi ? 'checked' : null}} {{$disabled ? 'disabled' : null}}>
+                    {!! Form::label('is_combi', 'Combi', ['class'=>'control-label', 'style'=>'padding-left:5px;']) !!}
+                </div>
+            </div>
         </div>
-        <div class="form-group">
+
+        <div class="row">
+            <div class="col-md-6 col-sm-6 col-xs-12">
+                <div class="form-group" style="padding-top: 20px;">
+                    {!! Form::checkbox('is_commission_report', $person->is_commission_report, null, []) !!}
+                    {!! Form::label('To Generate Commission Report', '', ['class'=>'control-label', 'style'=>'padding-left:5px;']) !!}
+                </div>
+            </div>
+            <div class="col-md-6 col-sm-6 col-xs-12 isVendDiv">
+                <div class="form-group" style="padding-top: 20px;">
+                    {!! Form::checkbox('is_sys', $person->is_sys, null, []) !!}
+                    {!! Form::label('is_sys', 'Connect to sys.happyice?', ['class'=>'control-label', 'style'=>'padding-left:5px;']) !!}
+                </div>
+            </div>
+        </div>
+        {{-- <div class="form-group">
             {!! Form::label('vend_code', 'Vend ID#', ['class'=>'control-label']) !!}
             {!! Form::text('vend_code', null, ['class'=>'form-control']) !!}
         </div>
-
+ --}}
 
         <div class="form-group">
             {!! Form::label('cooperate_method', 'Cooperate Method', ['class'=>'control-label']) !!}
