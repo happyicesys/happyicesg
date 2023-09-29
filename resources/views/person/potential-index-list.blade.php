@@ -588,6 +588,12 @@
                         <span ng-if="search.sortName == 'name' && search.sortBy" class="fa fa-caret-up"></span>
                     </th>
                     <th class="col-md-1 text-center">
+                        <a href="" ng-click="sortTable('email')">
+                        Email
+                        <span ng-if="search.sortName == 'email' && !search.sortBy" class="fa fa-caret-down"></span>
+                        <span ng-if="search.sortName == 'email' && search.sortBy" class="fa fa-caret-up"></span>
+                    </th>
+                    <th class="col-md-1 text-center">
                         <a href="" ng-click="sortTable('contact')">
                         Contact
                         <span ng-if="search.sortName == 'contact' && !search.sortBy" class="fa fa-caret-down"></span>
@@ -672,6 +678,9 @@
                             @{{ person.account_manager_name }}
                         </td>
                         <td class="col-md-1">@{{ person.name }}</td>
+                        <td class="col-md-1 text-left" style="max-width: 200px; overflow:auto;">
+                            @{{ person.email }}
+                        </td>
                         <td class="col-md-1">
                             @{{ person.contact }}
                             <span ng-show="person.alt_contact.length > 0">
