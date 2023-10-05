@@ -108,12 +108,14 @@
             {!! Form::text('contact', null, ['class'=>'form-control', 'disabled'=>$disabled]) !!}
         </div>
     </div>
+    @if(config('app.usage') != 'operator')
     <div class="col-md-4 col-sm-4 col-xs-12">
         <div class="form-group">
             {!! Form::label('alt_contact', 'Alt Contact', ['class'=>'control-label']) !!}
             {!! Form::text('alt_contact', null, ['class'=>'form-control', 'disabled'=>$disabled]) !!}
         </div>
     </div>
+    @endif
 </div>
 
 <div class="row">
@@ -129,12 +131,14 @@
             {!! Form::text('cost_rate', null, ['class'=>'form-control', 'disabled'=>$disabled]) !!}
         </div>
     </div>
+    @if(config('app.usage') != 'operator')
     <div class="col-md-4 col-sm-4 col-xs-12">
         <div class="form-group">
             {!! Form::label('payterm', 'Terms', ['class'=>'control-label']) !!}
             {!! Form::select('payterm', $payterm::lists('name', 'name'), null, ['id'=>'payterm', 'class'=>'select form-control', 'disabled'=>$disabled]) !!}
         </div>
     </div>
+    @endif
 </div>
 @endif
 
@@ -178,6 +182,7 @@
     <div class="col-md-4 col-sm-4 col-xs-12">
         <div class="form-group">
             {!! Form::label('profile_id', 'Company Profile', ['class'=>'control-label']) !!}
+            {!! Form::label('art', '*', ['class'=>'control-label', 'style'=>'color:red;']) !!}
             {!! Form::select('profile_id',
                             $profiles::filterUserProfile()->select(DB::raw("CONCAT(name,' - ',roc_no) AS full, id"))->pluck('full', 'id'),
                             null, ['id'=>'profile_id', 'class'=>'select form-control', 'disabled'=>$disabled]) !!}
@@ -260,6 +265,7 @@
 </div>
 <hr>
 
+@if(config('app.usage') != 'operator')
 <div class="row" style="padding: 15px 0px 15px 0px;">
     <div class="col-md-4 col-sm-4 col-xs-6">
         <div class="form-group">
@@ -304,6 +310,7 @@
         </div>
     </div>
 </div>
+@endif
 <hr>
 
 @if($person->is_vending)

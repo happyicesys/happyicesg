@@ -32,6 +32,9 @@ return [
 
     'url' => 'http://127.0.0.1',
 
+    'sys_url' => env('SYS_URL', 'http://localhost'),
+    'usage' => env('APP_USAGE', 'self'),
+
     /*
     |--------------------------------------------------------------------------
     | Application Timezone

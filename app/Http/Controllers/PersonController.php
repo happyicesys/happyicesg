@@ -201,7 +201,9 @@ class PersonController extends Controller
         $person = Person::create($input);
         $person->is_vending = $request->has('is_vending') ? 1 : 0;
         $person->is_dvm = $request->has('is_dvm') ? 1 : 0;
+        $person->is_combi = $request->has('is_combi') ? 1 : 0;
         $person->is_subsidiary = $request->has('is_subsidiary') ? 1 : 0;
+        $person->is_non_freezer_point = $request->has('is_non_freezer_point') ? 1 : 0;
         // default setting is dvm based on custcategory
         if ($person->custcategory) {
             if ($person->custcategory->name == 'V-Dir') {
@@ -410,8 +412,8 @@ class PersonController extends Controller
 
         if($this->retrieveCustomerMigration($person->id)->toArray()) {
             $client = new Client();
-            $clientUrl = "https://sys.happyice.com.sg/api/v1/customer/migrate";
-            // $clientUrl = "http://mark1.test/api/v1/customer/migrate";
+            // $clientUrl = "https://sys.happyice.com.sg/api/v1/customer/migrate";
+            $clientUrl = config('app.sys_url').'/api/v1/customer/migrate';
             $clientRequest = $client->post($clientUrl, ['form_params' => $this->retrieveCustomerMigration($person->id)->toArray()[0]]);
         }
 

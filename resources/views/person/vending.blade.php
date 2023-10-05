@@ -24,12 +24,14 @@
                 </div>
             </div>
 
+            @if(config('app.usage') != 'operator')
             <div class="col-md-4 col-sm-4 col-xs-6 isVendDiv">
                 <div class="form-group">
                     <input type="radio" name="type" value="is_combi" {{$person->is_combi ? 'checked' : null}} {{$disabled ? 'disabled' : null}}>
                     {!! Form::label('is_combi', 'Combi', ['class'=>'control-label', 'style'=>'padding-left:5px;']) !!}
                 </div>
             </div>
+            @endif
         </div>
 
         <div class="row">
@@ -126,6 +128,7 @@
                 </div>
             </div>
         </div>
+        @if(config('app.usage') != 'operator')
         <div class="row col-md-12 col-sm-12 col-xs-12">
             @if(!$person->vending)
             <div class="col-md-3 col-sm-6 col-xs-12">
@@ -162,6 +165,8 @@
                 </div>
             </div>
         </div>
+        @endif
+        @if(config('app.usage') != 'operator')
         <div class="row col-md-12 col-sm-12 col-xs-12">
             <div class="col-md-3 col-sm-6 col-xs-12">
                 <div class="form-group">
@@ -176,6 +181,7 @@
                 </div>
             </div>
         </div>
+        @endif
         <div class="row col-md-12 col-sm-12 col-xs-12">
             <div class="col-md-6 col-sm-6 col-xs-12">
                 <div class="form-group">
@@ -194,6 +200,7 @@
                 </div>
             </div>
         </div>
+        @if(config('app.usage') != 'operator')
         <div class="col-md-12 col-sm-12 col-xs-12">
             <div class="form-group">
                 {!! Form::label('vending_id', 'Binded Vending', ['class'=>'control-label']) !!}
@@ -216,6 +223,7 @@
                 </select>
             </div>
         </div>
+        @endif
         </div>
     </div>
 </div>
