@@ -2678,6 +2678,7 @@ class TransactionController extends Controller
         $inventoryDeals = $transaction->deals()->whereHas('item', function($query) {
                             $query->where('is_inventory', true);
                         });
+        $stockValueItem = Item::where('product_id', '051a')->first();
 
         switch($inventoryMovementType) {
             case 1:
@@ -2691,7 +2692,7 @@ class TransactionController extends Controller
                     }
                     $inventoryDealsAmount = $inventoryDeals->sum('amount');
                     Deal::create([
-                        'item_id' => 61,
+                        'item_id' => $stockValueItem->id,
                         'transaction_id' => $transactionId,
                         'qty' => 1,
                         'dividend' => 1,
@@ -2702,6 +2703,7 @@ class TransactionController extends Controller
                         'is_stock_action' => true,
                         'qty_json' => ['ctn' => 1],
                     ]);
+
                 }
                 $this->syncTransactionTotalAmountQty($transactionId);
                 break;
@@ -2725,7 +2727,7 @@ class TransactionController extends Controller
                     }
                     $inventoryDealsAmount = $inventoryDeals->sum('amount');
                     Deal::create([
-                        'item_id' => 61,
+                        'item_id' => $stockValueItem->id,
                         'transaction_id' => $transactionId,
                         'qty' => 1,
                         'dividend' => 1,
@@ -2750,7 +2752,7 @@ class TransactionController extends Controller
                     }
                     $inventoryDealsAmount = $inventoryDeals->sum('amount');
                     $balancedDeal = Deal::create([
-                        'item_id' => 61,
+                        'item_id' => $stockValueItem->id,
                         'transaction_id' => $transactionId,
                         'qty' => 1,
                         'dividend' => 1,

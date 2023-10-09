@@ -48,7 +48,7 @@ class Deal extends Model
     protected $fillable = [
         'item_id', 'transaction_id', 'qty', 'amount', 'unit_price', 'qty_status',
         'dividend', 'divisor', 'unit_cost', 'qty_before', 'qty_after', 'is_stock_action',
-        'qty_json'
+        'qty_json',
     ];
 
     protected $casts = [
