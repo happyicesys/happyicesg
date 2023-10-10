@@ -294,7 +294,7 @@
                     </li>
                 @endif
 
-                @if($gt_sales_lead_access)
+                @if($gt_sales_lead_access and config('app.usage') != 'operator')
                     <li class="{{ Request::segment(1) == 'potential-customer' ? 'active' : '' }}">
                         <a href="/potential-customer"><i class="fa fa-address-card-o"></i> GT Sales Lead</a>
                     </li>
@@ -306,12 +306,12 @@
                     </li>
                 @endif
 
-                @if($route_template)
+                @if($route_template and config('app.usage') != 'operator')
                     <li class="{{ Request::segment(1) == 'route-template' ? 'active' : '' }}">
                         <a href="/route-template"><i class="fa fa-road" aria-hidden="true"></i> Route Template</a>
                     </li>
                 @endif
-                @if($hd_access)
+                @if($hd_access and config('app.usage') != 'operator')
                     <li class="{{ Request::segment(1) == 'hdprofile' || Request::segment(1) == 'personasset' ? 'active' : '' }}">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" type="button" aria-haspopup="true" aria-expanded="false"><i class="fa fa-fw fa-truck"></i>
                             HD Profile
@@ -332,7 +332,7 @@
                         <a href="/item"><i class="fa fa-fw fa-shopping-cart"></i> {{ $ITEM_TITLE }}</a>
                     </li>
                 @endif
-                @if($profile_access)
+                @if($profile_access and config('app.usage') != 'operator')
                     <li class="{{ Request::segment(1) == 'profile' ? 'active' : '' }}">
                         <a href="/profile"><i class="fa fa-fw fa-building"></i> {{ $PROFILE_TITLE }}</a>
                     </li>
@@ -348,7 +348,7 @@
                         <a href="/user"><i class="fa fa-fw fa-user"></i> {{ $USER_TITLE }} & Data</a>
                     </li>
                 @endif
-                @if($detailrpt_access)
+                @if($detailrpt_access and config('app.usage') != 'operator')
                     <li class="{{ Request::segment(1) == 'detailrpt' ? 'active' : '' }}">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" type="button" aria-haspopup="true" aria-expanded="false"><i class="fa fa-fw fa-book"></i> {{ $DETAILRPT_TITLE }} <i class="fa fa-caret-down"></i></a>
                         <ul class="dropdown-menu">
@@ -366,7 +366,7 @@
                         </ul>
                     </li>
                 @endif
-                @if($dailyreport_access)
+                @if($dailyreport_access and config('app.usage') != 'operator')
                     <li class="{{ Request::segment(1) == 'dailyreport' ? 'active' : '' }}">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" type="button" aria-haspopup="true" aria-expanded="false"><i class="fa fa-fw fa-flag"></i> Performance <i class="fa fa-caret-down"></i></a>
                         <ul class="dropdown-menu">
@@ -385,7 +385,7 @@
                         <a href="/report"><i class="fa fa-fw fa-file-text-o"></i> {{ $REPORT_TITLE }}</a>
                     </li>
                 @endif
-                @if($operation_access)
+                @if($operation_access and config('app.usage') != 'operator')
                     <li class="{{ Request::segment(1) == 'operation' ? 'active' : '' }}">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" type="button" aria-haspopup="true" aria-expanded="false"><i class="fa fa-sticky-note-o"></i> Operations <i class="fa fa-caret-down"></i></a>
                         <ul class="dropdown-menu">
@@ -400,7 +400,7 @@
                     </li>
                 @endif
 
-                @if($dtd_access)
+                @if($dtd_access and config('app.usage') != 'operator')
                     <li class="{{ (Request::segment(1) == 'setup' || Request::segment(1) == 'member' || Request::segment(1) == 'market') ? 'active' : '' }}">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" type="button" aria-haspopup="true" aria-expanded="false"><i class="fa fa-fw fa-address-card"></i> Door To Door <i class="fa fa-caret-down"></i></a>
                         <ul class="dropdown-menu">
@@ -411,7 +411,7 @@
                         </ul>
                     </li>
                 @endif
-                @if($franchisee_access)
+                @if($franchisee_access and config('app.usage') != 'operator')
                     <li class="{{ Request::segment(1) == 'franchise' ? 'active' : '' }}">
                         <a href="/franchisee"><i class="fa fa-fw fa-handshake-o"></i> {{ $FRANCHISE_TRANS }}</a>
                     </li>
@@ -419,7 +419,7 @@
                         <a href="/franrpt"><i class="fa fa-fw fa-area-chart"></i> {{ $FRANCHISE_RPT }}</a>
                     </li>
                 @endif
-                @if($vending_access)
+                @if($vending_access and config('app.usage') != 'operator')
                     <li class="{{ (Request::segment(1) == 'bom' || Request::segment(1) == 'personmaintenance' || Request::segment(1) == 'vm' || Request::segment(1) == 'deal') ? 'active' : '' }}">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" type="button" aria-haspopup="true" aria-expanded="false"><i class="fa fa-fw fa-rocket"></i> Vending <i class="fa fa-caret-down"></i></a>
                         <ul class="dropdown-menu">
@@ -435,7 +435,7 @@
                         </ul>
                     </li>
                 @endif
-                @if($jobcard_access)
+                @if($jobcard_access and config('app.usage') != 'operator')
                     <li class="{{ Request::segment(1) == 'jobcard' ? 'active' : '' }}">
                         <a href="/jobcard"><i class="fa fa-th-list "></i> {{ $JOBCARD_TITLE }}</a>
                     </li>

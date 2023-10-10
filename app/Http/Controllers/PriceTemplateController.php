@@ -111,6 +111,10 @@ class PriceTemplateController extends Controller
     {
         if($request->item_id) {
             $priceTemplate = PriceTemplate::findOrFail($priceTemplateId);
+            $isReplicate = $priceTemplate->priceTemplateItems()->where('item_id', $request->item_id)->exists();
+            if($isReplicate) {
+                return;
+            }
             $priceTemplateItem = $priceTemplate->priceTemplateItems()->create($request->all());
 
             if($priceTemplateItem) {
