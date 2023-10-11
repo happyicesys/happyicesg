@@ -14,16 +14,20 @@
         <ul class="nav nav-pills nav-justified" role="tablist">
             @if(auth()->user()->hasRole('admin'))
                 <li class="active"><a href="#data" role="tab" data-toggle="tab">User Data</a></li>
-                <li><a href="#freezer" role="tab" data-toggle="tab">Freezer</a></li>
-                <li><a href="#accessory" role="tab" data-toggle="tab">Accessory</a></li>
-                <li><a href="#payterm" role="tab" data-toggle="tab">Pay Term</a></li>
+                @if(config('app.usage') != 'operator')
+                    <li><a href="#freezer" role="tab" data-toggle="tab">Freezer</a></li>
+                    <li><a href="#accessory" role="tab" data-toggle="tab">Accessory</a></li>
+                    <li><a href="#payterm" role="tab" data-toggle="tab">Pay Term</a></li>
+                @endif
             @endif
             @if(auth()->user()->hasRole('admin') or auth()->user()->hasRole('supervisor'))
-                <li><a href="#cust_cat_group" role="tab" data-toggle="tab">Customer Category Group</a></li>
-                <li><a href="#cust_cat" role="tab" data-toggle="tab">Customer Category</a></li>
-                <li><a href="#cust_tags" role="tab" data-toggle="tab">Customer Tags</a></li>
-                <li><a href="#racking_config" role="tab" data-toggle="tab">Racking Config</a></li>
-                <li><a href="#truck" role="tab" data-toggle="tab">Truck</a></li>
+                @if(config('app.usage') != 'operator')
+                    <li><a href="#cust_cat_group" role="tab" data-toggle="tab">Customer Category Group</a></li>
+                    <li><a href="#cust_cat" role="tab" data-toggle="tab">Customer Category</a></li>
+                    <li><a href="#cust_tags" role="tab" data-toggle="tab">Customer Tags</a></li>
+                    <li><a href="#racking_config" role="tab" data-toggle="tab">Racking Config</a></li>
+                    <li><a href="#truck" role="tab" data-toggle="tab">Truck</a></li>
+                @endif
                 <li><a href="#itemcategory" role="tab" data-toggle="tab">Item Category</a></li>
                 <li><a href="#itemGroup" role="tab" data-toggle="tab">Item Group</a></li>
                 <li><a href="#zone" role="tab" data-toggle="tab">Zone</a></li>
