@@ -68,17 +68,17 @@ class PriceTemplateController extends Controller
             });
         }
 
-        if(request('active')) {
-            $active = request('active');
+        // if(request('active')) {
+        //     $active = request('active');
 
-            $query = $query->where(function($query) use ($active){
-                $query->whereDoesntHave('people');
-                $query->orWhereHas('people', function($query) use ($active) {
-                    $query->whereIn('active', $active);
-                });
+        //     $query = $query->where(function($query) use ($active){
+        //         $query->whereDoesntHave('people');
+        //         $query->orWhereHas('people', function($query) use ($active) {
+        //             $query->whereIn('active', $active);
+        //         });
 
-            });
-        }
+        //     });
+        // }
 
         if(request('sortName')){
             $query = $query->orderBy(request('sortName'), request('sortBy') ? 'asc' : 'desc');

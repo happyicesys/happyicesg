@@ -85,7 +85,7 @@ Price Template
                         ])
                     !!}
                 </div>
-                <div class="form-group col-md-4 col-sm-5 col-xs-12">
+                {{-- <div class="form-group col-md-4 col-sm-5 col-xs-12">
                     {!! Form::label('active', 'Status', ['class'=>'control-label search-title']) !!}
                     <select name="active" id="active" class="selectmultiple form-control" ng-model="search.active" ng-change="searchDB()" multiple>
                         <option value="">All</option>
@@ -95,7 +95,7 @@ Price Template
                         <option value="Pending">Pending</option>
                         <option value="No">Inactive</option>
                     </select>
-                </div>
+                </div> --}}
             </div>
             <div class="row">
                 <div class="col-md-4 col-sm-6 col-xs-12">
