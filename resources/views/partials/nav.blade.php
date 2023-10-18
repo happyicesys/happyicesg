@@ -419,14 +419,14 @@
                         <a href="/franrpt"><i class="fa fa-fw fa-area-chart"></i> {{ $FRANCHISE_RPT }}</a>
                     </li>
                 @endif
-                @if($vending_access and config('app.usage') != 'operator')
+                {{-- @if($vending_access and config('app.usage') != 'operator') --}}
                     <li class="{{ (Request::segment(1) == 'bom' || Request::segment(1) == 'personmaintenance' || Request::segment(1) == 'vm' || Request::segment(1) == 'deal') ? 'active' : '' }}">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" type="button" aria-haspopup="true" aria-expanded="false"><i class="fa fa-fw fa-rocket"></i> Vending <i class="fa fa-caret-down"></i></a>
                         <ul class="dropdown-menu">
-                            @if($bom_access)
+                            @if($bom_access and $vending_access and config('app.usage') != 'operator')
                                 <li class="text-left"><a href="/bom"> {{ $BOM_TITLE }}</a></li>
                             @endif
-                            @if($personmaintenance_access)
+                            @if($personmaintenance_access and $vending_access and config('app.usage') != 'operator')
                                 <li class="text-left"><a href="/personmaintenance"> {{ $PERSONMAINTENANCE_TITLE }}</a></li>
                             @endif
                             <li class="text-left"><a href="/vm"> Machine</a></li>
@@ -434,7 +434,7 @@
                             <li class="text-left"><a href="/cashless"> Cashless</a></li>
                         </ul>
                     </li>
-                @endif
+                {{-- @endif --}}
                 @if($jobcard_access and config('app.usage') != 'operator')
                     <li class="{{ Request::segment(1) == 'jobcard' ? 'active' : '' }}">
                         <a href="/jobcard"><i class="fa fa-th-list "></i> {{ $JOBCARD_TITLE }}</a>
