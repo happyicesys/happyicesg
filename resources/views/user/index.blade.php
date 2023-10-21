@@ -21,13 +21,13 @@
                 @endif
             @endif
             @if(auth()->user()->hasRole('admin') or auth()->user()->hasRole('supervisor'))
-                @if(config('app.usage') != 'operator')
+                {{-- @if(config('app.usage') != 'operator') --}}
                     <li><a href="#cust_cat_group" role="tab" data-toggle="tab">Customer Category Group</a></li>
                     <li><a href="#cust_cat" role="tab" data-toggle="tab">Customer Category</a></li>
                     <li><a href="#cust_tags" role="tab" data-toggle="tab">Customer Tags</a></li>
                     <li><a href="#racking_config" role="tab" data-toggle="tab">Racking Config</a></li>
                     <li><a href="#truck" role="tab" data-toggle="tab">Truck</a></li>
-                @endif
+                {{-- @endif --}}
                 <li><a href="#itemcategory" role="tab" data-toggle="tab">Item Category</a></li>
                 <li><a href="#itemGroup" role="tab" data-toggle="tab">Item Group</a></li>
                 <li><a href="#zone" role="tab" data-toggle="tab">Zone</a></li>

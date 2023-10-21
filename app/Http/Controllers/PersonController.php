@@ -331,6 +331,7 @@ class PersonController extends Controller
                 break;
             case 'Pending':
                 $request->merge(array('active' => 'Pending'));
+                $request->merge(['vending_id' => null]);
                 break;
             case 'New':
                 $request->merge(array('active' => 'New'));
