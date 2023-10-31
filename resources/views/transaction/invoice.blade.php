@@ -600,7 +600,8 @@
                                 @if($transaction->is_vending_generate)
                                     Sales
                                 @else
-                                    Quantity
+                                    Quantity <br>
+                                    (ctn)
                                 @endif
                             </th>
                             @if($type == 'invoice')
@@ -608,7 +609,7 @@
                                 @if($transaction->is_vending_generate)
                                     Percent
                                 @else
-                                    Price/ Unit ({{$transaction->person->profile->currency ? $transaction->person->profile->currency->symbol: '$'}})
+                                    Price/ ctn ({{$transaction->person->profile->currency ? $transaction->person->profile->currency->symbol: '$'}})
                                 @endif
                             </th>
                             <th class="col-xs-1 text-center" rowspan="{{$uomArr ? 2 : 0}}">
