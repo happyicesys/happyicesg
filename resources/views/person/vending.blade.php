@@ -200,7 +200,6 @@
                 </div>
             </div>
         </div>
-        @if(config('app.usage') != 'operator')
         <div class="col-md-12 col-sm-12 col-xs-12">
             <div class="form-group">
                 {!! Form::label('vending_id', 'Binded Vending', ['class'=>'control-label']) !!}
@@ -223,7 +222,6 @@
                 </select>
             </div>
         </div>
-        @endif
         </div>
     </div>
 </div>
