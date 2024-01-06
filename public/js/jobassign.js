@@ -547,7 +547,7 @@ function transController($scope, $http, $window) {
 
         if (singleperson) {
             // single map
-            $http.get('https://developers.onemap.sg/commonapi/search?searchVal=' + singleperson.del_postcode + '&returnGeom=Y&getAddrDetails=Y').success(function (data) {
+            $http.get('https://www.onemap.gov.sg/api/common/elastic/search?searchVal=' + singleperson.del_postcode + '&returnGeom=Y&getAddrDetails=Y').success(function (data) {
                 let coord = {
                     transaction_id: singleperson.id,
                     lat: data.results[0].LATITUDE,
@@ -596,7 +596,7 @@ function transController($scope, $http, $window) {
                 $scope.coordsArr = [];
                 angular.forEach($scope.drivers[driverkey].transactions, function (person, pkey) {
                     if (!person.del_lat && !person.del_lng) {
-                        $http.get('https://developers.onemap.sg/commonapi/search?searchVal=' + person.del_postcode + '&returnGeom=Y&getAddrDetails=Y').success(function (data) {
+                        $http.get('https://www.onemap.gov.sg/api/common/elastic/search?searchVal=' + person.del_postcode + '&returnGeom=Y&getAddrDetails=Y').success(function (data) {
                             let coord = {
                                 transaction_id: person.id,
                                 lat: data.results[0].LATITUDE,
@@ -648,7 +648,7 @@ function transController($scope, $http, $window) {
                 angular.forEach($scope.drivers, function (driver, dkey) {
                     angular.forEach($scope.drivers[dkey].transactions, function (person, pkey) {
                         if (!person.del_lat && !person.del_lng) {
-                            $http.get('https://developers.onemap.sg/commonapi/search?searchVal=' + person.del_postcode + '&returnGeom=Y&getAddrDetails=Y').success(function (data) {
+                            $http.get('https://www.onemap.gov.sg/api/common/elastic/search?searchVal=' + person.del_postcode + '&returnGeom=Y&getAddrDetails=Y').success(function (data) {
                                 let coord = {
                                     transaction_id: person.id,
                                     lat: data.results[0].LATITUDE,
@@ -751,7 +751,7 @@ function transController($scope, $http, $window) {
             loopCounter++;
 
             if (!person.del_lat && !person.del_lng) {
-                $http.get('https://developers.onemap.sg/commonapi/search?searchVal=' + person.del_postcode + '&returnGeom=Y&getAddrDetails=Y').success(function (data) {
+                $http.get('https://www.onemap.gov.sg/api/common/elastic/search?searchVal=' + person.del_postcode + '&returnGeom=Y&getAddrDetails=Y').success(function (data) {
                     let coord = {
                         transaction_id: person.id,
                         lat: data.results[0].LATITUDE,

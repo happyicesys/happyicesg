@@ -329,7 +329,7 @@ var app = angular.module('app', [
                 content: contentString
             });
 
-            $http.get('https://developers.onemap.sg/commonapi/search?searchVal=' + data.postcode + '&returnGeom=Y&getAddrDetails=Y').success(function(res) {
+            $http.get('https://www.onemap.gov.sg/api/common/elastic/search?searchVal=' + data.postcode + '&returnGeom=Y&getAddrDetails=Y').success(function(res) {
                     let lat = res.results[0].LATITUDE;
                     let lng = res.results[0].LONGITUDE;
 

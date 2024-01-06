@@ -507,7 +507,7 @@ function transController($scope, $http) {
                 content: contentString
             });
             // console.log(singleperson)
-            $http.get('https://developers.onemap.sg/commonapi/search?searchVal=' + singleperson.del_postcode + '&returnGeom=Y&getAddrDetails=Y').success(function (data) {
+            $http.get('https://www.onemap.gov.sg/api/common/elastic/search?searchVal=' + singleperson.del_postcode + '&returnGeom=Y&getAddrDetails=Y').success(function (data) {
                 let coord = {
                     transaction_id: singleperson.id,
                     lat: data.results[0].LATITUDE,
@@ -553,7 +553,7 @@ function transController($scope, $http) {
                 });
 
                 if (!person.del_lat && !person.del_lng) {
-                    $http.get('https://developers.onemap.sg/commonapi/search?searchVal=' + person.del_postcode + '&returnGeom=Y&getAddrDetails=Y').success(function (data) {
+                    $http.get('https://www.onemap.gov.sg/api/common/elastic/search?searchVal=' + person.del_postcode + '&returnGeom=Y&getAddrDetails=Y').success(function (data) {
                         let coord = {
                             transaction_id: person.id,
                             lat: data.results[0].LATITUDE,
