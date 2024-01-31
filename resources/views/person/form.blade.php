@@ -1,5 +1,6 @@
 @inject('banks', 'App\Bank')
 @inject('countries', 'App\Country')
+@inject('custPrefixes', 'App\CustPrefix')
 @inject('payterm', 'App\Payterm')
 @inject('profiles', 'App\Profile')
 @inject('custcategories', 'App\Custcategory')
@@ -20,6 +21,26 @@
         $disabledStr = 'disabled';
     }
 @endphp
+<div class="row">
+    <div class="col-md-4 col-sm-4 col-xs-12">
+        <div class="form-group">
+            {!! Form::label('code', 'Running ID', ['class'=>'control-label']) !!}
+            {!! Form::text('code', null, ['class'=>'form-control', 'disabled'=>'disabled']) !!}
+        </div>
+    </div>
+    <div class="col-md-4 col-sm-4 col-xs-12">
+        <div class="form-group">
+            {!! Form::label('cust_prefix_id', 'Cust Prefix', ['class'=>'control-label']) !!}
+            {!! Form::select('cust_prefix_id', $custPrefixes::lists('code', 'id'), null, ['id'=>'cust_prefix_id', 'class'=>'selectNormal form-control', 'disabled'=>$disabled]) !!}
+        </div>
+    </div>
+    <div class="col-md-4 col-sm-4 col-xs-12">
+        <div class="form-group">
+            {!! Form::label('vend_code', 'Vend ID', ['class'=>'control-label']) !!}
+            {!! Form::text('vend_code', null, ['class'=>'form-control', 'disabled'=>'disabled']) !!}
+        </div>
+    </div>
+</div>
 <div class="row">
     <div class="col-md-6 col-sm-6 col-xs-12">
         <div class="form-group">
