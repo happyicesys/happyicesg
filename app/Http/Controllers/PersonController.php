@@ -35,12 +35,13 @@ use App\HasProfileAccess;
 use App\Persontag;
 use App\Persontagattach;
 use App\Traits\HasCustcategoryAccess;
+use App\Traits\HasRunningNumber;
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Request as ClientRequest;
 
 class PersonController extends Controller
 {
-    use HasProfileAccess, HasCustcategoryAccess, HasMonthOptions;
+    use HasProfileAccess, HasRunningNumber, HasCustcategoryAccess, HasMonthOptions;
 
     //auth-only login can see
     public function __construct()
@@ -218,7 +219,7 @@ class PersonController extends Controller
         $person->is_gst_inclusive = $person->profile->is_gst_inclusive;
         $person->gst_rate = $person->profile->gst_rate;
         $person->account_manager = auth()->user()->id;
-        $person->code = preg_replace('/[^0-9]/', '', $person->cust_id);
+        $person->code = $this->generateRunningNumber($person);
         $person->save();
 
         return Redirect::action('PersonController@edit', $person->id);
@@ -522,7 +523,7 @@ class PersonController extends Controller
         }
         // $transactions = $this->filterDriverView($transactions);
 
-        $transactions = $transactions->latest('transactions.created_at')->groupBy('transactions.id');
+        $transactions = $transactions->latest('transactions.delivery_date')->groupBy('transactions.id');
 
         $totals = $this->calTotals($transactions);
 

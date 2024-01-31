@@ -97,6 +97,7 @@ class Person extends Baum\Node
     'updated_by', 'price_template_id', 'is_pwp', 'pwp_adj_rate', 'billing_country_id', 'delivery_country_id',
     'is_stock_balance_count_required', 'is_analog_clocker_required', 'unit_number', 'vend_code',
     'is_parent', 'location_type_id', 'is_vend', 'code', 'first_transaction_id', 'is_sys', 'is_commission_report',
+    'cust_prefix_id',
     ];
 
     protected $dates = ['deleted_at'];
@@ -119,6 +120,11 @@ class Person extends Baum\Node
     public function cashlessTerminal()
     {
         return $this->belongsTo(CashlessTerminal::class, 'terminal_provider');
+    }
+
+    public function custPrefix()
+    {
+        return $this->belongsTo(CustPrefix::class);
     }
 
     public function deliveryCountry()

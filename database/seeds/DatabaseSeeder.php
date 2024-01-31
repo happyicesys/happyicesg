@@ -58,6 +58,7 @@ class DatabaseSeeder extends Seeder
         // $this->call(LocationTypeSeeder::class);
         // $this->call(RackingConfigSeeder::class);
         $this->call(SyncPersonCodeSeeder::class);
+        $this->call(PersonRunningNumberSeeder::class);
         Model::reguard();
     }
 }

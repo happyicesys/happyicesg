@@ -469,6 +469,12 @@ Route::get('/truck/data', 'TruckController@getData');
 Route::delete('/truck/data/{id}', 'TruckController@destroyAjax');
 Route::resource('truck', 'TruckController');
 
+Route::get('/api/cust-prefixes', 'CustPrefixController@getIndexApi');
+Route::get('/api/cust-prefixes/{id}', 'CustPrefixController@getCustPrefixApi');
+Route::get('/cust-prefixes/data', 'CustPrefixController@getData');
+Route::delete('/cust-prefixes/data/{id}', 'CustPrefixController@destroyAjax');
+Route::resource('cust-prefixes', 'CustPrefixController');
+
 Route::post('/api/pricematrix/override', 'PriceController@overridePriceMatrixApi');
 Route::post('/api/prices/person', 'PriceController@getPersonPricesApi');
 Route::post('/pricematrix/batchconfirm', 'PriceController@batchConfirmPriceMatrix');

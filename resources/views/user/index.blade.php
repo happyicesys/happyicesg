@@ -14,6 +14,7 @@
         <ul class="nav nav-pills nav-justified" role="tablist">
             @if(auth()->user()->hasRole('admin'))
                 <li class="active"><a href="#data" role="tab" data-toggle="tab">User Data</a></li>
+                <li><a href="#cust-prefix" role="tab" data-toggle="tab">Cust Prefix</a></li>
                 @if(config('app.usage') != 'operator')
                     <li><a href="#freezer" role="tab" data-toggle="tab">Freezer</a></li>
                     <li><a href="#accessory" role="tab" data-toggle="tab">Accessory</a></li>
@@ -387,6 +388,9 @@
                 @include('user.custcat_template')
             </div>
             {{-- end of fifth element --}}
+            <div class="tab-pane" id="cust-prefix" ng-controller="custPrefixController">
+                @include('user.cust_prefix')
+            </div>
 
             <div class="tab-pane" id="cust_tags" ng-controller="custTagsController">
                 @include('user.cust_tags_template')

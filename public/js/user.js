@@ -256,6 +256,43 @@ function custCategoryController($scope, $http) {
     }
 }
 
+function custPrefixController($scope, $http) {
+    $scope.currentPage13 = 1;
+    $scope.itemsPerPage13 = 100;
+
+    $http.get('/api/cust-prefixes').success(function (custPrefixes) {
+        $scope.custPrefixes = custPrefixes;
+    });
+
+    // export cust cat excel
+    $scope.exportCustPrefixExcel = function (event) {
+        event.preventDefault();
+        var blob = new Blob(["\ufeff", document.getElementById('exportable_cust_prefix').innerHTML], {
+            type: "application/vnd.ms-excel;charset=charset=utf-8"
+        });
+        var now = Date.now();
+        saveAs(blob, "Cust Prefix" + now + ".xls");
+    };
+
+    $scope.confirmDelete13 = function (id) {
+        var isConfirmDelete = confirm('Are you sure you want to delete this cust prefix?');
+        if (isConfirmDelete) {
+            $http({
+                method: 'DELETE',
+                url: '/cust-prefixes/data/' + id
+            })
+                .success(function (data) {
+                    location.reload();
+                })
+                .error(function (data) {
+                    alert('Unable to delete');
+                })
+        } else {
+            return false;
+        }
+    }
+}
+
 function custTagsController($scope, $http) {
     // init the variables
     $scope.alldata = [];
@@ -946,8 +983,16 @@ function repeatController12($scope) {
     })
 }
 
+function repeatController13($scope) {
+    $scope.$watch('$index', function (index) {
+        $scope.number = ($scope.$index + 1) + ($scope.currentPage13 - 1) * $scope.itemsPerPage13;
+    })
+}
+
+
 app.controller('userController', userController);
 app.controller('custCategoryController', custCategoryController);
+app.controller('custPrefixController', custPrefixController);
 app.controller('repeatController', repeatController);
 app.controller('repeatController2', repeatController2);
 app.controller('repeatController3', repeatController3);
@@ -956,6 +1001,8 @@ app.controller('repeatController5', repeatController5);
 app.controller('repeatController6', repeatController6);
 app.controller('repeatController10', repeatController10);
 app.controller('repeatController11', repeatController11);
+app.controller('repeatController12', repeatController12);
+app.controller('repeatController13', repeatController13);
 app.controller('custTagsController', custTagsController);
 app.controller('custCategoryGroupController', custCategoryGroupController);
 app.controller('itemcategoryController', itemcategoryController);
