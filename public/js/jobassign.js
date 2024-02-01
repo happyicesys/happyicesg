@@ -58,6 +58,7 @@ function transController($scope, $http, $window) {
         account_manager: '',
         zone_id: '',
         is_service: '',
+        vend_code: '',
         itemsPerPage: 200,
         sortName: '',
         sortBy: true

@@ -101,7 +101,7 @@
                     @foreach($drivers as $driver)
                     <table class="table table-bordered table-condensed" style="border:thin solid black;">
                         <tr style="background-color: lightgrey !important;">
-                          <th colspan="7">
+                          <th colspan="8">
                             {{$driver['name']}}
                           </th>
                           <th class="col-xs-1 text-right">
@@ -129,6 +129,9 @@
                             </th>
                             <th class="col-xs-1 text-center">
                               ID
+                            </th>
+                            <th class="col-xs-1 text-center">
+                              Vend ID
                             </th>
                             <th class="col-xs-1 text-center">
                               Postcode
@@ -169,6 +172,9 @@
                                 <td class="col-xs-1 text-center">
                                     {{ $transaction->cust_id }}<br>
                                     {{ $transaction->company }}
+                                </td>
+                                <td class="col-xs-1 text-center">
+                                  {{ $transaction->vend_code }}
                                 </td>
                                 <td class="col-xs-1 text-center">
                                     {{ $transaction->del_postcode }}

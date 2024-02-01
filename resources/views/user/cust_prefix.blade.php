@@ -51,6 +51,9 @@
                         <span ng-show="sortType == 'code' && sortReverse" class="fa fa-caret-up"></span>
                         </a>
                     </th>
+                    <th class="col-md-5 text-center">
+                        Desc
+                    </th>
                     <th class="col-md-2 text-center">
                       Cust Count
                     </th>
@@ -63,6 +66,7 @@
                      <tr dir-paginate="custPrefix in custPrefixes | filter:search | orderBy:sortType:sortReverse | itemsPerPage:itemsPerPage13" pagination-id="cust-prefix" current-page="currentPage13" ng-controller="repeatController13">
                         <td class="col-md-1 text-center">@{{ number }} </td>
                         <td class="col-md-2">@{{ custPrefix.code }}</td>
+                        <td class="col-md-5">@{{ custPrefix.desc }}</td>
                         <td class="col-md-2 text-right">@{{ custPrefix.people_count }}</td>
 
                         <td class="col-md-2 text-center">

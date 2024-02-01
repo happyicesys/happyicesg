@@ -506,6 +506,17 @@ Job Assign
                         ])
                     !!}
                     </div>
+                    <div class="form-group col-md-3 col-sm-6 col-xs-12">
+                        {!! Form::label('vend_code', 'Vend ID', ['class'=>'control-label search-title']) !!}
+                        {!! Form::text('vend_code', null,
+                                                        [
+                                                            'class'=>'form-control input-sm',
+                                                            'ng-model'=>'search.vend_code',
+                                                            'ng-change'=>'searchDB()',
+                                                            'placeholder'=>'Vend ID',
+                                                            'ng-model-options'=>'{ debounce: 1000 }'
+                                                        ]) !!}
+                    </div>
                 </div>
 
                 <div class="row">
@@ -815,9 +826,15 @@ Job Assign
                             </th>
                             <th class="col-md-1 text-center">
                                 <a href="" ng-click="sortTable('cust_id', driverkey)">
-                                ID
+                                Customer
                                 <span ng-if="search.sortName == 'cust_id' && !search.sortBy" class="fa fa-caret-down"></span>
                                 <span ng-if="search.sortName == 'cust_id' && search.sortBy" class="fa fa-caret-up"></span>
+                            </th>
+                            <th class="col-md-1 text-center">
+                                <a href="" ng-click="sortTable('vend_code', driverkey)">
+                                Vend ID
+                                <span ng-if="search.sortName == 'vend_code' && !search.sortBy" class="fa fa-caret-down"></span>
+                                <span ng-if="search.sortName == 'vend_code' && search.sortBy" class="fa fa-caret-up"></span>
                             </th>
 {{--
                             <th class="col-md-1 text-center">
@@ -960,10 +977,9 @@ Job Assign
                                     </span>
                                     <span class="col-md-12"><a href="/person/@{{ transaction.person_id }}">@{{transaction.cust_id[0] == 'D' || transaction.cust_id[0] == 'H' ? transaction.name : transaction.company}}</a></span>
                                 </td>
-{{--
                                 <td class="col-md-1 text-center">
-
-                                </td> --}}
+                                    @{{ transaction.vend_code }}
+                                </td>
                                 <td class="col-md-1 text-center">
                                     {{-- print invoice         --}}
                                     <a href="/transaction/download/@{{ transaction.id }}" class="btn btn-primary btn-xs" ng-if="transaction.status != 'Pending' && transaction.status != 'Cancelled'">Print</a>

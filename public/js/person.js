@@ -42,6 +42,7 @@ function personController($scope, $http) {
         is_pwp: '',
         created_from: '',
         created_to: '',
+        del_address: '',
     }
     $scope.assignForm = {
         name: '',

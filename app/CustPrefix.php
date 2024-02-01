@@ -8,6 +8,7 @@ class CustPrefix extends Model
 {
     protected $fillable = [
         'code',
+        'desc',
     ];
 
     public function people()

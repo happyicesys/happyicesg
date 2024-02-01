@@ -71,7 +71,7 @@
                             <th colspan="3" class="text-center">
                                 {{$request['delivery_to']}}
                             </th>
-                            <th colspan="3" class="text-center">
+                            <th colspan="4" class="text-center">
                                 {{$driverResult && $driverResult->truck ? $driverResult->truck->name : null}} ({{$driver['name']}})
                             </th>
                             <th colspan="3" class="text-center">
@@ -94,16 +94,19 @@
                             <th class="col-xs-2 text-center" style="width: 12%;">
                                 ID Name
                             </th>
+                            <th class="col-xs-2 text-center" style="width: 5%;">
+                                Vend Code
+                            </th>
                             <th class="col-xs-1 text-center" style="width: 3%;">
                                 Postal
                             </th>
                             <th class="col-xs-1 text-center" style="width: 4%;">
                                 Contact
                             </th>
-                            <th class="col-xs-2 text-center" style="width: 23%;">
+                            <th class="col-xs-2 text-center" style="width: 20%;">
                               T.Remark
                             </th>
-                            <th class="col-xs-2 text-center" style="width: 23%;">
+                            <th class="col-xs-2 text-center" style="width: 20%;">
                                 Ops Note
                             </th>
                             <th class="col-xs-1 text-center" style="width: 4%;">
@@ -137,6 +140,9 @@
                                 </td>
                                 <td class="col-xs-2 text-left" style="width: 12%;  height: 70%; overflow: hidden;">
                                     {{ $transaction->company }}
+                                </td>
+                                <td class="col-xs-1 text-center" style="width: 3%;">
+                                    {{ $transaction->vend_code }}
                                 </td>
                                 <td class="col-xs-1 text-center" style="width: 3%;">
                                     {{ $transaction->del_postcode }}

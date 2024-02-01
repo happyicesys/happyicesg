@@ -42,8 +42,8 @@ class PersonRequest extends Request
     public function messages()
     {
         return [
-            'cust_id.required' => 'Please fill in the Customer ID',
-            'cust_id.unique' => 'The ID has been taken',
+            // 'cust_id.required' => 'Please fill in the Customer ID',
+            // 'cust_id.unique' => 'The ID has been taken',
             'company.required' => 'Please fill in the Customer ID Name',
             'name.min' => 'Attn To must more than 3 words',
             'roc_no.unique' => 'The ROC No has been taken',

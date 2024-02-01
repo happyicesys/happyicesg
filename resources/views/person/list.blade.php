@@ -271,6 +271,27 @@
                         <option value="0">No</option>
                     </select>
                 </div>
+                <div class="form-group col-md-2 col-sm-4 col-xs-12">
+                    {!! Form::label('del_address', 'Del Address', ['class'=>'control-label search-title']) !!}
+                    {!! Form::text('del_address', null,
+                                                    [
+                                                        'class'=>'form-control input-sm',
+                                                        'ng-model'=>'search.del_address',
+                                                        'placeholder'=>'Del Address',
+                                                    ])
+                    !!}
+                </div>
+                <div class="form-group col-md-2 col-sm-4 col-xs-12">
+                    {!! Form::label('cust_prefix_id', 'Customer Prefix', ['class'=>'control-label search-title']) !!}
+                    <select name="cust_prefix_id" id="cust_prefix_id" class="selectmultiple form-control" ng-model="search.cust_prefix_id" multiple>
+                        <option value="-1">-- Unassigned --</option>
+                        @foreach($custPrefixes::orderBy('code')->get() as $custPrefix)
+                            <option value="{{$custPrefix->id}}">
+                                {{$custPrefix->code}}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
             </div>
 
 
@@ -342,6 +363,27 @@
         <div ng-show="showBatchFunctionPanel">
             <hr class="row">
             <div class="row">
+                <div class="col-md-12 col-sm-12 col-xs-12">
+                    <div class="col-md-6 col-sm-6 col-xs-12">
+                        <div class="form-group">
+                            {!! Form::label('assign_cust_prefix', 'Batch Assign Cust Prefix', ['class'=>'control-label search-title']) !!}
+                            <select name="custPrefix" class="select form-control" ng-model="assignForm.custPrefix" ng-change="searchDB()">
+                                <option value="">None</option>
+                                @foreach($custPrefixes::orderBy('code')->get() as $custPrefix)
+                                    <option value="{{$custPrefix->id}}">{{$custPrefix->code}}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-sm-6 col-xs-12">
+                        <div class="form-group">
+                        <label class="control-label"></label>
+                        <div class="btn-group-control">
+                            <button type="submit" class="btn btn-sm btn-warning" ng-click="onBatchAssignClicked($event, 'custPrefix')" style="margin-top: 9px;"><i class="fa fa-arrow-circle-right" aria-hidden="true"></i> Assign Cust Prefix</button>
+                        </div>
+                        </div>
+                    </div>
+                </div>
                 <div class="col-md-12 col-sm-12 col-xs-12">
                     <div class="col-md-6 col-sm-6 col-xs-12">
                         <div class="form-group">
@@ -717,6 +759,12 @@
                         Tag(s)
                     </th>
                     <th class="col-md-1 text-center">
+                        <a href="" ng-click="sortTable('cust_prefix_id')">
+                        Prefix
+                        <span ng-if="search.sortName == 'cust_prefix_id' && !search.sortBy" class="fa fa-caret-down"></span>
+                        <span ng-if="search.sortName == 'cust_prefix_id' && search.sortBy" class="fa fa-caret-up"></span>
+                    </th>
+                    <th class="col-md-1 text-center">
                         Freezer(s)
                     </th>
                     <th class="col-md-1 text-center">
@@ -818,6 +866,9 @@
                                     @{{tag.name}}
                                 </li>
                             </ul> --}}
+                        </td>
+                        <td class="col-md-1 text-center">
+                            @{{ person.cust_prefix_code }}
                         </td>
                         <td class="col-md-1 text-left" style="max-width: 150; font-size: 13px;">
                             <span class="col-md-12" ng-repeat="freezer in person.freezers">

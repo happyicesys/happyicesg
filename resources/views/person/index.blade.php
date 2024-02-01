@@ -4,6 +4,7 @@
 @inject('profiles', 'App\Profile')
 @inject('franchisees', 'App\User')
 @inject('persontags', 'App\Persontag')
+@inject('custPrefixes', 'App\CustPrefix')
 @inject('priceTemplates', 'App\PriceTemplate')
 @inject('users', 'App\User')
 @inject('zones', 'App\Zone')

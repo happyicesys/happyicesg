@@ -88,6 +88,7 @@ class PersonController extends Controller
         $people = Person::with(['persontags', 'custcategory', 'profile', 'freezers', 'zone', 'accountManager'])
         ->leftJoin('custcategories', 'people.custcategory_id', '=', 'custcategories.id')
         ->leftJoin('custcategory_groups', 'custcategories.custcategory_group_id', '=', 'custcategory_groups.id')
+        ->leftJoin('cust_prefixes', 'cust_prefixes.id', '=', 'people.cust_prefix_id')
         ->leftJoin('profiles', 'profiles.id', '=', 'people.profile_id')
         ->leftJoin('users AS account_managers', 'account_managers.id', '=', 'people.account_manager')
         ->leftJoin('zones', 'zones.id', '=', 'people.zone_id')
@@ -103,7 +104,9 @@ class PersonController extends Controller
             'zones.name AS zone_name',
             'updater.name AS updated_by',
             DB::raw('DATE(earliestTransaction.delivery_date) AS earliest_delivery_date'),
-            'location_types.name AS location_type_name'
+            'location_types.name AS location_type_name',
+            'cust_prefixes.code AS cust_prefix_code',
+            'cust_prefixes.id AS cust_prefix_id',
         );
 
         // reading whether search input is filled
@@ -1011,6 +1014,9 @@ class PersonController extends Controller
                             $value = null;
                         }
                         switch($name) {
+                            case 'custPrefix':
+                                $person->cust_prefix_id = $value;
+                                break;
                             case 'locationType':
                                 $person->location_type_id = $value;
                                 break;
@@ -1621,6 +1627,8 @@ class PersonController extends Controller
         $createdTo = $request->created_to;
         $customerTypes = $request->customer_types;
         $isVend = $request->is_vend;
+        $del_address = $request->del_address;
+        $cust_prefix_id = $request->cust_prefix_id;
 
         if ($cust_id) {
             if($strictCustId) {
@@ -1797,6 +1805,20 @@ class PersonController extends Controller
             $people = $people->where('people.is_vend', $isVend);
         }
 
+        if($del_address) {
+            $people = $people->where('people.del_address', 'LIKE', '%' . $del_address . '%');
+        }
+
+        if($cust_prefix_id != '') {
+            if(in_array('-1', $cust_prefix_id)) {
+                $people = $people->where(function($query) {
+                    $query->whereNull('people.cust_prefix_id')->orWhere('people.cust_prefix_id', 0);
+                });
+            }else {
+                $people = $people->whereIn('people.cust_prefix_id', $cust_prefix_id);
+            }
+        }
+
         return $people;
     }
 
@@ -1813,6 +1835,7 @@ class PersonController extends Controller
         $po_no = $request->po_no;
         $is_service = $request->is_service;
         $is_vend = $request->is_vend;
+        $del_address = $request->del_address;
 
         if($id) {
             $transactions = $transactions->where('transactions.id', 'LIKE', '%' . $id . '%');
@@ -1846,6 +1869,9 @@ class PersonController extends Controller
         }
         if($is_vend) {
             $transactions = $transaction->where('people.is_vend', $is_vend);
+        }
+        if($del_address) {
+            $transactions = $transactions->where('transactions.del_address', 'LIKE', '%' . $del_address . '%');
         }
         return $transactions;
     }

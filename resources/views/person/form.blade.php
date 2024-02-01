@@ -24,14 +24,14 @@
 <div class="row">
     <div class="col-md-4 col-sm-4 col-xs-12">
         <div class="form-group">
-            {!! Form::label('code', 'Running ID', ['class'=>'control-label']) !!}
-            {!! Form::text('code', null, ['class'=>'form-control', 'disabled'=>'disabled']) !!}
+            {!! Form::label('cust_prefix_id', 'Customer Prefix', ['class'=>'control-label']) !!}
+            {!! Form::select('cust_prefix_id', $custPrefixes::lists('code', 'id'), null, ['id'=>'cust_prefix_id', 'class'=>'selectNormal form-control', 'disabled'=>$disabled]) !!}
         </div>
     </div>
     <div class="col-md-4 col-sm-4 col-xs-12">
         <div class="form-group">
-            {!! Form::label('cust_prefix_id', 'Cust Prefix', ['class'=>'control-label']) !!}
-            {!! Form::select('cust_prefix_id', $custPrefixes::lists('code', 'id'), null, ['id'=>'cust_prefix_id', 'class'=>'selectNormal form-control', 'disabled'=>$disabled]) !!}
+            {!! Form::label('code', 'Customer Code', ['class'=>'control-label']) !!}
+            {!! Form::text('code', null, ['class'=>'form-control', 'disabled'=>'disabled']) !!}
         </div>
     </div>
     <div class="col-md-4 col-sm-4 col-xs-12">
@@ -45,7 +45,7 @@
     <div class="col-md-6 col-sm-6 col-xs-12">
         <div class="form-group">
             {!! Form::label('cust_id', 'ID', ['class'=>'control-label']) !!}
-            {!! Form::label('art', '*', ['class'=>'control-label', 'style'=>'color:red;']) !!}
+            {{-- {!! Form::label('art', '*', ['class'=>'control-label', 'style'=>'color:red;']) !!} --}}
             {!! Form::text('cust_id', null, ['class'=>'form-control', 'disabled'=>$disabled]) !!}
         </div>
     </div>
