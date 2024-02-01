@@ -8,7 +8,10 @@ trait HasRunningNumber{
     public function generateRunningNumber($model)
     {
 
-        $code = $model->max('code');
+        $code = $model
+            ->orderByRaw('LENGTH(code) DESC, code DESC')
+            ->first()
+            ->code;
 
         if(!$code) {
             return 10001;
