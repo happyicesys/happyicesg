@@ -106,7 +106,7 @@ class PersonController extends Controller
             DB::raw('DATE(earliestTransaction.delivery_date) AS earliest_delivery_date'),
             'location_types.name AS location_type_name',
             'cust_prefixes.code AS cust_prefix_code',
-            'cust_prefixes.id AS cust_prefix_id',
+            'cust_prefixes.id AS cust_prefix_id'
         );
 
         // reading whether search input is filled
