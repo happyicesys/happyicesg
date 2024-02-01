@@ -736,6 +736,7 @@ class PersonController extends Controller
         $rep_person->account_number = null;
         $rep_person->account_manager = auth()->user()->id;
         $rep_person->vend_code = null;
+        $rep_person->code = $this->generateRunningNumber($rep_person);
         $rep_person->save();
 
 
