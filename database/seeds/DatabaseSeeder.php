@@ -57,8 +57,9 @@ class DatabaseSeeder extends Seeder
         // $this->call(PriceTemplateItemUomSeeder::class);
         // $this->call(LocationTypeSeeder::class);
         // $this->call(RackingConfigSeeder::class);
-        $this->call(SyncPersonCodeSeeder::class);
-        $this->call(PersonRunningNumberSeeder::class);
+        // $this->call(SyncPersonCodeSeeder::class);
+        // $this->call(PersonRunningNumberSeeder::class);
+        $this->call(SyncSysVendCodeSeeder::class);
         Model::reguard();
     }
 }

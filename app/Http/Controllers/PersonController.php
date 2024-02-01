@@ -51,7 +51,8 @@ class PersonController extends Controller
             'getLastInvoiceDateApi',
             'getPeopleByVendCode',
             'getVendsApi',
-            'syncLocationTypeWithSys'
+            'syncLocationTypeWithSys',
+            'updatePersonVendCodeApi'
         ]]);
     }
 
@@ -1583,6 +1584,13 @@ class PersonController extends Controller
 
         $people = Person::whereIn('vend_code', $vendCodeArr)->get();
         return $people;
+    }
+
+    public function updatePersonVendCodeApi(Request $request, $id)
+    {
+        $person = Person::findOrFail($id);
+        $person->vend_code = $request->vendCode;
+        $person->save();
     }
 
     // conditional filter parser(Collection $query, Formrequest $request)
