@@ -1593,10 +1593,10 @@ class PersonController extends Controller
         return $people;
     }
 
-    public function updatePersonVendCodeApi(Request $request, $id)
+    public function updatePersonVendCodeApi($id, $vendCode)
     {
         $person = Person::findOrFail($id);
-        $person->vend_code = $request->vendCode;
+        $person->vend_code = $vendCode;
         $person->save();
     }
 

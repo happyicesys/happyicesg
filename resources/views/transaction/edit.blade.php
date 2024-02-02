@@ -284,8 +284,9 @@
                         <div class="btn-group">
                             @if(!auth()->user()->hasRole('hd_user') and !auth()->user()->hasRole('watcher') and !auth()->user()->hasRole('subfranchisee') and !auth()->user()->hasRole('event') and !auth()->user()->hasRole('event_plus'))
                             {!! Form::submit('Update', ['name'=>'update', 'class'=> 'btn btn-default', 'form'=>'form_cust']) !!}
+
                                 <a href="/transaction/download/{{$transaction->id}}" class="btn btn-primary">Print Invoice</a>
-                                @if(!$transaction->is_service)
+                                @if(!$transaction->is_service and !auth()->user()->hasRole('driver') and !auth()->user()->hasRole('technician'))
                                     <a href="/transaction/emailInv/{{$transaction->id}}" class="btn btn-warning">Send Inv Email</a>
                                 @endif
                             @endif

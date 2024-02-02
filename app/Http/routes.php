@@ -404,7 +404,7 @@ Route::get('/api/people/last-invoice-date', 'PersonController@getLastInvoiceDate
 Route::post('/api/person/location-type', 'PersonController@getLocationTypeApi');
 Route::get('/potential', 'PersonController@potentialIndex');
 Route::get('/api/vends/{type?}', 'PersonController@getVendsApi');
-Route::get('/api/person/vendcode/{id}', 'PersonController@updatePersonVendCodeApi');
+Route::get('/api/person/{id}/vendcode/{vendCode}', 'PersonController@updatePersonVendCodeApi');
 
 
 Route::get('/potential-customer', 'PotentialCustomerController@index');
