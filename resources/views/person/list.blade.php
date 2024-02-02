@@ -820,12 +820,12 @@
                             @{{ $index + indexFrom }}
                         </td>
                         <td class="col-md-1" style="max-width: 100px;">
-                            <a href="/person/@{{ person.id }}/edit">
                             @{{ person.cust_id }}
-                            </a>
                         </td>
                         <td class="col-md-2">
+                            <a href="/person/@{{ person.id }}/edit">
                             @{{ person.company }}
+                            </a>
                         </td>
                         <td class="col-md-1 text-center">
                             @{{ person.earliest_delivery_date }}
