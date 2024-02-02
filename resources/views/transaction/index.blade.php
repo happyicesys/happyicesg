@@ -595,6 +595,16 @@
                             ])
                         !!}
                         </div>
+                        <div class="form-group col-md-3 col-sm-6 col-xs-12">
+                            {!! Form::label('prefix_code', 'Prefix Code', ['class'=>'control-label search-title']) !!}
+                            {!! Form::text('prefix_code', null,
+                                                            [
+                                                                'class'=>'form-control input-sm',
+                                                                'ng-model'=>'search.prefix_code',
+                                                                'ng-change'=>'searchDB()',
+                                                                'placeholder'=>'Prefix Code',
+                                                            ]) !!}
+                        </div>
                     </div>
                 </div>
 
@@ -977,6 +987,12 @@
                                     <span ng-if="search.sortName == 'cust_id' && search.sortBy" class="fa fa-caret-up"></span>
                                 </th>
                                 <th class="col-md-1 text-center">
+                                    <a href="" ng-click="sortTable('prefix_code')">
+                                    Prefix Code
+                                    <span ng-if="search.sortName == 'prefix_code' && !search.sortBy" class="fa fa-caret-down"></span>
+                                    <span ng-if="search.sortName == 'prefix_code' && search.sortBy" class="fa fa-caret-up"></span>
+                                </th>
+                                <th class="col-md-1 text-center">
                                     <a href="" ng-click="sortTable('company')">
                                     ID Name
                                     <span ng-if="search.sortName == 'company' && !search.sortBy" class="fa fa-caret-down"></span>
@@ -1147,6 +1163,9 @@
 
                                     @if(!auth()->user()->hasRole('hd_user'))
                                     <td class="col-md-1 text-center" style="max-width: 80px;">@{{ transaction.cust_id }} </td>
+                                    <td class="col-md-1 text-center" style="max-width: 100px;">
+                                        @{{ transaction.cust_prefix_code }}-@{{ transaction.code }}
+                                    </td>
                                     <td class="col-md-1 text-left" style="max-width: 180px;"><a href="/person/@{{ transaction.person_id }}">@{{transaction.cust_id[0] == 'H' ? transaction.name : transaction.company}}</a></td>
                                     <td class="col-md-1 text-center">
                                         {{-- print invoice         --}}

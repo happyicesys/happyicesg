@@ -292,6 +292,16 @@
                         @endforeach
                     </select>
                 </div>
+                <div class="form-group col-md-2 col-sm-4 col-xs-12">
+                    {!! Form::label('prefix_code', 'Prefix + Code', ['class'=>'control-label search-title']) !!}
+                    {!! Form::text('prefix_code', null,
+                                                    [
+                                                        'class'=>'form-control input-sm',
+                                                        'ng-model'=>'search.prefix_code',
+                                                        'placeholder'=>'Prefix + Code',
+                                                    ])
+                    !!}
+                </div>
             </div>
 
 
@@ -693,6 +703,12 @@
                         <span ng-if="search.sortName == 'cust_id' && !search.sortBy" class="fa fa-caret-down"></span>
                         <span ng-if="search.sortName == 'cust_id' && search.sortBy" class="fa fa-caret-up"></span>
                     </th>
+                    <th class="col-md-1 text-center">
+                        <a href="" ng-click="sortTable('code')">
+                        Prefix Code
+                        <span ng-if="search.sortName == 'code' && !search.sortBy" class="fa fa-caret-down"></span>
+                        <span ng-if="search.sortName == 'code' && search.sortBy" class="fa fa-caret-up"></span>
+                    </th>
                     <th class="col-md-2 text-center">
                         <a href="" ng-click="sortTable('company')">
                         ID Name
@@ -759,12 +775,6 @@
                         Tag(s)
                     </th>
                     <th class="col-md-1 text-center">
-                        <a href="" ng-click="sortTable('cust_prefix_id')">
-                        Prefix
-                        <span ng-if="search.sortName == 'cust_prefix_id' && !search.sortBy" class="fa fa-caret-down"></span>
-                        <span ng-if="search.sortName == 'cust_prefix_id' && search.sortBy" class="fa fa-caret-up"></span>
-                    </th>
-                    <th class="col-md-1 text-center">
                         Freezer(s)
                     </th>
                     <th class="col-md-1 text-center">
@@ -822,6 +832,9 @@
                         <td class="col-md-1" style="max-width: 100px;">
                             @{{ person.cust_id }}
                         </td>
+                        <td class="col-md-1 text-center">
+                            @{{ person.cust_prefix_code }}-@{{ person.code }}
+                        </td>
                         <td class="col-md-2">
                             <a href="/person/@{{ person.id }}/edit">
                             @{{ person.company }}
@@ -866,9 +879,6 @@
                                     @{{tag.name}}
                                 </li>
                             </ul> --}}
-                        </td>
-                        <td class="col-md-1 text-center">
-                            @{{ person.cust_prefix_code }}
                         </td>
                         <td class="col-md-1 text-left" style="max-width: 150; font-size: 13px;">
                             <span class="col-md-12" ng-repeat="freezer in person.freezers">

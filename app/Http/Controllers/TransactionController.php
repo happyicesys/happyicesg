@@ -3069,6 +3069,7 @@ class TransactionController extends Controller
         // dd('dude');
         $transactions = DB::table('transactions')
                         ->leftJoin('people', 'transactions.person_id', '=', 'people.id')
+                        ->leftJoin('cust_prefixes', 'people.cust_prefix_id', '=', 'cust_prefixes.id')
                         ->leftJoin('profiles', 'people.profile_id', '=', 'profiles.id')
                         ->leftJoin('custcategories', 'people.custcategory_id', '=', 'custcategories.id')
                         ->leftJoin('custcategory_groups', 'custcategories.custcategory_group_id', '=', 'custcategory_groups.id')
@@ -3079,8 +3080,9 @@ class TransactionController extends Controller
                         ->leftJoin('zones', 'zones.id', '=', 'people.zone_id');
                         // ->leftJoin($dupes_transaction, 'dupes_transactions.id', '=', 'transactions.id');
         $transactions = $transactions->select(
+                                    'cust_prefixes.code AS cust_prefix_code',
                                     'people.cust_id', 'people.company',
-                                    'people.name', 'people.id as person_id', 'people.operation_note', 'people.zone_id', 'people.vend_code',
+                                    'people.name', 'people.id as person_id', 'people.operation_note', 'people.zone_id', 'people.vend_code', 'people.code',
                                     'zones.name AS zone_name',
                                     'transactions.del_postcode','transactions.status', 'transactions.delivery_date', 'transactions.driver',
                                     'transactions.total_qty', 'transactions.pay_status', 'transactions.is_deliveryorder',
@@ -3956,6 +3958,23 @@ class TransactionController extends Controller
 
         if(request('vend_code')) {
             $transactions = $transactions->where('people.vend_code', 'LIKE', '%'.request('vend_code').'%');
+        }
+
+
+        if($prefixCode = request('prefix_code')) {
+            $transactions = $transactions->where(function($query) use ($prefixCode) {
+                $lettersOnly = preg_replace("/[^a-zA-Z]/", "", $prefixCode);
+                $numbersOnly = preg_replace("/[^0-9]/", "", $prefixCode);
+                if($lettersOnly && !$numbersOnly) {
+                    $query->where('cust_prefixes.code', 'LIKE', '%' . $lettersOnly . '%');
+                }
+                if($numbersOnly && !$lettersOnly) {
+                    $query->where('people.code', 'LIKE', '%' . $numbersOnly . '%');
+                }
+                if($lettersOnly && $numbersOnly) {
+                    $query->where('cust_prefixes.code', 'LIKE', '%' . $lettersOnly . '%')->where('people.code', 'LIKE', '%' . $numbersOnly . '%');
+                }
+            });
         }
 
         if(request('sortName')){

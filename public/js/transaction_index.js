@@ -60,6 +60,7 @@ function transController($scope, $http) {
         account_manager: '',
         zone_id: '',
         is_service: '',
+        prefix_code: '',
         itemsPerPage: 200,
         sortName: '',
         sortBy: true

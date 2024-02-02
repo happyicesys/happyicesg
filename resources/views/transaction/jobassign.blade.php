@@ -517,6 +517,17 @@ Job Assign
                                                             'ng-model-options'=>'{ debounce: 1000 }'
                                                         ]) !!}
                     </div>
+                    <div class="form-group col-md-3 col-sm-6 col-xs-12">
+                        {!! Form::label('prefix_code', 'Prefix Code', ['class'=>'control-label search-title']) !!}
+                        {!! Form::text('prefix_code', null,
+                                                        [
+                                                            'class'=>'form-control input-sm',
+                                                            'ng-model'=>'search.prefix_code',
+                                                            'ng-change'=>'searchDB()',
+                                                            'placeholder'=>'Prefix Code',
+                                                            'ng-model-options'=>'{ debounce: 1000 }'
+                                                        ]) !!}
+                    </div>
                 </div>
 
                 <div class="row">
@@ -727,9 +738,9 @@ Job Assign
                         {{-- hidden table for excel export --}}
                         <tr style="background-color: #8BD5FC">
                             @if(!auth()->user()->hasRole('driver') and !auth()->user()->hasRole('technician'))
-                            <th colspan="18">
+                            <th colspan="20">
                             @else
-                            <th colspan="14">
+                            <th colspan="16">
                             @endif
                                 @{{driver.name}}
                                 @if(!auth()->user()->hasRole('driver') and !auth()->user()->hasRole('technician'))
@@ -829,6 +840,12 @@ Job Assign
                                 Customer
                                 <span ng-if="search.sortName == 'cust_id' && !search.sortBy" class="fa fa-caret-down"></span>
                                 <span ng-if="search.sortName == 'cust_id' && search.sortBy" class="fa fa-caret-up"></span>
+                            </th>
+                            <th class="col-md-1 text-center">
+                                <a href="" ng-click="sortTable('code', driverkey)">
+                                Prefix Code
+                                <span ng-if="search.sortName == 'code' && !search.sortBy" class="fa fa-caret-down"></span>
+                                <span ng-if="search.sortName == 'code' && search.sortBy" class="fa fa-caret-up"></span>
                             </th>
                             <th class="col-md-1 text-center">
                                 <a href="" ng-click="sortTable('vend_code', driverkey)">
@@ -976,6 +993,9 @@ Job Assign
                                         @{{ transaction.cust_id }}
                                     </span>
                                     <span class="col-md-12"><a href="/person/@{{ transaction.person_id }}">@{{transaction.cust_id[0] == 'D' || transaction.cust_id[0] == 'H' ? transaction.name : transaction.company}}</a></span>
+                                </td>
+                                <td class="col-md-1 text-center">
+                                    @{{ transaction.cust_prefix_code }}-@{{ transaction.code }}
                                 </td>
                                 <td class="col-md-1 text-center">
                                     @{{ transaction.vend_code }}

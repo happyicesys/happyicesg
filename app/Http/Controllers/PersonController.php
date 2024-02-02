@@ -97,7 +97,7 @@ class PersonController extends Controller
         ->leftJoin($earliestTransaction, 'earliestTransaction.person_id', '=', 'people.id')
         ->select(
             'people.id', 'people.cust_id', 'people.company', 'people.name', 'people.contact', 'people.alt_contact', 'people.del_address', 'people.del_postcode', 'people.bill_postcode', 'people.active', 'people.payterm', 'people.del_lat', 'people.del_lng', 'people.remark', 'people.email',
-            DB::raw('DATE(people.created_at) AS created_at'), 'people.updated_at', 'people.serial_number', 'people.delivery_country_id', 'people.billing_country_id', 'people.unit_number', 'people.is_commission_report',
+            DB::raw('DATE(people.created_at) AS created_at'), 'people.updated_at', 'people.serial_number', 'people.delivery_country_id', 'people.billing_country_id', 'people.unit_number', 'people.is_commission_report', 'people.code', 'people.vend_code',
             'custcategories.name as custcategory_name', 'custcategories.map_icon_file', 'custcategory_groups.name AS custcategory_group_name',
             'profiles.id AS profile_id', 'profiles.name AS profile_name',
             'account_managers.name AS account_manager_name',
@@ -1630,6 +1630,7 @@ class PersonController extends Controller
         $isVend = $request->is_vend;
         $del_address = $request->del_address;
         $cust_prefix_id = $request->cust_prefix_id;
+        $prefix_code = $request->prefix_code;
 
         if ($cust_id) {
             if($strictCustId) {
@@ -1818,6 +1819,22 @@ class PersonController extends Controller
             }else {
                 $people = $people->whereIn('people.cust_prefix_id', $cust_prefix_id);
             }
+        }
+
+        if($prefix_code) {
+            $people = $people->where(function($query) use ($prefix_code) {
+                $lettersOnly = preg_replace("/[^a-zA-Z]/", "", $prefix_code);
+                $numbersOnly = preg_replace("/[^0-9]/", "", $prefix_code);
+                if($lettersOnly && !$numbersOnly) {
+                    $query->where('cust_prefixes.code', 'LIKE', '%' . $lettersOnly . '%');
+                }
+                if($numbersOnly && !$lettersOnly) {
+                    $query->where('people.code', 'LIKE', '%' . $numbersOnly . '%');
+                }
+                if($lettersOnly && $numbersOnly) {
+                    $query->where('cust_prefixes.code', 'LIKE', '%' . $lettersOnly . '%')->where('people.code', 'LIKE', '%' . $numbersOnly . '%');
+                }
+            });
         }
 
         return $people;

@@ -22,19 +22,31 @@
     }
 @endphp
 <div class="row">
-    <div class="col-md-4 col-sm-4 col-xs-12">
+    <div class="col-md-3 col-sm-3 col-xs-12">
         <div class="form-group">
             {!! Form::label('cust_prefix_id', 'Customer Prefix', ['class'=>'control-label']) !!}
+            {!! Form::label('art', '*', ['class'=>'control-label', 'style'=>'color:red;']) !!}
             {!! Form::select('cust_prefix_id', $custPrefixes::lists('code', 'id'), null, ['id'=>'cust_prefix_id', 'class'=>'selectNormal form-control', 'disabled'=>$disabled]) !!}
         </div>
     </div>
-    <div class="col-md-4 col-sm-4 col-xs-12">
+    <div class="col-md-3 col-sm-3 col-xs-12">
         <div class="form-group">
             {!! Form::label('code', 'Customer Code', ['class'=>'control-label']) !!}
             {!! Form::text('code', null, ['class'=>'form-control', 'disabled'=>'disabled']) !!}
         </div>
     </div>
-    <div class="col-md-4 col-sm-4 col-xs-12">
+    <div class="col-md-3 col-sm-3 col-xs-12">
+        <div class="form-group">
+            {!! Form::label('is_vend', 'Is Vending Machine?', ['class'=>'control-label']) !!}
+            {!! Form::label('art', '*', ['class'=>'control-label', 'style'=>'color:red;']) !!}
+            {!! Form::select('is_vend',
+                [''=>null, '1'=>'Yes', '0'=>'No'],
+                null,
+                ['class'=>'selectnotclear form-control', 'disabled'=> $disabled])
+            !!}
+        </div>
+    </div>
+    <div class="col-md-3 col-sm-3 col-xs-12">
         <div class="form-group">
             {!! Form::label('vend_code', 'Vend ID', ['class'=>'control-label']) !!}
             {!! Form::text('vend_code', null, ['class'=>'form-control', 'disabled'=>'disabled']) !!}
@@ -271,17 +283,6 @@
                     [''=>null]+ $locationTypes::orderBy('sequence')->lists('name', 'id')->all(),
                     null,
                     ['class'=>'select form-control', 'disabled'=> $disabled])
-            !!}
-        </div>
-    </div>
-    <div class="col-md-4 col-sm-4 col-xs-12">
-        <div class="form-group">
-            {!! Form::label('is_vend', 'Is Vending Machine?', ['class'=>'control-label']) !!}
-            {!! Form::label('art', '*', ['class'=>'control-label', 'style'=>'color:red;']) !!}
-            {!! Form::select('is_vend',
-                [''=>null, '1'=>'Yes', '0'=>'No'],
-                null,
-                ['class'=>'selectnotclear form-control', 'disabled'=> $disabled])
             !!}
         </div>
     </div>

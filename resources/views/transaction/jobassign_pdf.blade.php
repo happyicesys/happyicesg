@@ -96,12 +96,12 @@
                 <div class="col-xs-12" style="padding-top: 10px">
 
                   @if(count($drivers) == 0)
-                    <td class="text-center" colspan="18">No Records Found</td>
+                    <td class="text-center" colspan="20">No Records Found</td>
                   @else
                     @foreach($drivers as $driver)
                     <table class="table table-bordered table-condensed" style="border:thin solid black;">
                         <tr style="background-color: lightgrey !important;">
-                          <th colspan="8">
+                          <th colspan="9">
                             {{$driver['name']}}
                           </th>
                           <th class="col-xs-1 text-right">
@@ -132,6 +132,9 @@
                             </th>
                             <th class="col-xs-1 text-center">
                               Vend ID
+                            </th>
+                            <th class="col-xs-1 text-center">
+                              Prefix Code
                             </th>
                             <th class="col-xs-1 text-center">
                               Postcode
@@ -172,6 +175,9 @@
                                 <td class="col-xs-1 text-center">
                                     {{ $transaction->cust_id }}<br>
                                     {{ $transaction->company }}
+                                </td>
+                                <td class="col-xs-1 text-center">
+                                  {{ $transaction->cust_prefix_code }}-{{ $transaction->code }}
                                 </td>
                                 <td class="col-xs-1 text-center">
                                   {{ $transaction->vend_code }}

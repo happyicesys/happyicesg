@@ -43,6 +43,7 @@ function personController($scope, $http) {
         created_from: '',
         created_to: '',
         del_address: '',
+        prefix_code: '',
     }
     $scope.assignForm = {
         name: '',
