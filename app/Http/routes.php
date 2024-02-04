@@ -405,6 +405,7 @@ Route::post('/api/person/location-type', 'PersonController@getLocationTypeApi');
 Route::get('/potential', 'PersonController@potentialIndex');
 Route::get('/api/vends/{type?}', 'PersonController@getVendsApi');
 Route::get('/api/person/{id}/vendcode/{vendCode}', 'PersonController@updatePersonVendCodeApi');
+Route::get('/api/person/{id}/detach-vendcode', 'PersonController@detachPersonVendCodeApi');
 
 
 Route::get('/potential-customer', 'PotentialCustomerController@index');

@@ -52,7 +52,8 @@ class PersonController extends Controller
             'getPeopleByVendCode',
             'getVendsApi',
             'syncLocationTypeWithSys',
-            'updatePersonVendCodeApi'
+            'updatePersonVendCodeApi',
+            'detachPersonVendCodeApi',
         ]]);
     }
 
@@ -383,7 +384,7 @@ class PersonController extends Controller
         }
 
         $request->merge(['updated_by' => auth()->user()->id]);
-        $request->merge(['code' => preg_replace('/[^0-9]/', '', $request->cust_id)]);
+        // $request->merge(['code' => preg_replace('/[^0-9]/', '', $request->cust_id)]);
         $input = $request->all();
         unset($input['type']);
         $person->update($input);
@@ -1600,6 +1601,13 @@ class PersonController extends Controller
         $person->save();
     }
 
+    public function detachPersonVendCodeApi($id)
+    {
+        $person = Person::findOrFail($id);
+        $person->vend_code = null;
+        $person->save();
+    }
+
     // conditional filter parser(Collection $query, Formrequest $request)
     private function searchPeopleDBFilter($people, $request)
     {
@@ -1811,7 +1819,7 @@ class PersonController extends Controller
             $people = $people->where('people.del_address', 'LIKE', '%' . $del_address . '%');
         }
 
-        if($cust_prefix_id != '') {
+        if($cust_prefix_id != '' && $cust_prefix_id != []) {
             if(in_array('-1', $cust_prefix_id)) {
                 $people = $people->where(function($query) {
                     $query->whereNull('people.cust_prefix_id')->orWhere('people.cust_prefix_id', 0);
