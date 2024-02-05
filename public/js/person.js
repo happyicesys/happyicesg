@@ -44,6 +44,7 @@ function personController($scope, $http) {
         created_to: '',
         del_address: '',
         prefix_code: '',
+        code: '',
     }
     $scope.assignForm = {
         name: '',

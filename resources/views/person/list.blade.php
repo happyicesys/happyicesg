@@ -18,8 +18,28 @@
     </div>
 
     <div class="panel-body">
-
             <div class="row">
+                <div class="form-group col-md-2 col-sm-4 col-xs-12">
+                    {!! Form::label('cust_prefix_id', 'Customer Prefix', ['class'=>'control-label search-title']) !!}
+                    <select name="cust_prefix_id" id="cust_prefix_id" class="selectmultiple form-control" ng-model="search.cust_prefix_id" multiple>
+                        <option value="-1">-- Unassigned --</option>
+                        @foreach($custPrefixes::orderBy('code')->get() as $custPrefix)
+                            <option value="{{$custPrefix->id}}">
+                                {{$custPrefix->code}}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="form-group col-md-2 col-sm-4 col-xs-12">
+                    {!! Form::label('code', 'Customer Code', ['class'=>'control-label search-title']) !!}
+                    {!! Form::text('code', null,
+                                                    [
+                                                        'class'=>'form-control input-sm',
+                                                        'ng-model'=>'search.code',
+                                                        'placeholder'=>'Customer Code',
+                                                    ])
+                    !!}
+                </div>
                 <div class="form-group col-md-2 col-sm-4 col-xs-12">
                     {!! Form::label('cust_id', 'ID', ['class'=>'control-label search-title']) !!}
                     <label class="pull-right">
@@ -36,6 +56,20 @@
                                                     ])
                     !!}
                 </div>
+                <div class="col-md-2 col-sm-4 col-xs-12">
+                    <div class="form-group">
+                    {!! Form::label('company', 'ID Name', ['class'=>'control-label search-title']) !!}
+                    {!! Form::text('company', null,
+                                                    [
+                                                        'class'=>'form-control input-sm',
+                                                        'ng-model'=>'search.company',
+                                                        'placeholder'=>'ID Name',
+                                                    ])
+                    !!}
+                    </div>
+                </div>
+            </div>
+            <div class="row">
                 <div class="form-group col-md-2 col-sm-4 col-xs-12">
                     {!! Form::label('custcategory', 'Cust Category', ['class'=>'control-label search-title']) !!}
                     <label class="pull-right">
@@ -64,18 +98,6 @@
                         ])
                     !!}
                 </div>
-                <div class="col-md-2 col-sm-4 col-xs-12">
-                    <div class="form-group">
-                    {!! Form::label('company', 'ID Name', ['class'=>'control-label search-title']) !!}
-                    {!! Form::text('company', null,
-                                                    [
-                                                        'class'=>'form-control input-sm',
-                                                        'ng-model'=>'search.company',
-                                                        'placeholder'=>'ID Name',
-                                                    ])
-                    !!}
-                    </div>
-                </div>
                 <div class="form-group col-md-2 col-sm-4 col-xs-12">
                     {!! Form::label('contact', 'Contact', ['class'=>'control-label search-title']) !!}
                     {!! Form::text('contact', null,
@@ -98,6 +120,24 @@
                             <option value="No">Inactive</option>
                         @endif
                     </select>
+                </div>
+                <div class="form-group col-md-2 col-sm-4 col-xs-12">
+                    {!! Form::label('is_vend', 'Is Vending Machine?', ['class'=>'control-label']) !!}
+                    <select name="is_vend" class="select form-control" ng-model="search.is_vend">
+                        <option value="">All</option>
+                        <option value="1">Yes</option>
+                        <option value="0">No</option>
+                    </select>
+                </div>
+                <div class="form-group col-md-2 col-sm-4 col-xs-12">
+                    {!! Form::label('del_address', 'Del Address', ['class'=>'control-label search-title']) !!}
+                    {!! Form::text('del_address', null,
+                                                    [
+                                                        'class'=>'form-control input-sm',
+                                                        'ng-model'=>'search.del_address',
+                                                        'placeholder'=>'Del Address',
+                                                    ])
+                    !!}
                 </div>
             </div>
             <div class="row">
@@ -263,36 +303,9 @@
                         <option value="na">-- N/A --</option>
                     </select>
                 </div>
-                <div class="form-group col-md-2 col-sm-4 col-xs-12">
-                    {!! Form::label('is_vend', 'Is Vending Machine?', ['class'=>'control-label']) !!}
-                    <select name="is_vend" class="select form-control" ng-model="search.is_vend">
-                        <option value="">All</option>
-                        <option value="1">Yes</option>
-                        <option value="0">No</option>
-                    </select>
-                </div>
-                <div class="form-group col-md-2 col-sm-4 col-xs-12">
-                    {!! Form::label('del_address', 'Del Address', ['class'=>'control-label search-title']) !!}
-                    {!! Form::text('del_address', null,
-                                                    [
-                                                        'class'=>'form-control input-sm',
-                                                        'ng-model'=>'search.del_address',
-                                                        'placeholder'=>'Del Address',
-                                                    ])
-                    !!}
-                </div>
-                <div class="form-group col-md-2 col-sm-4 col-xs-12">
-                    {!! Form::label('cust_prefix_id', 'Customer Prefix', ['class'=>'control-label search-title']) !!}
-                    <select name="cust_prefix_id" id="cust_prefix_id" class="selectmultiple form-control" ng-model="search.cust_prefix_id" multiple>
-                        <option value="-1">-- Unassigned --</option>
-                        @foreach($custPrefixes::orderBy('code')->get() as $custPrefix)
-                            <option value="{{$custPrefix->id}}">
-                                {{$custPrefix->code}}
-                            </option>
-                        @endforeach
-                    </select>
-                </div>
-                <div class="form-group col-md-2 col-sm-4 col-xs-12">
+
+
+                {{-- <div class="form-group col-md-2 col-sm-4 col-xs-12">
                     {!! Form::label('prefix_code', 'Prefix + Code', ['class'=>'control-label search-title']) !!}
                     {!! Form::text('prefix_code', null,
                                                     [
@@ -301,7 +314,7 @@
                                                         'placeholder'=>'Prefix + Code',
                                                     ])
                     !!}
-                </div>
+                </div> --}}
             </div>
 
 
@@ -698,16 +711,22 @@
                         #
                     </th>
                     <th class="col-md-1 text-center">
+                        <a href="" ng-click="sortTable('prefix_code')">
+                        Prefix
+                        <span ng-if="search.sortName == 'prefix_code' && !search.sortBy" class="fa fa-caret-down"></span>
+                        <span ng-if="search.sortName == 'prefix_code' && search.sortBy" class="fa fa-caret-up"></span>
+                    </th>
+                    <th class="col-md-1 text-center">
+                        <a href="" ng-click="sortTable('code')">
+                        Cust Code
+                        <span ng-if="search.sortName == 'code' && !search.sortBy" class="fa fa-caret-down"></span>
+                        <span ng-if="search.sortName == 'code' && search.sortBy" class="fa fa-caret-up"></span>
+                    </th>
+                    <th class="col-md-1 text-center">
                         <a href="" ng-click="sortTable('cust_id')">
                         ID
                         <span ng-if="search.sortName == 'cust_id' && !search.sortBy" class="fa fa-caret-down"></span>
                         <span ng-if="search.sortName == 'cust_id' && search.sortBy" class="fa fa-caret-up"></span>
-                    </th>
-                    <th class="col-md-1 text-center">
-                        <a href="" ng-click="sortTable('code')">
-                        Prefix Code
-                        <span ng-if="search.sortName == 'code' && !search.sortBy" class="fa fa-caret-down"></span>
-                        <span ng-if="search.sortName == 'code' && search.sortBy" class="fa fa-caret-up"></span>
                     </th>
                     <th class="col-md-2 text-center">
                         <a href="" ng-click="sortTable('company')">
@@ -829,11 +848,14 @@
                         <td class="col-md-1 text-center">
                             @{{ $index + indexFrom }}
                         </td>
-                        <td class="col-md-1" style="max-width: 100px;">
-                            @{{ person.cust_id }}
+                        <td class="col-md-1 text-center" style="max-width: 50px;">
+                            @{{ person.cust_prefix_code }}
                         </td>
                         <td class="col-md-1 text-center">
-                            @{{ person.cust_prefix_code }}-@{{ person.code }}
+                            @{{ person.code }}
+                        </td>
+                        <td class="col-md-1" style="max-width: 100px;">
+                            @{{ person.cust_id }}
                         </td>
                         <td class="col-md-2">
                             <a href="/person/@{{ person.id }}/edit">

@@ -1641,6 +1641,7 @@ class PersonController extends Controller
         $del_address = $request->del_address;
         $cust_prefix_id = $request->cust_prefix_id;
         $prefix_code = $request->prefix_code;
+        $code = $request->code;
 
         if ($cust_id) {
             if($strictCustId) {
@@ -1845,6 +1846,10 @@ class PersonController extends Controller
                     $query->where('cust_prefixes.code', 'LIKE', '%' . $lettersOnly . '%')->where('people.code', 'LIKE', '%' . $numbersOnly . '%');
                 }
             });
+        }
+
+        if($code) {
+            $people = $people->where('people.code', 'LIKE', '%' . $code . '%');
         }
 
         return $people;
