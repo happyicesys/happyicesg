@@ -1500,7 +1500,9 @@ class PersonController extends Controller
         if($personId) {
             $people = $people->where('people.id', $personId);
         }
-            $people = $people->where('custcategory_id', '<>', 43)
+
+            $people = $people
+                    // ->where('custcategory_id', '<>', 43)
                     ->where('people.cust_id', 'NOT LIKE', 'H%')
                     ->where('people.cust_id', 'NOT LIKE', 'D%')
                     ->where(function($query) {
