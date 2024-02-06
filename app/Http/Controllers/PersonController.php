@@ -1642,7 +1642,7 @@ class PersonController extends Controller
         $cust_prefix_id = $request->cust_prefix_id;
         $prefix_code = $request->prefix_code;
         $code = $request->code;
-        $vendCode = $request->vendCode;
+        $vendCode = $request->vend_code;
 
         if ($cust_id) {
             if($strictCustId) {
