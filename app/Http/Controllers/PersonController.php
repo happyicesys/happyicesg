@@ -1642,6 +1642,7 @@ class PersonController extends Controller
         $cust_prefix_id = $request->cust_prefix_id;
         $prefix_code = $request->prefix_code;
         $code = $request->code;
+        $vendCode = $request->vendCode;
 
         if ($cust_id) {
             if($strictCustId) {
@@ -1850,6 +1851,9 @@ class PersonController extends Controller
 
         if($code) {
             $people = $people->where('people.code', 'LIKE', '%' . $code . '%');
+        }
+        if($vendCode) {
+            $people = $people->where('people.vend_code', 'LIKE', '%' . $vendCode . '%');
         }
 
         return $people;

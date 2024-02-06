@@ -68,6 +68,18 @@
                     !!}
                     </div>
                 </div>
+                <div class="col-md-2 col-sm-4 col-xs-12">
+                    <div class="form-group">
+                    {!! Form::label('vend_code', 'Vend ID', ['class'=>'control-label search-title']) !!}
+                    {!! Form::text('vend_code', null,
+                                                    [
+                                                        'class'=>'form-control input-sm',
+                                                        'ng-model'=>'search.vend_code',
+                                                        'placeholder'=>'Vend ID',
+                                                    ])
+                    !!}
+                    </div>
+                </div>
             </div>
             <div class="row">
                 <div class="form-group col-md-2 col-sm-4 col-xs-12">
@@ -734,6 +746,12 @@
                         <span ng-if="search.sortName == 'company' && !search.sortBy" class="fa fa-caret-down"></span>
                         <span ng-if="search.sortName == 'company' && search.sortBy" class="fa fa-caret-up"></span>
                     </th>
+                    <th class="col-md-2 text-center">
+                        <a href="" ng-click="sortTable('vend_code')">
+                        Vend ID
+                        <span ng-if="search.sortName == 'vend_code' && !search.sortBy" class="fa fa-caret-down"></span>
+                        <span ng-if="search.sortName == 'vend_code' && search.sortBy" class="fa fa-caret-up"></span>
+                    </th>
                     <th class="col-md-1 text-center">
                         <a href="" ng-click="sortTable('earliest_delivery_date')">
                         First Inv Date
@@ -855,12 +873,17 @@
                             @{{ person.code }}
                         </td>
                         <td class="col-md-1" style="max-width: 100px;">
+                            <a href="/person/@{{ person.id }}/edit">
                             @{{ person.cust_id }}
+                            </a>
                         </td>
                         <td class="col-md-2">
                             <a href="/person/@{{ person.id }}/edit">
                             @{{ person.company }}
                             </a>
+                        </td>
+                        <td class="col-md-1 text-center" style="max-width: 60px;">
+                            @{{ person.vend_code }}
                         </td>
                         <td class="col-md-1 text-center">
                             @{{ person.earliest_delivery_date }}
