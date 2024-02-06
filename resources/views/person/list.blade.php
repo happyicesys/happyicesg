@@ -42,6 +42,9 @@
                 </div>
                 <div class="form-group col-md-2 col-sm-4 col-xs-12">
                     {!! Form::label('cust_id', 'ID', ['class'=>'control-label search-title']) !!}
+                    <label for="company" style="color:red; font-size: 11px;">
+                        (To be replaced)
+                    </label>
                     <label class="pull-right">
                         <input type="checkbox" name="strictCustId" ng-model="search.strictCustId" ng-change="searchDB($event)">
                         <span style="margin-top: 5px; margin-right: 5px; font-size: 12px;">
@@ -870,12 +873,12 @@
                             @{{ person.cust_prefix_code }}
                         </td>
                         <td class="col-md-1 text-center">
+                            <a href="/person/@{{ person.id }}/edit">
                             @{{ person.code }}
+                            </a>
                         </td>
                         <td class="col-md-1" style="max-width: 100px;">
-                            <a href="/person/@{{ person.id }}/edit">
                             @{{ person.cust_id }}
-                            </a>
                         </td>
                         <td class="col-md-2">
                             <a href="/person/@{{ person.id }}/edit">

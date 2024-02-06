@@ -54,26 +54,17 @@
                 <div class="col-md-7 col-sm-7 col-xs-12">
                     <div class="form-group">
                     <span class="control-label">
-                        <h3 class="panel-title"><strong>Profile for {{$person->cust_id}} : {{$person->company}} </strong>
-                            -
-                        @php
-                            $statusStr = '';
-                            switch($person->active) {
-                                case 'Yes':
-                                    $statusStr = '[Active]';
-                                    break;
-                                case 'No':
-                                    $statusStr = '[Inactive]';
-                                    break;
-                                case 'Pending':
-                                    $statusStr = '[Pending]';
-                                    break;
-                                case 'New':
-                                    $statusStr = '[New]';
-                                    break;
-                            }
-                        @endphp
-                        {{$statusStr}}
+                        @if($person->active == 'Yes')
+                            <h4><span class="label label-success">Active</span></h4>
+                        @elseif($person->active == 'No')
+                            <h4><span class="label label-danger">Inactive</span></h4>
+                        @elseif($person->active == 'Pending')
+                            <h4><span class="label label-warning">Pending</span></h4>
+                        @elseif($person->active == 'New')
+                            <h4><span class="label label-primary">New</span></h4>
+                        @endif
+                        <h3 class="panel-title" style="padding-top:5px;"><strong>{{$person->custPrefix->code}}-{{$person->code}} </strong></h3>
+                        <h4 class="panel-title" style="padding-top:5px;"><strong>Profile for ({{$person->cust_id}}) : {{$person->company}} </strong></h4>
                     </span>
                     </div>
                 </div>
