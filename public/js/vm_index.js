@@ -20,6 +20,7 @@ function vmController($scope, $http) {
         custcategory: '',
         serial_no: '',
         racking_config_id: '',
+        vend_code: '',
         itemsPerPage: 100,
         sortName: '',
         sortBy: true

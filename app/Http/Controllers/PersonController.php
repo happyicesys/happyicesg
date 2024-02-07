@@ -224,7 +224,9 @@ class PersonController extends Controller
         $person->is_gst_inclusive = $person->profile->is_gst_inclusive;
         $person->gst_rate = $person->profile->gst_rate;
         $person->account_manager = auth()->user()->id;
-        $person->code = $this->generateRunningNumber($person);
+        $runningNumber = $this->generateRunningNumber($person);
+        $person->code = $runningNumber;
+        $person->cust_id = $runningNumber;
         $person->save();
 
         return Redirect::action('PersonController@edit', $person->id);
@@ -1420,27 +1422,15 @@ class PersonController extends Controller
             'accountManager' => function($query) {
                 $query->select('id', 'name', 'username');
             },
-            'bank' => function($query) {
-                $query->select('id', 'name');
-            },
-            'billingCountry' => function($query) {
-                $query->select('id', 'name');
-            },
-            'deliveryCountry' => function($query) {
-                $query->select('id', 'name');
-            },
             'custcategory' => function($query) {
                 $query->select('id', 'name', 'desc', 'map_icon_file', 'custcategory_group_id');
             },
             'custcategory.custcategoryGroup' => function($query) {
                 $query->select('id', 'name', 'desc');
             },
-            // 'transactions' => function($query) {
-            //     $query
-            //     ->latest()
-            //     ->select('id', 'person_id', 'delivery_date', 'status', 'total')
-            //     ->limit(1);
-            // },
+            'deliveryCountry' => function($query) {
+                $query->select('id', 'name');
+            },
             'locationType' => function($query) {
                 $query->select('id', 'name', 'remarks', 'sequence');
             },
@@ -1454,62 +1444,45 @@ class PersonController extends Controller
                 $query->select('id', 'name', 'priority');
             },
         ])
+        ->leftJoin('cust_prefixes', 'cust_prefixes.id', '=', 'people.cust_prefix_id')
         ->leftJoin($firstTransaction, 'firstTransaction.person_id', '=', 'people.id')
         ->select(
-            'people.id',
-            'account_manager',
-            'bank_id',
-            'billing_country_id',
-            'delivery_country_id',
-            'custcategory_id',
-            'location_type_id',
-            'profile_id',
-            'zone_id',
-            'vend_code',
             'active',
-            'payterm',
-            'bill_postcode',
-            'cust_id',
+            'account_manager',
             'company',
-            'account_number',
-            'remark',
-            'operation_note',
-            'created_at',
-            'bill_postcode',
-            'bill_address',
-            'del_postcode',
+            'cust_id',
+            'custcategory_id',
+            'cust_prefixes.code AS prefix',
             'del_address',
+            'del_postcode',
+            'delivery_country_id',
+            'location_type_id',
+            'people.code',
+            'people.created_at',
+            'people.id',
+            'profile_id',
+            'is_combi',
             'is_dvm',
             'is_vending',
-            'is_combi',
-            'cooperate_method',
-            'commission_type',
-            'commission_package',
-            'vending_piece_price',
-            'vending_monthly_rental',
-            'vending_profit_sharing',
-            'vending_monthly_utilities',
-            'vending_clocker_adjustment',
-            'is_pwp',
-            'pwp_adj_rate',
+            'vend_code',
+            'zone_id',
             DB::raw('DATE(firstTransaction.delivery_date) AS first_transaction_date'),
-            'firstTransaction.id AS first_transaction_id',
-            'people.created_at'
+            'firstTransaction.id AS first_transaction_id'
         );
 
         if($personId) {
             $people = $people->where('people.id', $personId);
         }
 
-            $people = $people
-                    // ->where('custcategory_id', '<>', 43)
-                    ->where('people.cust_id', 'NOT LIKE', 'H%')
-                    ->where('people.cust_id', 'NOT LIKE', 'D%')
-                    ->where(function($query) {
-                        $query->where('is_vending', 1)->orWhere('is_dvm', 1)->orWhere('is_combi', 1);
-                    })
-                    ->orderBy('cust_id')
-                    ->get();
+        $people = $people
+                // ->where('custcategory_id', '<>', 43)
+                ->where('people.cust_id', 'NOT LIKE', 'H%')
+                ->where('people.cust_id', 'NOT LIKE', 'D%')
+                ->where(function($query) {
+                    $query->where('is_vending', 1)->orWhere('is_dvm', 1)->orWhere('is_combi', 1);
+                })
+                ->orderBy('cust_id')
+                ->get();
 
         return $people;
     }
@@ -1853,7 +1826,13 @@ class PersonController extends Controller
             $people = $people->where('people.code', 'LIKE', '%' . $code . '%');
         }
         if($vendCode) {
-            $people = $people->where('people.vend_code', 'LIKE', '%' . $vendCode . '%');
+            // $people = $people->where('people.vend_code', 'LIKE', '%' . $vendCode . '%');
+            if(strpos($vendCode, ',') !== false) {
+                $vendCode = explode(',', $vendCode);
+                $people->whereIn('people.vend_code', $vendCode);
+            }else {
+                $people->where('people.vend_code', 'LIKE', "%{$vendCode}%");
+            }
         }
 
         return $people;

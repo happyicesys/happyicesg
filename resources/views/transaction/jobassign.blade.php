@@ -836,16 +836,16 @@ Job Assign
                                 <span ng-if="search.sortName == 'transactions.id' && search.sortBy" class="fa fa-caret-up"></span>
                             </th>
                             <th class="col-md-1 text-center">
-                                <a href="" ng-click="sortTable('cust_id', driverkey)">
-                                Customer
-                                <span ng-if="search.sortName == 'cust_id' && !search.sortBy" class="fa fa-caret-down"></span>
-                                <span ng-if="search.sortName == 'cust_id' && search.sortBy" class="fa fa-caret-up"></span>
-                            </th>
-                            <th class="col-md-1 text-center">
                                 <a href="" ng-click="sortTable('code', driverkey)">
                                 Prefix Code
                                 <span ng-if="search.sortName == 'code' && !search.sortBy" class="fa fa-caret-down"></span>
                                 <span ng-if="search.sortName == 'code' && search.sortBy" class="fa fa-caret-up"></span>
+                            </th>
+                            <th class="col-md-1 text-center">
+                                <a href="" ng-click="sortTable('cust_id', driverkey)">
+                                Customer
+                                <span ng-if="search.sortName == 'cust_id' && !search.sortBy" class="fa fa-caret-down"></span>
+                                <span ng-if="search.sortName == 'cust_id' && search.sortBy" class="fa fa-caret-up"></span>
                             </th>
                             <th class="col-md-1 text-center">
                                 <a href="" ng-click="sortTable('vend_code', driverkey)">
@@ -987,15 +987,14 @@ Job Assign
                                         <i class="fa fa-wrench" aria-hidden="true" style="color:grey; cursor:pointer;" ng-if="!transaction.is_service && transaction.deal_count == 0" ng-click="onIsServiceClicked(transaction.id, driverkey, transactionkey)"></i>
                                     </span>
                                 </td>
-
+                                <td class="col-md-1 text-center">
+                                    @{{ transaction.cust_prefix_code }}-@{{ transaction.code }}
+                                </td>
                                 <td class="col-md-1 text-center">
                                     <span class="col-md-12">
                                         @{{ transaction.cust_id }}
                                     </span>
                                     <span class="col-md-12"><a href="/person/@{{ transaction.person_id }}">@{{transaction.cust_id[0] == 'D' || transaction.cust_id[0] == 'H' ? transaction.name : transaction.company}}</a></span>
-                                </td>
-                                <td class="col-md-1 text-center">
-                                    @{{ transaction.cust_prefix_code }}-@{{ transaction.code }}
                                 </td>
                                 <td class="col-md-1 text-center">
                                     @{{ transaction.vend_code }}

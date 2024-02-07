@@ -58,7 +58,7 @@
         <div class="form-group">
             {!! Form::label('cust_id', 'ID', ['class'=>'control-label']) !!}
             {{-- {!! Form::label('art', '*', ['class'=>'control-label', 'style'=>'color:red;']) !!} --}}
-            {!! Form::text('cust_id', null, ['class'=>'form-control', 'disabled'=>$disabled]) !!}
+            {!! Form::text('cust_id', null, ['class'=>'form-control', 'disabled'=>'disabled']) !!}
         </div>
     </div>
 

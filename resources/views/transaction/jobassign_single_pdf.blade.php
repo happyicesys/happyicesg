@@ -88,14 +88,11 @@
                             <th class="col-xs-1 text-center" style="width: 4%;">
                               INV #
                             </th>
-                            <th class="col-xs-1 text-center" style="width: 7%;">
-                              ID
+                            <th class="col-xs-2 text-center" style="width: 9%;">
+                                Prefix Code
                             </th>
                             <th class="col-xs-2 text-center" style="width: 10%;">
                                 ID Name
-                            </th>
-                            <th class="col-xs-2 text-center" style="width: 8%;">
-                                Prefix Code
                             </th>
                             <th class="col-xs-2 text-center" style="width: 5%;">
                                 Vend Code
@@ -106,10 +103,10 @@
                             <th class="col-xs-1 text-center" style="width: 4%;">
                                 Contact
                             </th>
-                            <th class="col-xs-2 text-center" style="width: 17%;">
+                            <th class="col-xs-2 text-center" style="width: 20%;">
                               T.Remark
                             </th>
-                            <th class="col-xs-2 text-center" style="width: 17%;">
+                            <th class="col-xs-2 text-center" style="width: 20%;">
                                 Ops Note
                             </th>
                             <th class="col-xs-1 text-center" style="width: 4%;">
@@ -138,14 +135,13 @@
                                 <td class="col-xs-1 text-center" style="width: 4%;">
                                     {{ $transaction->id }}
                                 </td>
-                                <td class="col-xs-1 text-center" style="width: 7%;">
-                                    {{ $transaction->cust_id }}
+                                <td class="col-xs-1 text-center" style="width: 9%;">
+                                    {{ $transaction->cust_prefix_code }}-{{ $transaction->code }}
                                 </td>
                                 <td class="col-xs-2 text-left" style="width: 10%;  height: 70%; overflow: hidden;">
+                                    {{ $transaction->cust_id }}
+                                    <br>
                                     {{ $transaction->company }}
-                                </td>
-                                <td class="col-xs-1 text-center" style="width: 8%;">
-                                    {{ $transaction->cust_prefix_code }}-{{ $transaction->code }}
                                 </td>
                                 <td class="col-xs-1 text-center" style="width: 3%;">
                                     {{ $transaction->vend_code }}
@@ -156,10 +152,10 @@
                                 <td class="col-xs-1 text-center" style="width: 4%;">
                                     {{ $transaction->contact }}
                                 </td>
-                                <td class="col-xs-2 text-left" style="width: 17%;">
+                                <td class="col-xs-2 text-left" style="width: 20%;">
                                     {{ $transaction->transremark }}
                                 </td>
-                                <td class="col-xs-2 text-left" style="width: 17%;">
+                                <td class="col-xs-2 text-left" style="width: 20%;">
                                     {{ $transaction->operation_note }}
                                 </td>
                                 <td class="col-xs-1 text-center" style="width: 4%;">

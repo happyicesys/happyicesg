@@ -326,7 +326,7 @@ class VMController extends Controller
             ->leftJoin('cashless_terminals', 'cashless_terminals.id', '=', 'vendings.cashless_terminal_id')
             ->leftJoin('racking_configs', 'racking_configs.id', '=', 'vendings.racking_config_id')
             ->select(
-                'people.cust_id', 'people.company', 'people.id as person_id',
+                'people.cust_id', 'people.company', 'people.id as person_id', 'people.vend_code',
                 'vendings.vend_id', 'vendings.serial_no', 'vendings.type', 'vendings.router', 'vendings.desc', 'vendings.updated_by', 'vendings.created_at', 'vendings.id', 'vendings.updated_at', 'vendings.id AS id',
                 'profiles.id as profile_id',
                 'custcategories.name as custcategory',
@@ -375,6 +375,17 @@ class VMController extends Controller
 
         if(request('racking_config_id')) {
             $vendings = $vendings->where('racking_configs.id', request('racking_config_id'));
+        }
+
+        if(request('vend_code')) {
+            $vendCode = request('vend_code');
+            // $people = $people->where('people.vend_code', 'LIKE', '%' . $vendCode . '%');
+            if(strpos($vendCode, ',') !== false) {
+                $vendCode = explode(',', $vendCode);
+                $vendings = $vendings->whereIn('people.vend_code', $vendCode);
+            }else {
+                $vendings = $vendings->where('people.vend_code', 'LIKE', "%{$vendCode}%");
+            }
         }
 
         if (request('sortName')) {

@@ -74,6 +74,9 @@
                 <div class="col-md-2 col-sm-4 col-xs-12">
                     <div class="form-group">
                     {!! Form::label('vend_code', 'Vend ID', ['class'=>'control-label search-title']) !!}
+                    <span style="font-size: 11px;">
+                        ("," for multiple)
+                    </span>
                     {!! Form::text('vend_code', null,
                                                     [
                                                         'class'=>'form-control input-sm',

@@ -39,7 +39,7 @@ Vending Machine
                                                         'class'=>'form-control input-sm',
                                                         'ng-model'=>'search.type',
                                                         'ng-change'=>'searchDB()',
-                                                        'placeholder'=>'Vend ID',
+                                                        'placeholder'=>'Type',
                                                         'ng-model-options'=>'{ debounce: 500 }'
                                                     ])
                         !!}
@@ -87,7 +87,7 @@ Vending Machine
                                                         'class'=>'form-control input-sm',
                                                         'ng-model'=>'search.desc',
                                                         'ng-change'=>'searchDB()',
-                                                        'placeholder'=>'Vend ID',
+                                                        'placeholder'=>'Desc',
                                                         'ng-model-options'=>'{ debounce: 500 }'
                                                     ])
                         !!}
@@ -99,7 +99,7 @@ Vending Machine
                                                         'class'=>'form-control input-sm',
                                                         'ng-model'=>'search.serial_no',
                                                         'ng-change'=>'searchDB()',
-                                                        'placeholder'=>'Vend ID',
+                                                        'placeholder'=>'Serial No',
                                                         'ng-model-options'=>'{ debounce: 500 }'
                                                     ])
                         !!}
@@ -113,6 +113,23 @@ Vending Machine
                             'ng-change'=>'searchDB()'
                             ])
                         !!}
+                    </div>
+                    <div class="form-group col-md-3 col-sm-6 col-xs-12">
+                        <div class="form-group">
+                        {!! Form::label('vend_code', 'Vend ID', ['class'=>'control-label search-title']) !!}
+                        <span style="font-size: 11px;">
+                            ("," for multiple)
+                        </span>
+                        {!! Form::text('vend_code', null,
+                                                        [
+                                                            'class'=>'form-control input-sm',
+                                                            'ng-model'=>'search.vend_code',
+                                                            'ng-change'=>'searchDB()',
+                                                            'placeholder'=>'Vend ID',
+                                                            'ng-model-options'=>'{ debounce: 500 }'
+                                                        ])
+                        !!}
+                        </div>
                     </div>
                 </div>
 
@@ -158,7 +175,7 @@ Vending Machine
                                 <span ng-if="search.sortName == 'type' && !search.sortBy" class="fa fa-caret-down"></span>
                                 <span ng-if="search.sortName == 'type' && search.sortBy" class="fa fa-caret-up"></span>
                             </th>
-                            <th class="col-md-1 text-center">
+                            <th class="col-md-3 text-center">
                                 <a href="" ng-click="sortTable('racking_config_id')">
                                 Racking Config
                                 <span ng-if="search.sortName == 'racking_config_id' && !search.sortBy" class="fa fa-caret-down"></span>
@@ -181,6 +198,12 @@ Vending Machine
                                 Desc
                                 <span ng-if="search.sortName == 'desc' && !search.sortBy" class="fa fa-caret-down"></span>
                                 <span ng-if="search.sortName == 'desc' && search.sortBy" class="fa fa-caret-up"></span>
+                            </th>
+                            <th class="col-md-1 text-center">
+                                <a href="" ng-click="sortTable('vend_code')">
+                                Vend ID
+                                <span ng-if="search.sortName == 'vend_code' && !search.sortBy" class="fa fa-caret-down"></span>
+                                <span ng-if="search.sortName == 'vend_code' && search.sortBy" class="fa fa-caret-up"></span>
                             </th>
                             <th class="col-md-2 text-center">
                                 <a href="" ng-click="sortTable('cust_id')">
@@ -213,7 +236,7 @@ Vending Machine
                                 <td class="col-md-1 text-center">
                                     @{{ vm.type }}
                                 </td>
-                                <td class="col-md-1 text-center">
+                                <td class="col-md-3 text-center">
                                     @{{ vm.racking_config_name }} <br>
                                     @{{ vm.racking_config_desc }}
                                 </td>
@@ -233,6 +256,9 @@ Vending Machine
                                 </td>
                                 <td class="col-md-2 text-left">
                                     @{{ vm.desc }}
+                                </td>
+                                <td class="col-md-1 text-center">
+                                    @{{ vm.vend_code}}
                                 </td>
                                 <td class="col-md-2 text-left">
                                     <a href="/person/@{{ vm.person_id }}" ng-if="vm.person_id">
