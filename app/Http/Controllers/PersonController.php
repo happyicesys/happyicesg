@@ -729,17 +729,20 @@ class PersonController extends Controller
     // replicate the person particulars(int $person_id)
     public function replicatePerson($person_id)
     {
+        $runningNumber = $this->generateRunningNumber();
+
         $person = Person::findOrFail($person_id);
         $rep_person = $person->replicate();
-        $find_already_replicate = Person::where('cust_id', 'LIKE', $person->cust_id . '-replicate-%');
-        $rep_person->cust_id = $find_already_replicate->first() ? substr($find_already_replicate->max('cust_id'), 0, -1) . (substr($find_already_replicate->max('cust_id'), -1) + 1) : $person->cust_id . '-replicate-1';
+        // $find_already_replicate = Person::where('cust_id', 'LIKE', $person->cust_id . '-replicate-%');
+        // $rep_person->cust_id = $find_already_replicate->first() ? substr($find_already_replicate->max('cust_id'), 0, -1) . (substr($find_already_replicate->max('cust_id'), -1) + 1) : $person->cust_id . '-replicate-1';
+        $rep_person->cust_id = $runningNumber;
         $rep_person->del_lat = null;
         $rep_person->del_lng = null;
         $rep_person->bank_id = null;
         $rep_person->account_number = null;
         $rep_person->account_manager = auth()->user()->id;
         $rep_person->vend_code = null;
-        $rep_person->code = $this->generateRunningNumber($rep_person);
+        $rep_person->code = $runningNumber;
         $rep_person->save();
 
 
