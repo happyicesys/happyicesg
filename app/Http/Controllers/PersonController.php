@@ -29,6 +29,7 @@ use App\OutletVisit;
 use App\HasMonthOptions;
 use App\ServiceItem;
 use App\LocationType;
+use App\CustPrefix;
 use Auth;
 use DB;
 use App\HasProfileAccess;
@@ -734,9 +735,8 @@ class PersonController extends Controller
     // replicate the person particulars(int $person_id)
     public function replicatePerson($person_id)
     {
-        $runningNumber = $this->generateRunningNumber();
-
         $person = Person::findOrFail($person_id);
+        $runningNumber = $this->generateRunningNumber($person);
         $rep_person = $person->replicate();
         // $find_already_replicate = Person::where('cust_id', 'LIKE', $person->cust_id . '-replicate-%');
         // $rep_person->cust_id = $find_already_replicate->first() ? substr($find_already_replicate->max('cust_id'), 0, -1) . (substr($find_already_replicate->max('cust_id'), -1) + 1) : $person->cust_id . '-replicate-1';
