@@ -34,6 +34,13 @@
                 </th>
                 <th></th>
                 <th style="border: 1px solid #000000">
+                    Prefix Code
+                </th>
+                <th style="border: 1px solid #000000">
+                    {{request('prefix_code')}}
+                </th>
+                <th></th>
+                <th style="border: 1px solid #000000">
                     Company
                 </th>
                 <th style="border: 1px solid #000000">

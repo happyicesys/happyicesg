@@ -105,6 +105,21 @@
             </div>
             <div class="col-md-3 col-sm-6 col-xs-12">
                 <div class="form-group">
+                    {!! Form::label('prefix_code', 'Prefix Code', ['class'=>'control-label search-title']) !!}
+                    {!! Form::text('prefix_code',
+                        null,
+                        [
+                            'class'=>'form-control',
+                            'ng-model'=>'search.prefix_code',
+                            'placeholder'=>'Prefix Code',
+                            'ng-change'=>'searchDB()',
+                            'ng-model-options'=>'{ debounce: 500 }'
+                        ])
+                    !!}
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6 col-xs-12">
+                <div class="form-group">
                     {!! Form::label('company', 'ID Name', ['class'=>'control-label search-title']) !!}
                     {!! Form::text('company',
                         null,
@@ -142,6 +157,8 @@
                     !!}
                 </div>
             </div>
+        </div>
+        <div class="row">
             <div class="col-md-3 col-sm-6 col-xs-12">
                 <div class="form-group">
                     {!! Form::label('custcategory', 'Cust Category', ['class'=>'control-label search-title']) !!}
@@ -155,8 +172,6 @@
                     !!}
                 </div>
             </div>
-        </div>
-        <div class="row form-group">
             <div class="col-md-3 col-sm-6 col-xs-12">
                 <div class="form-group">
                     {!! Form::label('is_commission', 'Include Commission', ['class'=>'control-label search-title']) !!}
@@ -285,6 +300,12 @@
                     <th class="col-md-1 text-center" style="background-color: #DDFDF8">
                         #
                     </th>
+                    {{-- <th class="col-md-1 text-center" style="background-color: #DDFDF8">
+                        <a href="" ng-click="sortTable('people.prefix_code')">
+                        Prefix Code
+                        <span ng-if="search.sortName == 'people.prefix_code' && !search.sortBy" class="fa fa-caret-down"></span>
+                        <span ng-if="search.sortName == 'people.prefix_code' && search.sortBy" class="fa fa-caret-up"></span>
+                    </th> --}}
                     <th class="col-md-1 text-center" style="background-color: #DDFDF8">
                         <a href="" ng-click="sortTable('people.cust_id')">
                         Customer
