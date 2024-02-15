@@ -74,23 +74,23 @@
                         <div class="col-xs-12">
                             <div class="form-group" style="padding-top: 3px; margin-bottom: 0px;">
                                 <div style="font-size:14px"><strong>Customer:</strong></div>
-                                <div style="border: solid thin; height:20px; padding-bottom: 10px;">
-                                <span class="col-xs-12">{{$person->custPrefix->code}}-{{$person->code}}</span>
-                                <span class="col-xs-12">{{$person->cust_id}} - {{$person->company}}</span>
-                                @if(($transaction->person->is_vending === 1 or $transaction->person->is_dvm) and $transaction->person->vending)
-                                <div class="col-xs-12">
-                                    <div class="form-group">
-                                        <small>
-                                        (
-                                        Binded VM:  {{$transaction->person->vending->serial_no}}
-                                        @if($transaction->person->vending->type)
-                                        - {{$transaction->person->vending->type}}
-                                        @endif
-                                        )
-                                        </small>
+                                <div style="border: solid thin; height:40px; padding-bottom: 10px;">
+                                    <span class="col-xs-12">{{$person->custPrefix->code}}-{{$person->code}}</span>
+                                    <span class="col-xs-12">{{$person->cust_id}} - {{$person->company}}</span>
+                                    @if(($transaction->person->is_vending === 1 or $transaction->person->is_dvm) and $transaction->person->vending)
+                                    <div class="col-xs-12">
+                                        <div class="form-group">
+                                            <small>
+                                            (
+                                            Binded VM:  {{$transaction->person->vending->serial_no}}
+                                            @if($transaction->person->vending->type)
+                                            - {{$transaction->person->vending->type}}
+                                            @endif
+                                            )
+                                            </small>
+                                        </div>
                                     </div>
-                                </div>
-                                @endif
+                                    @endif
                                 </div>
 
                             </div>
