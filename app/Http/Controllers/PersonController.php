@@ -1275,7 +1275,7 @@ class PersonController extends Controller
                         'cust_id',
                         'people.code',
                         'company',
-                        'cust_prefixes.code AS prefix',
+                        'cust_prefixes.code AS prefix'
                     );
                 $people = $people->get('id', 'cust_id', 'company');
             }else if($type == 'full') {
