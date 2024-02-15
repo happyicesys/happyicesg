@@ -1268,13 +1268,15 @@ class PersonController extends Controller
             ->orderBy('cust_id', 'asc');
 
             if($type == 'simple') {
-                $people = $people->select(
-                    'people.id',
-                    'cust_id',
-                    'code',
-                    'company',
-                    'cust_prefix_id',
-                );
+                $people = $people
+                    ->leftJoin('cust_prefixes', 'cust_prefixes.id', '=', 'people.cust_prefix_id')
+                    ->select(
+                        'people.id',
+                        'cust_id',
+                        'people.code',
+                        'company',
+                        'cust_prefixes.code AS prefix',
+                    );
                 $people = $people->get('id', 'cust_id', 'company');
             }else if($type == 'full') {
                 $people = $people->select(
