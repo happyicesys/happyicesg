@@ -53,7 +53,8 @@ class PriceTemplateController extends Controller
                                                 $query->whereIn('active', $request->active);
                                             }
                                             $query->orderBy('cust_id');
-                                        }
+                                        },
+                                        'people.custPrefix',
                                     ]);
 
         if(request('name')) {

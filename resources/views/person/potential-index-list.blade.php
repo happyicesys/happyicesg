@@ -21,6 +21,27 @@
 
             <div class="row">
                 <div class="form-group col-md-2 col-sm-4 col-xs-12">
+                    {!! Form::label('cust_prefix_id', 'Customer Prefix', ['class'=>'control-label search-title']) !!}
+                    <select name="cust_prefix_id" id="cust_prefix_id" class="selectmultiple form-control" ng-model="search.cust_prefix_id" multiple>
+                        <option value="-1">-- Unassigned --</option>
+                        @foreach($custPrefixes::orderBy('code')->get() as $custPrefix)
+                            <option value="{{$custPrefix->id}}">
+                                {{$custPrefix->code}}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="form-group col-md-2 col-sm-4 col-xs-12">
+                    {!! Form::label('code', 'Customer Code', ['class'=>'control-label search-title']) !!}
+                    {!! Form::text('code', null,
+                                                    [
+                                                        'class'=>'form-control input-sm',
+                                                        'ng-model'=>'search.code',
+                                                        'placeholder'=>'Customer Code',
+                                                    ])
+                    !!}
+                </div>
+                <div class="form-group col-md-2 col-sm-4 col-xs-12">
                     {!! Form::label('cust_id', 'ID', ['class'=>'control-label search-title']) !!}
                     <label class="pull-right">
                         <input type="checkbox" name="strictCustId" ng-model="search.strictCustId" ng-change="searchDB($event)">
@@ -37,43 +58,6 @@
                                                         'ng-keydown' => '$event.keyCode === 13 && searchDB($event)',
                                                         'ng-model-options'=>'{ debounce: 500 }'
                                                     ])
-                    !!}
-                </div>
-                <div class="form-group col-md-2 col-sm-4 col-xs-12">
-                    {!! Form::label('custcategory', 'Cust Category', ['class'=>'control-label search-title']) !!}
-                    <label class="pull-right">
-                        <input type="checkbox" name="excludeCustCat" ng-model="search.excludeCustCat" ng-change="searchDB($event)">
-                        <span style="margin-top: 5px; margin-right: 5px; font-size: 12px;">
-                            Exclude
-                        </span>
-                    </label>
-                    <select name="custcategory" class="selectmultiple form-control" ng-model="search.custcategory" ng-change="searchDB($event)" multiple>
-                        <option value="">All</option>
-                        @foreach($custcategories::orderBy('name')->get() as $custcategory)
-                        <option value="{{$custcategory->id}}">{{$custcategory->name}}</option>
-                        @endforeach
-                    </select>
-                </div>
-                <div class="form-group col-md-2 col-sm-4 col-xs-12">
-                    {!! Form::label('custcategory_group', 'CustCategory Group', ['class'=>'control-label search-title']) !!}
-                    <label class="pull-right">
-                        {{-- <input type="checkbox" name="p_category" ng-model="search.p_category" ng-change="onPCategoryChanged()">
-                        <span style="margin-top: 5px; margin-right: 5px;">
-                            P
-                        </span>
-                        <input type="checkbox" name="exclude_custcategory_group" ng-model="search.exclude_custcategory_group" ng-true-value="'1'" ng-false-value="'0'" ng-change="searchDB()">
-                        <span style="margin-top: 5px;">
-                            Exclude
-                        </span>--}}
-                    </label>
-                    {!! Form::select('custcategory_group', [''=>'All'] + $custcategoryGroups::orderBy('name')->pluck('name', 'id')->all(),
-                        null,
-                        [
-                            'class'=>'selectmultiple form-control',
-                            'ng-model'=>'search.custcategory_group',
-                            'multiple'=>'multiple',
-                            'ng-change' => "searchDB($event)"
-                        ])
                     !!}
                 </div>
                 <div class="form-group col-md-2 col-sm-4 col-xs-12">
@@ -262,6 +246,35 @@
                         <option value="is_non_freezer_point">Non Freezer Point</option>
                         <option value="na">-- N/A --</option>
                     </select>
+                </div>
+                <div class="form-group col-md-2 col-sm-4 col-xs-12">
+                    {!! Form::label('custcategory', 'Cust Category', ['class'=>'control-label search-title']) !!}
+                    <label class="pull-right">
+                        <input type="checkbox" name="excludeCustCat" ng-model="search.excludeCustCat" ng-change="searchDB($event)">
+                        <span style="margin-top: 5px; margin-right: 5px; font-size: 12px;">
+                            Exclude
+                        </span>
+                    </label>
+                    <select name="custcategory" class="selectmultiple form-control" ng-model="search.custcategory" ng-change="searchDB($event)" multiple>
+                        <option value="">All</option>
+                        @foreach($custcategories::orderBy('name')->get() as $custcategory)
+                        <option value="{{$custcategory->id}}">{{$custcategory->name}}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="form-group col-md-2 col-sm-4 col-xs-12">
+                    {!! Form::label('custcategory_group', 'CustCategory Group', ['class'=>'control-label search-title']) !!}
+                    <label class="pull-right">
+                    </label>
+                    {!! Form::select('custcategory_group', [''=>'All'] + $custcategoryGroups::orderBy('name')->pluck('name', 'id')->all(),
+                        null,
+                        [
+                            'class'=>'selectmultiple form-control',
+                            'ng-model'=>'search.custcategory_group',
+                            'multiple'=>'multiple',
+                            'ng-change' => "searchDB($event)"
+                        ])
+                    !!}
                 </div>
             </div>
 
@@ -552,6 +565,18 @@
                         #
                     </th>
                     <th class="col-md-1 text-center">
+                        <a href="" ng-click="sortTable('prefix_code')">
+                        Prefix
+                        <span ng-if="search.sortName == 'prefix_code' && !search.sortBy" class="fa fa-caret-down"></span>
+                        <span ng-if="search.sortName == 'prefix_code' && search.sortBy" class="fa fa-caret-up"></span>
+                    </th>
+                    <th class="col-md-1 text-center">
+                        <a href="" ng-click="sortTable('code')">
+                        Cust Code
+                        <span ng-if="search.sortName == 'code' && !search.sortBy" class="fa fa-caret-down"></span>
+                        <span ng-if="search.sortName == 'code' && search.sortBy" class="fa fa-caret-up"></span>
+                    </th>
+                    <th class="col-md-1 text-center">
                         <a href="" ng-click="sortTable('cust_id')">
                         ID
                         <span ng-if="search.sortName == 'cust_id' && !search.sortBy" class="fa fa-caret-down"></span>
@@ -659,6 +684,14 @@
                         </td>
                         <td class="col-md-1 text-center">
                             @{{ $index + indexFrom }}
+                        </td>
+                        <td class="col-md-1 text-center" style="max-width: 100px;">
+                            @{{ person.cust_prefix_code }}
+                        </td>
+                        <td class="col-md-1 text-center">
+                            <a href="/person/@{{ person.id }}/edit">
+                            @{{ person.code }}
+                            </a>
                         </td>
                         <td class="col-md-1">
                             <a href="/person/@{{ person.id }}/edit">

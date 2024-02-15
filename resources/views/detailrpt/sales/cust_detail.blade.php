@@ -289,6 +289,18 @@
             </select>
             </div>
         </div>
+        <div class="col-md-3 col-sm-6 col-xs-12">
+            <div class="form-group">
+            {!! Form::label('prefix_code', 'Prefix Code', ['class'=>'control-label search-title']) !!}
+            {!! Form::text('prefix_code', null,
+                                            [
+                                                'class'=>'form-control input-sm',
+                                                'ng-model'=>'search.prefix_code',
+                                                'ng-change'=>'searchDB()',
+                                                'placeholder'=>'Prefix Code',
+                                            ]) !!}
+            </div>
+        </div>
     </div>
 </div>
 
@@ -333,14 +345,18 @@
                 <th class="col-md-1 text-center">
                     #
                 </th>
-
+                <th class="col-md-1 text-center">
+                    <a href="" ng-click="sortTable('prefix_code')">
+                    Prefix Code
+                    <span ng-if="search.sortName == 'prefix_code' && !search.sortBy" class="fa fa-caret-down"></span>
+                    <span ng-if="search.sortName == 'prefix_code' && search.sortBy" class="fa fa-caret-up"></span>
+                </th>
                 <th class="col-md-1 text-center">
                     <a href="" ng-click="sortTable('cust_id')">
                     ID
                     <span ng-if="search.sortName == 'cust_id' && !search.sortBy" class="fa fa-caret-down"></span>
                     <span ng-if="search.sortName == 'cust_id' && search.sortBy" class="fa fa-caret-up"></span>
                 </th>
-
                 <th class="col-md-2 text-center">
                     <a href="" ng-click="sortTable('company')">
                     ID Name
@@ -395,7 +411,7 @@
             </tr>
 
             <tr style="background-color: #DDFDF8">
-                <th colspan="6"></th>
+                <th colspan="7"></th>
                 <th class="col-md-1 text-right" style="font-size: 13px;">
                     <span class="pull-left" style="font-size:11px;">
                         Trans:
@@ -491,6 +507,9 @@
                 <tr dir-paginate="transaction in alldata | itemsPerPage:itemsPerPage | orderBy:sortType:sortReverse" pagination-id="cust_detail" total-items="totalCount" current-page="currentPage">
                     <td class="col-md-1 text-center">
                         @{{ $index + indexFrom }}
+                    </td>
+                    <td class="col-md-1 text-center" style="max-width: 100px;">
+                        @{{ transaction.cust_prefix_code }}-@{{ transaction.code }}
                     </td>
                     <td class="col-md-1 text-center">
                         @{{ transaction.cust_id }}

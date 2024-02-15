@@ -64,6 +64,7 @@ class DetailRptController extends Controller
                         ->leftJoin('items', 'items.id', '=', 'deals.item_id')
                         ->leftJoin('transactions', 'transactions.id', '=', 'deals.transaction_id')
                         ->leftJoin('people', 'transactions.person_id', '=', 'people.id')
+                        ->leftJoin('cust_prefixes', 'cust_prefixes.id', '=', 'people.cust_prefix_id')
                         ->leftJoin('profiles', 'people.profile_id', '=', 'profiles.id')
                         ->leftJoin('custcategories', 'custcategories.id', '=', 'people.custcategory_id')
                         ->leftJoin('custcategory_groups', 'custcategory_groups.id', '=', 'custcategories.custcategory_group_id')
@@ -76,7 +77,8 @@ class DetailRptController extends Controller
                                                 END) ELSE transactions.total END) + (CASE WHEN transactions.delivery_fee>0 THEN transactions.delivery_fee ELSE 0 END), 2) AS total'),
                                     DB::raw('ROUND(SUM(CASE WHEN deals.divisor > 1 THEN (items.base_unit * deals.dividend/ deals.divisor) ELSE (items.base_unit * deals.qty) END)) AS pieces'),
                                     'transactions.id', 'people.cust_id', 'people.company', 'people.com_remark',
-                                    'people.name', 'people.id as person_id',
+                                    'people.name', 'people.id as person_id', 'people.code',
+                                    'cust_prefixes.code AS cust_prefix_code',
                                     'transactions.status', 'transactions.delivery_date', 'profiles.name as profile_name',
                                     'transactions.pay_status',
                                     'profiles.id as profile_id', 'transactions.order_date',
@@ -85,9 +87,7 @@ class DetailRptController extends Controller
                                 );
 
         // reading whether search input is filled
-        if($request->id or $request->cust_id or $request->company or $request->status or $request->pay_status or $request->updated_by or $request->updated_at or $request->delivery_from or $request->delivery_to or $request->driver or $request->profile or $request->custcategory or $request->franchisee_id){
-            $transactions = $this->searchTransactionDBFilter($transactions, $request);
-        }
+        $transactions = $this->searchTransactionDBFilter($transactions, $request);
 
         // add user profile filters
         $transactions = $this->filterUserDbProfile($transactions);
@@ -181,6 +181,7 @@ class DetailRptController extends Controller
 
         $transactions = DB::table('transactions')
                         ->leftJoin('people', 'transactions.person_id', '=', 'people.id')
+                        ->leftJoin('cust_prefixes', 'cust_prefixes.id', '=', 'people.cust_prefix_id')
                         ->leftJoin('profiles', 'people.profile_id', '=', 'profiles.id')
                         ->leftJoin('custcategories', 'custcategories.id', '=', 'people.custcategory_id')
                         ->leftJoin('custcategory_groups', 'custcategory_groups.id', '=', 'custcategories.custcategory_group_id')
@@ -191,7 +192,8 @@ class DetailRptController extends Controller
                         ->leftJoin($last3total, 'people.id', '=', 'last3total.person_id')
                         ->leftJoin($alltotal, 'people.id', '=', 'alltotal.person_id')
                         ->select(
-                                    'people.cust_id', 'people.company', 'people.name', 'people.id as person_id',
+                                    'people.cust_id', 'people.company', 'people.name', 'people.id as person_id', 'people.code',
+                                    'cust_prefixes.code AS cust_prefix_code',
                                     'profiles.name as profile_name', 'profiles.id as profile_id', 'transactions.gst',
                                     'transactions.is_gst_inclusive', 'transactions.gst_rate',
                                     'transactions.id', 'transactions.status', 'transactions.delivery_date', 'transactions.pay_status', 'transactions.delivery_fee', 'transactions.paid_at', 'transactions.created_at',
@@ -244,11 +246,13 @@ class DetailRptController extends Controller
 
         $transactions = DB::table('transactions')
                         ->leftJoin('people', 'transactions.person_id', '=', 'people.id')
+                        ->leftJoin('cust_prefixes', 'cust_prefixes.id', '=', 'people.cust_prefix_id')
                         ->leftJoin('profiles', 'people.profile_id', '=', 'profiles.id')
                         ->leftJoin('custcategories', 'custcategories.id', '=', 'people.custcategory_id')
                         ->leftJoin('custcategory_groups', 'custcategory_groups.id', '=', 'custcategories.custcategory_group_id')
                         ->select(
-                                    'people.cust_id', 'people.company', 'people.name', 'people.id as person_id',
+                                    'people.cust_id', 'people.company', 'people.name', 'people.id as person_id', 'people.code',
+                                    'cust_prefixes.code AS cust_prefix_code',
                                     'profiles.name as profile_name', 'profiles.id as profile_id',
                                     'transactions.id', 'transactions.delivery_fee', 'transactions.paid_at', 'transactions.status', 'transactions.delivery_date', 'transactions.pay_status', 'transactions.order_date', 'transactions.note', 'transactions.pay_method',
                                     'custcategories.name as custcategory',
@@ -587,6 +591,7 @@ class DetailRptController extends Controller
                         ->leftJoin('profiles', 'people.profile_id', '=', 'profiles.id')
                         ->leftJoin('custcategories', 'custcategories.id', '=', 'people.custcategory_id')
                         ->leftJoin('custcategory_groups', 'custcategory_groups.id', '=', 'custcategories.custcategory_group_id')
+                        ->leftJoin('cust_prefixes', 'cust_prefixes.id', '=', 'people.cust_prefix_id')
                         ->leftJoin('users AS account_manager', 'account_manager.id', '=', 'people.account_manager')
                         ->leftJoin($thistotal, 'people.id', '=', 'thistotal.person_id')
                         ->leftJoin($prevtotal, 'people.id', '=', 'prevtotal.person_id')
@@ -603,6 +608,8 @@ class DetailRptController extends Controller
                         ->select(
                             'items.is_commission', 'items.product_id', 'items.name AS item_name',
                             'people.cust_id', 'people.company', 'people.name', 'people.id as person_id', 'people.active',
+                            'people.code',
+                            'cust_prefixes.code AS cust_prefix_code',
                             'profiles.name as profile_name', 'profiles.id as profile_id', 'account_manager.name AS account_manager_name', 'transactions.gst', 'transactions.gst_rate',
                             'transactions.id', 'transactions.status', 'transactions.delivery_date', 'transactions.pay_status', 'transactions.delivery_fee', 'transactions.paid_at', 'transactions.created_at',
                             'custcategories.name as custcategory',
@@ -3406,6 +3413,7 @@ class DetailRptController extends Controller
         $franchisee_id = $request->franchisee_id;
         $is_gst_inclusive = $request->is_gst_inclusive;
         $gst_rate = $request->gst_rate;
+        $prefixCode = $request->prefix_code;
 
         if($profile_id){
             $transactions = $transactions->where('profiles.id', $profile_id);
@@ -3515,6 +3523,22 @@ class DetailRptController extends Controller
             $transactions = $transactions->where('transactions.gst_rate', $gst_rate);
         }
 
+        if($prefixCode) {
+            $transactions = $transactions->where(function($query) use ($prefixCode) {
+                $lettersOnly = preg_replace("/[^a-zA-Z]/", "", $prefixCode);
+                $numbersOnly = preg_replace("/[^0-9]/", "", $prefixCode);
+                if($lettersOnly && !$numbersOnly) {
+                    $query->where('cust_prefixes.code', 'LIKE', '%' . $lettersOnly . '%');
+                }
+                if($numbersOnly && !$lettersOnly) {
+                    $query->where('people.code', 'LIKE', '%' . $numbersOnly . '%');
+                }
+                if($lettersOnly && $numbersOnly) {
+                    $query->where('cust_prefixes.code', 'LIKE', '%' . $lettersOnly . '%')->where('people.code', 'LIKE', '%' . $numbersOnly . '%');
+                }
+            });
+        }
+
         if($request->sortName){
             $transactions = $transactions->orderBy($request->sortName, $request->sortBy ? 'asc' : 'desc');
         }
@@ -3556,6 +3580,7 @@ class DetailRptController extends Controller
         $tags = $request->tags;
         $itemGroupId = $request->item_group_id;
         $isInventory = $request->is_inventory;
+        $prefixCode = $request->prefix_code;
 
         if($profile_id){
             $transactions = $transactions->where('profiles.id', $profile_id);
@@ -3727,6 +3752,22 @@ class DetailRptController extends Controller
 
         if($isInventory) {
             $transactions = $transactions->where('items.is_inventory', $isInventory);
+        }
+
+        if($prefixCode) {
+            $transactions = $transactions->where(function($query) use ($prefixCode) {
+                $lettersOnly = preg_replace("/[^a-zA-Z]/", "", $prefixCode);
+                $numbersOnly = preg_replace("/[^0-9]/", "", $prefixCode);
+                if($lettersOnly && !$numbersOnly) {
+                    $query->where('cust_prefixes.code', 'LIKE', '%' . $lettersOnly . '%');
+                }
+                if($numbersOnly && !$lettersOnly) {
+                    $query->where('people.code', 'LIKE', '%' . $numbersOnly . '%');
+                }
+                if($lettersOnly && $numbersOnly) {
+                    $query->where('cust_prefixes.code', 'LIKE', '%' . $lettersOnly . '%')->where('people.code', 'LIKE', '%' . $numbersOnly . '%');
+                }
+            });
         }
 
         if($request->sortName){

@@ -202,6 +202,7 @@ class VendingController extends Controller
         $is_rental = request('is_rental');
         $is_active = request('is_active');
         $isPwp = request('is_pwp');
+        $prefixCode = request('prefix_code');
 
         if($profile_id) {
             $transactions = $transactions->where('profiles.id', $profile_id);
@@ -246,17 +247,6 @@ class VendingController extends Controller
                 $transactions = $transactions->where('transactions.status', $status);
             }
         }
-/*
-        if($is_profit_sharing_report != 'All') {
-            switch($is_profit_sharing_report) {
-                case 1:
-                    $transactions = $transactions->where('is_profit_sharing_report', 1);
-                    break;
-                case 0:
-                    $transactions = $transactions->where('is_profit_sharing_report', 0);
-                    break;
-            }
-        }*/
 
         if($is_rental) {
             $transactions = $transactions->where('people.cooperate_method', $is_rental);
@@ -268,6 +258,22 @@ class VendingController extends Controller
 
         if($isPwp != '') {
             $transactions = $transactions->where('people.is_pwp', $isPwp);
+        }
+
+        if($prefixCode) {
+            $transactions = $transactions->where(function($query) use ($prefixCode) {
+                $lettersOnly = preg_replace("/[^a-zA-Z]/", "", $prefixCode);
+                $numbersOnly = preg_replace("/[^0-9]/", "", $prefixCode);
+                if($lettersOnly && !$numbersOnly) {
+                    $query->where('cust_prefixes.code', 'LIKE', '%' . $lettersOnly . '%');
+                }
+                if($numbersOnly && !$lettersOnly) {
+                    $query->where('people.code', 'LIKE', '%' . $numbersOnly . '%');
+                }
+                if($lettersOnly && $numbersOnly) {
+                    $query->where('cust_prefixes.code', 'LIKE', '%' . $lettersOnly . '%')->where('people.code', 'LIKE', '%' . $numbersOnly . '%');
+                }
+            });
         }
 
         return $transactions;
@@ -530,6 +536,7 @@ class VendingController extends Controller
                         ->leftJoin('items', 'items.id', '=', 'deals.item_id')
                         ->leftJoin('transactions', 'transactions.id', '=', 'deals.transaction_id')
                         ->leftJoin('people', 'transactions.person_id', '=', 'people.id')
+                        ->leftJoin('cust_prefixes', 'cust_prefixes.id', '=', 'people.cust_prefix_id')
                         ->leftJoin('profiles', 'people.profile_id', '=', 'profiles.id')
                         ->leftJoin('custcategories', 'custcategories.id', '=', 'people.custcategory_id')
                         ->leftJoin($analog_start, 'people.id', '=', 'analog_start.person_id')
@@ -547,7 +554,8 @@ class VendingController extends Controller
                         ->leftJoin($sales_count, 'people.id', '=', 'sales_count.person_id')
                         ->select(
                                     'items.is_commission',
-                                    'people.cust_id', 'people.company', 'people.name', 'people.id as person_id', 'people.del_address', 'people.contact', 'people.del_postcode', 'people.bill_address', 'people.is_vending', 'people.is_dvm', 'people.active', 'people.is_gst_inclusive', 'people.gst_rate', 'people.commission_type', 'people.cooperate_method', 'people.commission_package', 'people.vending_monthly_rental', 'people.vending_profit_sharing', 'people.vending_monthly_utilities',
+                                    'people.cust_id', 'people.company', 'people.name', 'people.id as person_id', 'people.del_address', 'people.contact', 'people.del_postcode', 'people.bill_address', 'people.is_vending', 'people.is_dvm', 'people.active', 'people.is_gst_inclusive', 'people.gst_rate', 'people.commission_type', 'people.cooperate_method', 'people.commission_package', 'people.vending_monthly_rental', 'people.vending_profit_sharing', 'people.vending_monthly_utilities', 'people.code',
+                                    'cust_prefixes.code as cust_prefix_code',
                                     'profiles.name as profile_name', 'profiles.id as profile_id', 'profiles.gst',
                                     'transactions.id', 'transactions.status', 'transactions.delivery_date', 'transactions.delivery_fee', 'transactions.paid_at', 'transactions.created_at',
                                     'custcategories.name as custcategory',

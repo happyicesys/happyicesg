@@ -161,6 +161,18 @@
                 </select>
             </div>
         </div>
+        <div class="col-md-4 col-sm-6 col-xs-12">
+            <div class="form-group">
+                {!! Form::label('prefix_code', 'Prefix Code', ['class'=>'control-label search-title']) !!}
+                {!! Form::text('prefix_code', null,
+                                                [
+                                                    'class'=>'form-control input-sm',
+                                                    'ng-model'=>'search.prefix_code',
+                                                    'ng-change'=>'searchDB()',
+                                                    'placeholder'=>'Prefix Code',
+                                                ]) !!}
+            </div>
+        </div>
     </div>
     <hr>
     <div class="row">
@@ -372,6 +384,12 @@
                     #
                 </th>
                 <th class="col-md-1 text-center">
+                    <a href="" ng-click="sortTable('prefix_code')">
+                    Prefix Code
+                    <span ng-if="search.sortName == 'prefix_code' && !search.sortBy" class="fa fa-caret-down"></span>
+                    <span ng-if="search.sortName == 'prefix_code' && search.sortBy" class="fa fa-caret-up"></span>
+                </th>
+                <th class="col-md-1 text-center">
                     <a href="" ng-click="sortTable('cust_id')">
                     Cust ID
                     <span ng-if="search.sortName == 'cust_id' && !search.sortBy" class="fa fa-caret-down"></span>
@@ -486,6 +504,9 @@
                     <td class="col-md-1"></td>
                     <td class="col-md-1 text-center">
                         @{{absindex + 1}}
+                    </td>
+                    <td class="col-md-1 text-center" style="max-width: 100px;">
+                        @{{ transaction.cust_prefix_code }}-@{{ transaction.code }}
                     </td>
                     <td class="col-md-1 text-center">
                         @{{person.cust_id}}
