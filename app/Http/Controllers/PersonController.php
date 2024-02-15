@@ -1230,6 +1230,7 @@ class PersonController extends Controller
                 'accountManager' => function($query) {
                     $query->select('id', 'name', 'username');
                 },
+                'custPrefix',
                 'deliveryCountry' => function($query) {
                     $query->select('id', 'name');
                 },
@@ -1270,7 +1271,9 @@ class PersonController extends Controller
                 $people = $people->select(
                     'people.id',
                     'cust_id',
-                    'company'
+                    'code',
+                    'company',
+                    'cust_prefix_id',
                 );
                 $people = $people->get('id', 'cust_id', 'company');
             }else if($type == 'full') {
