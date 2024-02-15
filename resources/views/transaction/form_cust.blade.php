@@ -9,7 +9,12 @@
     <div class="panel-body">
         <label style="margin-bottom: 15px; font-size: 18px;">
             <a href="/person/{{ $person->id }}">
-                {{$transaction->person->cust_id}} - {{$transaction->person->company}}
+             {{$transaction->person->custPrefix->code}}-{{$transaction->person->code}}
+             <br>
+             <span style="color:gray;">
+                {{$transaction->person->cust_id}}
+             </span>
+              - {{$transaction->person->company}}
             </a>
             @if(($transaction->person->is_vending === 1 or $transaction->person->is_dvm) and $transaction->person->vending)
                 <label style="padding-left: 5px;">

@@ -4,9 +4,19 @@
     <div class="panel panel-success row">
         <div class="panel-heading">
             <div class="panel-title">
-                <div class="pull-left display_panel_title" style="margin-bottom: 15px;">
+                <div class="pull-left display_panel_title" style="margin-bottom: 5px;">
                     @unless($transaction->status == 'Cancelled' or $transaction->status == 'Deleted')
-                    <h3 class="panel-title"><strong>Selected : {{$person->cust_id}} - {{$person->company}} ({{$person->name}})</strong></h3>
+                    <h3 class="panel-title">
+                        <strong>
+                            Selected :
+                            {{$person->custPrefix->code}}-{{$person->code}}
+                            <br>
+                            <span style="color:gray;">
+                                {{$person->cust_id}}
+                            </span>
+                             - {{$person->company}} ({{$person->name}})
+                        </strong>
+                    </h3>
                     @else
                     <h3 class="panel-title"><strong><del>Selected : {{$person->cust_id}} - {{$person->company}} ({{$person->name}})</del></strong></h3>
                     @endunless

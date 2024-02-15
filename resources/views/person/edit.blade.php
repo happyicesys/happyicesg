@@ -174,7 +174,11 @@
 <div class="panel">
     <div class="panel-heading">
         <h3 class="panel-title">
-            <strong>Transaction History for {{$person->cust_id}} : {{$person->company}} </strong>
+            <strong>Transaction History for
+                {{$person->custPrefix->code}}-{{$person->code}}
+                <br>
+                {{$person->cust_id}} : {{$person->company}}
+            </strong>
             @if($person->cust_id[0] === 'D' or $person->cust_id[0] === 'H')
                 <a href="/person/log/{{$person->id}}" class="btn btn-warning pull-right">Log History</a>
             @endif
@@ -190,7 +194,11 @@
     <div class="panel-heading">
         <div class="panel-title">
             <div class="pull-left display_panel_title">
-                <h3 class="panel-title"><strong>Store Visit : {{$person->company}}</strong></h3>
+                <h3 class="panel-title">
+                    <strong>
+                    Store Visit : {{$person->company}}
+                    </strong>
+                </h3>
             </div>
             <button type="button" class="btn btn-xs btn-success pull-right" data-toggle="modal" data-target="#outletVisitModal" ng-click="onOutletVisitClicked($event)"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></button>
         </div>
