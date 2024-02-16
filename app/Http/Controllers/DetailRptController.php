@@ -746,6 +746,7 @@ class DetailRptController extends Controller
                         ->leftJoin('items', 'items.id', '=', 'deals.item_id')
                         ->leftJoin('transactions', 'transactions.id', '=', 'deals.transaction_id')
                         ->leftJoin('people', 'transactions.person_id', '=', 'people.id')
+                        ->leftJoin('cust_prefixes', 'cust_prefixes.id', '=', 'people.cust_prefix_id')
                         ->leftJoin('profiles', 'people.profile_id', '=', 'profiles.id')
                         ->leftJoin('custcategories', 'custcategories.id', '=', 'people.custcategory_id')
                         ->leftJoin('custcategory_groups', 'custcategory_groups.id', '=', 'custcategories.custcategory_group_id')
@@ -1026,6 +1027,7 @@ class DetailRptController extends Controller
                 ->leftJoin('items', 'items.id', '=', 'deals.item_id')
                 ->leftJoin('transactions', 'transactions.id', '=', 'deals.transaction_id')
                 ->leftJoin('people', 'people.id', '=', 'transactions.person_id')
+                ->leftJoin('cust_prefixes', 'cust_prefixes.id', '=', 'people.cust_prefix_id')
                 ->leftJoin('custcategories', 'custcategories.id', '=', 'people.custcategory_id')
                 ->leftJoin('custcategory_groups', 'custcategory_groups.id', '=', 'custcategories.custcategory_group_id')
                 ->leftJoin('profiles', 'profiles.id', '=', 'people.profile_id')
@@ -1185,6 +1187,7 @@ class DetailRptController extends Controller
                         LEFT JOIN items ON items.id=deals.item_id
                         LEFT JOIN transactions ON transactions.id=deals.transaction_id
                         LEFT JOIN people ON people.id=transactions.person_id
+                        LEFT JOIN cust_prefixes ON cust_prefixes.id=people.cust_prefix_id
                         LEFT JOIN profiles ON profiles.id=people.profile_id
                         LEFT JOIN custcategories ON custcategories.id=people.custcategory_id
                         LEFT JOIN custcategory_groups ON custcategory_groups.id=custcategories.custcategory_group_id
@@ -1672,6 +1675,7 @@ class DetailRptController extends Controller
                         ->leftJoin('transactions', 'transactions.id', '=', 'deals.transaction_id')
                         ->leftJoin('items', 'items.id', '=', 'deals.item_id')
                         ->leftJoin('people', 'transactions.person_id', '=', 'people.id')
+                        ->leftJoin('cust_prefixes', 'cust_prefixes.id', '=', 'people.cust_prefix_id')
                         ->leftJoin('profiles', 'people.profile_id', '=', 'profiles.id')
                         ->leftJoin('custcategories', 'custcategories.id', '=', 'people.custcategory_id')
                         ->leftJoin('custcategory_groups', 'custcategory_groups.id', '=', 'custcategories.custcategory_group_id')
@@ -2027,6 +2031,7 @@ class DetailRptController extends Controller
                         ->leftJoin('transactions', 'transactions.id', '=', 'deals.transaction_id')
                         ->leftJoin('items', 'items.id', '=', 'deals.item_id')
                         ->leftJoin('people', 'transactions.person_id', '=', 'people.id')
+                        ->leftJoin('cust_prefixes', 'cust_prefixes.id', '=', 'people.cust_prefix_id')
                         ->leftJoin('profiles', 'people.profile_id', '=', 'profiles.id')
                         ->leftJoin('custcategories', 'custcategories.id', '=', 'people.custcategory_id')
                         ->leftJoin('custcategory_groups', 'custcategory_groups.id', '=', 'custcategories.custcategory_group_id')
@@ -3814,6 +3819,7 @@ class DetailRptController extends Controller
         $actives = $request->active;
         $itemGroupId = $request->item_group_id;
         $isInventory = $request->is_inventory;
+        $prefixCode = $request->prefix_code;
 
         if($profile_id){
             $query .= " AND profiles.id='".$profile_id."' ";
@@ -3943,6 +3949,20 @@ class DetailRptController extends Controller
         }
         if($isInventory) {
             $query .= " AND items.is_inventory='".$isInventory."' ";
+        }
+
+        if($prefixCode) {
+            $lettersOnly = preg_replace("/[^a-zA-Z]/", "", $prefixCode);
+            $numbersOnly = preg_replace("/[^0-9]/", "", $prefixCode);
+            if($lettersOnly && !$numbersOnly) {
+                $query .= " AND cust_prefixes.code LIKE '%".$lettersOnly."%' ";
+            }
+            if($numbersOnly && !$lettersOnly) {
+                $query .= " AND people.code LIKE '%".$numbersOnly."%' ";
+            }
+            if($lettersOnly && $numbersOnly) {
+                $query .= " AND cust_prefixes.code LIKE '%".$lettersOnly."%' AND people.code LIKE '%".$numbersOnly."%' ";
+            }
         }
 /*
         if($sortName){

@@ -41,7 +41,7 @@
             </div>
         </div> --}}
 
-        <div class="form-group col-md-4 col-sm-6 col-xs-12">
+        {{-- <div class="form-group col-md-4 col-sm-6 col-xs-12">
             {!! Form::label('id', 'ID', ['class'=>'control-label search-title']) !!}
             <label class="pull-right">
                 <input type="checkbox" name="strictCustId" ng-model="search.strictCustId">
@@ -58,6 +58,19 @@
                                             'ng-model-options'=>'{ debounce: 700 }'
                                         ])
             !!}
+        </div> --}}
+        <div class="col-md-4 col-sm-6 col-xs-12">
+            <div class="form-group">
+                {!! Form::label('prefix_code', 'Prefix Code', ['class'=>'control-label search-title']) !!}
+                {!! Form::text('prefix_code', null,
+                                                [
+                                                    'class'=>'form-control input-sm',
+                                                    'ng-model'=>'search.prefix_code',
+                                                    'ng-change'=>'searchDB()',
+                                                    'placeholder'=>'Prefix Code',
+                                                    'ng-model-options'=>'{ debounce: 700 }'
+                                                ]) !!}
+            </div>
         </div>
     </div>
     <div class="row">
@@ -161,18 +174,7 @@
                 </select>
             </div>
         </div>
-        <div class="col-md-4 col-sm-6 col-xs-12">
-            <div class="form-group">
-                {!! Form::label('prefix_code', 'Prefix Code', ['class'=>'control-label search-title']) !!}
-                {!! Form::text('prefix_code', null,
-                                                [
-                                                    'class'=>'form-control input-sm',
-                                                    'ng-model'=>'search.prefix_code',
-                                                    'ng-change'=>'searchDB()',
-                                                    'placeholder'=>'Prefix Code',
-                                                ]) !!}
-            </div>
-        </div>
+
     </div>
     <hr>
     <div class="row">
@@ -389,12 +391,12 @@
                     <span ng-if="search.sortName == 'prefix_code' && !search.sortBy" class="fa fa-caret-down"></span>
                     <span ng-if="search.sortName == 'prefix_code' && search.sortBy" class="fa fa-caret-up"></span>
                 </th>
-                <th class="col-md-1 text-center">
+                {{-- <th class="col-md-1 text-center">
                     <a href="" ng-click="sortTable('cust_id')">
                     Cust ID
                     <span ng-if="search.sortName == 'cust_id' && !search.sortBy" class="fa fa-caret-down"></span>
                     <span ng-if="search.sortName == 'cust_id' && search.sortBy" class="fa fa-caret-up"></span>
-                </th>
+                </th> --}}
                 <th class="col-md-1 text-center">
                     <a href="" ng-click="sortTable('company')">
                     ID Name
@@ -508,9 +510,9 @@
                     <td class="col-md-1 text-center" style="max-width: 100px;">
                         @{{ transaction.cust_prefix_code }}-@{{ transaction.code }}
                     </td>
-                    <td class="col-md-1 text-center">
+                    {{-- <td class="col-md-1 text-center">
                         @{{person.cust_id}}
-                    </td>
+                    </td> --}}
                     <td class="col-md-1 text-left">
                         <a href="/person/@{{ person.id }}">
                             @{{ person.cust_id[0] == 'D' || person.cust_id[0] == 'H' ? person.name : person.company }}

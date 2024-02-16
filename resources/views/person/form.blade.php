@@ -57,8 +57,9 @@
     <div class="col-md-6 col-sm-6 col-xs-12">
         <div class="form-group">
             {!! Form::label('cust_id', 'ID', ['class'=>'control-label']) !!}
-            {{-- {!! Form::text('cust_id', null, ['class'=>'form-control', 'disabled'=>'disabled']) !!} --}}
-            {!! Form::text('cust_id', null, ['class'=>'form-control', 'disabled'=>$disabled]) !!}
+            <span style="color:red;font-size:13px;">(Deprecated)</span>
+            {!! Form::text('cust_id', null, ['class'=>'form-control', 'disabled'=>'disabled']) !!}
+            {{-- {!! Form::text('cust_id', null, ['class'=>'form-control', 'disabled'=>$disabled]) !!} --}}
         </div>
     </div>
 

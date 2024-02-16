@@ -14,7 +14,7 @@
                                             ]) !!}
             </div>
         </div>
-        <div class="col-md-3 col-xs-6">
+        {{-- <div class="col-md-3 col-xs-6">
             <div class="form-group">
                 {!! Form::label('cust_id', 'ID', ['class'=>'control-label search-title']) !!}
                 {!! Form::text('cust_id', null,
@@ -27,7 +27,7 @@
                                             ])
                 !!}
             </div>
-        </div>
+        </div> --}}
         <div class="col-md-3 col-xs-6">
             <div class="form-group">
                 {!! Form::label('company', 'ID Name', ['class'=>'control-label search-title']) !!}
@@ -203,12 +203,12 @@
                     <span ng-if="search.sortName == 'prefix_code' && !search.sortBy" class="fa fa-caret-down"></span>
                     <span ng-if="search.sortName == 'prefix_code' && search.sortBy" class="fa fa-caret-up"></span>
                 </th>
-                <th class="col-md-1 text-center">
+                {{-- <th class="col-md-1 text-center">
                     <a href="" ng-click="sortTable('cust_id')">
                     ID
                     <span ng-if="search.sortName == 'cust_id' && !search.sortBy" class="fa fa-caret-down"></span>
                     <span ng-if="search.sortName == 'cust_id' && search.sortBy" class="fa fa-caret-up"></span>
-                </th>
+                </th> --}}
                 <th class="col-md-1 text-center">
                     <a href="" ng-click="sortTable('company')">
                     ID Name
@@ -248,7 +248,7 @@
             </tr>
 
             <tr style="background-color: #DDFDF8">
-                <th colspan="5"></th>
+                <th colspan="4"></th>
                 <th class="col-md-1 text-right" style="font-size: 14px;">
                     @{{ totals.thistotal ? totals.thistotal : 0.00 | currency: "": 2}} <br>
                 </th>
@@ -269,7 +269,7 @@
                     <td class="col-md-1 text-center" style="max-width: 100px;">
                         @{{ transaction.cust_prefix_code }}-@{{ transaction.code }}
                     </td>
-                    <td class="col-md-1 text-center">@{{ transaction.cust_id }} </td>
+                    {{-- <td class="col-md-1 text-center">@{{ transaction.cust_id }} </td> --}}
 
                     <td class="col-md-1 text-center">
                         <a href="/person/@{{ transaction.person_id }}">

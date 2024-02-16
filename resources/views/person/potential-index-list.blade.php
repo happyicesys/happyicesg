@@ -41,7 +41,7 @@
                                                     ])
                     !!}
                 </div>
-                <div class="form-group col-md-2 col-sm-4 col-xs-12">
+                {{-- <div class="form-group col-md-2 col-sm-4 col-xs-12">
                     {!! Form::label('cust_id', 'ID', ['class'=>'control-label search-title']) !!}
                     <label class="pull-right">
                         <input type="checkbox" name="strictCustId" ng-model="search.strictCustId" ng-change="searchDB($event)">
@@ -59,7 +59,7 @@
                                                         'ng-model-options'=>'{ debounce: 500 }'
                                                     ])
                     !!}
-                </div>
+                </div> --}}
                 <div class="form-group col-md-2 col-sm-4 col-xs-12">
                     {!! Form::label('company', 'ID Name', ['class'=>'control-label search-title']) !!}
                     {!! Form::text('company', null,
@@ -576,12 +576,12 @@
                         <span ng-if="search.sortName == 'code' && !search.sortBy" class="fa fa-caret-down"></span>
                         <span ng-if="search.sortName == 'code' && search.sortBy" class="fa fa-caret-up"></span>
                     </th>
-                    <th class="col-md-1 text-center">
+                    {{-- <th class="col-md-1 text-center">
                         <a href="" ng-click="sortTable('cust_id')">
                         ID
                         <span ng-if="search.sortName == 'cust_id' && !search.sortBy" class="fa fa-caret-down"></span>
                         <span ng-if="search.sortName == 'cust_id' && search.sortBy" class="fa fa-caret-up"></span>
-                    </th>
+                    </th> --}}
                     <th class="col-md-2 text-center">
                         <a href="" ng-click="sortTable('company')">
                         ID Name
@@ -693,11 +693,11 @@
                             @{{ person.code }}
                             </a>
                         </td>
-                        <td class="col-md-1">
+                        {{-- <td class="col-md-1">
                             <a href="/person/@{{ person.id }}/edit">
                             @{{ person.cust_id }}
                             </a>
-                        </td>
+                        </td> --}}
                         <td class="col-md-2">
                             @{{ person.company }}
                         </td>

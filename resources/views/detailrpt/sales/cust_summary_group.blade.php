@@ -212,7 +212,7 @@
                 !!}
             </div>
         </div>
-
+{{--
         <div class="col-md-3 col-sm-6 col-xs-12">
             <div class="form-group">
                 {!! Form::label('cust_id', 'Cust ID', ['class'=>'control-label search-title']) !!}
@@ -225,6 +225,19 @@
                                                 'ng-model-options'=>'{ debounce: 500 }'
                                             ])
                 !!}
+            </div>
+        </div> --}}
+        <div class="col-md-3 col-sm-6 col-xs-12">
+            <div class="form-group">
+            {!! Form::label('prefix_code', 'Prefix Code', ['class'=>'control-label search-title']) !!}
+            {!! Form::text('prefix_code', null,
+                                            [
+                                                'class'=>'form-control input-sm',
+                                                'ng-model'=>'search.prefix_code',
+                                                'ng-change'=>'searchDB()',
+                                                'placeholder'=>'Prefix Code',
+                                                'ng-model-options'=>'{ debounce: 500 }'
+                                            ]) !!}
             </div>
         </div>
         <div class="col-md-3 col-sm-6 col-xs-12">

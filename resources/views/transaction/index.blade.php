@@ -74,7 +74,7 @@
                     </div>
 
                     @if(!auth()->user()->hasRole('hd_user'))
-                    <div class="form-group col-md-3 col-sm-6 col-xs-12">
+                    {{-- <div class="form-group col-md-3 col-sm-6 col-xs-12">
                         {!! Form::label('id', 'ID', ['class'=>'control-label search-title']) !!}
                         <label class="pull-right">
                             <input type="checkbox" name="strictCustId" ng-model="search.strictCustId">
@@ -91,6 +91,16 @@
                                                         'ng-model-options'=>'{ debounce: 700 }'
                                                     ])
                         !!}
+                    </div> --}}
+                    <div class="form-group col-md-3 col-sm-6 col-xs-12">
+                        {!! Form::label('prefix_code', 'Prefix Code', ['class'=>'control-label search-title']) !!}
+                        {!! Form::text('prefix_code', null,
+                                                        [
+                                                            'class'=>'form-control input-sm',
+                                                            'ng-model'=>'search.prefix_code',
+                                                            'ng-change'=>'searchDB()',
+                                                            'placeholder'=>'Prefix Code',
+                                                        ]) !!}
                     </div>
                     <div class="form-group col-md-3 col-sm-6 col-xs-12">
                         {!! Form::label('company', 'ID Name', ['class'=>'control-label search-title']) !!}
@@ -595,16 +605,6 @@
                             ])
                         !!}
                         </div>
-                        <div class="form-group col-md-3 col-sm-6 col-xs-12">
-                            {!! Form::label('prefix_code', 'Prefix Code', ['class'=>'control-label search-title']) !!}
-                            {!! Form::text('prefix_code', null,
-                                                            [
-                                                                'class'=>'form-control input-sm',
-                                                                'ng-model'=>'search.prefix_code',
-                                                                'ng-change'=>'searchDB()',
-                                                                'placeholder'=>'Prefix Code',
-                                                            ]) !!}
-                        </div>
                     </div>
                 </div>
 
@@ -980,12 +980,12 @@
                                 </th>
                                 @if(!auth()->user()->hasRole('hd_user'))
 
-                                <th class="col-md-1 text-center">
+                                {{-- <th class="col-md-1 text-center">
                                     <a href="" ng-click="sortTable('cust_id')">
                                     ID
                                     <span ng-if="search.sortName == 'cust_id' && !search.sortBy" class="fa fa-caret-down"></span>
                                     <span ng-if="search.sortName == 'cust_id' && search.sortBy" class="fa fa-caret-up"></span>
-                                </th>
+                                </th> --}}
                                 <th class="col-md-1 text-center">
                                     <a href="" ng-click="sortTable('prefix_code')">
                                     Prefix Code
@@ -1162,7 +1162,7 @@
                                     </td>
 
                                     @if(!auth()->user()->hasRole('hd_user'))
-                                    <td class="col-md-1 text-center" style="max-width: 80px;">@{{ transaction.cust_id }} </td>
+                                    {{-- <td class="col-md-1 text-center" style="max-width: 80px;">@{{ transaction.cust_id }} </td> --}}
                                     <td class="col-md-1 text-center" style="max-width: 100px;">
                                         @{{ transaction.cust_prefix_code }}-@{{ transaction.code }}
                                     </td>

@@ -143,7 +143,8 @@ class PersonController extends Controller
     public function getCreationApi(Request $request)
     {
         $model = Person::with(['accountManager', 'custcategory', 'persontags', 'profile'])
-                                ->leftJoin('users AS account_manager', 'account_manager.id', '=', 'people.account_manager');
+                                ->leftJoin('users AS account_manager', 'account_manager.id', '=', 'people.account_manager')
+                                ->leftJoin('cust_prefixes', 'cust_prefixes.id', '=', 'people.cust_prefix_id');
 
         $model = $this->searchPeopleFilter($model, $request);
 
@@ -1319,6 +1320,21 @@ class PersonController extends Controller
             }else {
                 $people = $people->where('cust_id', 'LIKE', '%'. $cust_id . '%');
             }
+        }
+        if ($prefixCode = $request->prefix_code) {
+            $people = $people->where(function($query) use ($prefixCode) {
+                $lettersOnly = preg_replace("/[^a-zA-Z]/", "", $prefixCode);
+                $numbersOnly = preg_replace("/[^0-9]/", "", $prefixCode);
+                if($lettersOnly && !$numbersOnly) {
+                    $query->where('cust_prefixes.code', 'LIKE', '%' . $lettersOnly . '%');
+                }
+                if($numbersOnly && !$lettersOnly) {
+                    $query->where('people.code', 'LIKE', '%' . $numbersOnly . '%');
+                }
+                if($lettersOnly && $numbersOnly) {
+                    $query->where('cust_prefixes.code', 'LIKE', '%' . $lettersOnly . '%')->where('people.code', 'LIKE', '%' . $numbersOnly . '%');
+                }
+            });
         }
         if ($custcategory = $request->custcategory) {
             if (count($custcategory) == 1) {

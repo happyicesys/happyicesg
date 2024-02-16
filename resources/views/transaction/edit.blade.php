@@ -132,7 +132,7 @@
             <div class="col-md-12 col-sm-12 col-xs-12 form-group">
                 <div class="pull-right btn-group">
                     @if(!auth()->user()->hasRole('watcher') and !auth()->user()->hasRole('subfranchisee') and !auth()->user()->hasRole('event') and !auth()->user()->hasRole('event_plus'))
-                        <button type="submit" class="btn btn-success" form="new_transaction"><i class="fa fa-plus"></i> New Transaction {{$transaction->person->custPrefix->code}}-{{$transaction->person->code}} ({{$transaction->person->cust_id}})</button>
+                        <button type="submit" class="btn btn-success" form="new_transaction"><i class="fa fa-plus"></i> New Transaction {{$transaction->person->custPrefix->code}}-{{$transaction->person->code}}</button>
                         @if(!$transaction->is_service)
                             {{-- {!! Form::submit('Discard Item(s)', ['class'=> 'btn btn-danger', 'type'=>'button', 'name'=>'discard', 'form'=>'new_transaction']) !!} --}}
                             {{-- @if(!auth()->user()->hasRole('hd_user')) --}}

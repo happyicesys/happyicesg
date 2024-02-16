@@ -10,10 +10,6 @@
                         <strong>
                             Selected :
                             {{$person->custPrefix->code}}-{{$person->code}}
-                            <br>
-                            <span style="color:gray;">
-                                {{$person->cust_id}}
-                            </span>
                              - {{$person->company}} ({{$person->name}})
                         </strong>
                     </h3>
