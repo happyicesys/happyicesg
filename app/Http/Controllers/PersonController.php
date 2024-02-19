@@ -1256,6 +1256,10 @@ class PersonController extends Controller
             ]);
         }
 
+        if($type == 'unbind') {
+            $people = $people->whereNull('vend_code')->where('active', 'Yes');
+        }
+
 
         if($inVendId) {
             $people = $people->whereIn('id', $vendId);
@@ -1266,9 +1270,9 @@ class PersonController extends Controller
 
         $people = $people
             ->where('is_sys', true)
-            ->orderBy('cust_id', 'asc');
+            ->orderBy('people.code', 'asc');
 
-            if($type == 'simple') {
+            if($type == 'simple' or $type == 'unbind') {
                 $people = $people
                     ->leftJoin('cust_prefixes', 'cust_prefixes.id', '=', 'people.cust_prefix_id')
                     ->select(
