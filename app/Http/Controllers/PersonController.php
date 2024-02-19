@@ -1257,7 +1257,7 @@ class PersonController extends Controller
         }
 
         if($type == 'unbind') {
-            $people = $people->whereNull('vend_code')->where('active', 'Yes');
+            $people = $people->whereNull('vend_code')->whereActive('Yes');
         }
 
 
