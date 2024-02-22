@@ -73,7 +73,7 @@
                         });
                     })
                     ->leftJoin('cust_prefixes', 'cust_prefixes.id', '=', 'people.cust_prefix_id')
-                    ->select(DB::raw("CONCAT(cust_prefixes.code,'-',people.code,' - ',company) AS full, id"))->orderBy('cust_id')->whereActive('Yes')->where('cust_id', 'NOT LIKE', 'H%')->lists('full', 'id')->all()],
+                    ->select(DB::raw("CONCAT(cust_prefixes.code,'-',people.code,' - ',company) AS full, people.id"))->orderBy('cust_id')->whereActive('Yes')->where('cust_id', 'NOT LIKE', 'H%')->where('is_vend', true)->lists('full', 'people.id')->all()],
                     null,
                     [
                         'class'=>'select form-control',
