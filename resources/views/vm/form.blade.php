@@ -71,7 +71,9 @@
                         })->orWhereHas('vending', function($query) use ($vending) {
                             $query->where('person_id', $vending->person->id);
                         });
-                    })->select(DB::raw("CONCAT(cust_id,' - ',company) AS full, id"))->orderBy('cust_id')->whereActive('Yes')->where('cust_id', 'NOT LIKE', 'H%')->lists('full', 'id')->all()],
+                    })
+                    ->leftJoin('cust_prefixes', 'cust_prefixes.id', '=', 'people.cust_prefix_id')
+                    ->select(DB::raw("CONCAT(cust_prefixes.code,'-',people.code,' - ',company) AS full, id"))->orderBy('cust_id')->whereActive('Yes')->where('cust_id', 'NOT LIKE', 'H%')->lists('full', 'id')->all()],
                     null,
                     [
                         'class'=>'select form-control',
