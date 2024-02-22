@@ -320,13 +320,15 @@ class VMController extends Controller
     {
         $vendings = DB::table('vendings')
             ->leftJoin('people', 'vendings.person_id', '=', 'people.id')
+            ->leftJoin('cust_prefixes', 'people.cust_prefix_id', '=', 'cust_prefixes.id')
             ->leftJoin('profiles', 'people.profile_id', '=', 'profiles.id')
             ->leftJoin('custcategories', 'people.custcategory_id', '=', 'custcategories.id')
             ->leftJoin('simcards', 'simcards.id', '=', 'vendings.simcard_id')
             ->leftJoin('cashless_terminals', 'cashless_terminals.id', '=', 'vendings.cashless_terminal_id')
             ->leftJoin('racking_configs', 'racking_configs.id', '=', 'vendings.racking_config_id')
             ->select(
-                'people.cust_id', 'people.company', 'people.id as person_id', 'people.vend_code',
+                'people.cust_id', 'people.company', 'people.id as person_id', 'people.vend_code', 'people.code',
+                'cust_prefixes.code as cust_prefix_code',
                 'vendings.vend_id', 'vendings.serial_no', 'vendings.type', 'vendings.router', 'vendings.desc', 'vendings.updated_by', 'vendings.created_at', 'vendings.id', 'vendings.updated_at', 'vendings.id AS id',
                 'profiles.id as profile_id',
                 'custcategories.name as custcategory',
@@ -344,6 +346,21 @@ class VMController extends Controller
     // pass value into filter search for DB (collection, collection request) [query]
     private function searchDBFilter($vendings)
     {
+        if($prefixCode = request('prefix_code')) {
+            $vendings = $vendings->where(function($query) use ($prefixCode) {
+                $lettersOnly = preg_replace("/[^a-zA-Z]/", "", $prefixCode);
+                $numbersOnly = preg_replace("/[^0-9]/", "", $prefixCode);
+                if($lettersOnly && !$numbersOnly) {
+                    $query->where('cust_prefixes.code', 'LIKE', '%' . $lettersOnly . '%');
+                }
+                if($numbersOnly && !$lettersOnly) {
+                    $query->where('people.code', 'LIKE', '%' . $numbersOnly . '%');
+                }
+                if($lettersOnly && $numbersOnly) {
+                    $query->where('cust_prefixes.code', 'LIKE', '%' . $lettersOnly . '%')->where('people.code', 'LIKE', '%' . $numbersOnly . '%');
+                }
+            });
+        }
         if (request('vend_id')) {
             $vendings = $vendings->where('vendings.vend_id', 'LIKE', '%' . request('vend_id') . '%');
         }

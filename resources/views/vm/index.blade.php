@@ -44,7 +44,7 @@ Vending Machine
                                                     ])
                         !!}
                     </div>
-                    <div class="form-group col-md-3 col-sm-6 col-xs-12">
+                    {{-- <div class="form-group col-md-3 col-sm-6 col-xs-12">
                         {!! Form::label('id', 'Cust ID', ['class'=>'control-label search-title']) !!}
                         {!! Form::text('id', null,
                                                     [
@@ -67,6 +67,16 @@ Vending Machine
                                                             'ng-model-options'=>'{ debounce: 500 }'
                                                         ])
                         !!}
+                    </div> --}}
+                    <div class="form-group col-md-3 col-sm-6 col-xs-12">
+                        {!! Form::label('prefix_code', 'Prefix Code', ['class'=>'control-label search-title']) !!}
+                        {!! Form::text('prefix_code', null,
+                                                        [
+                                                            'class'=>'form-control input-sm',
+                                                            'ng-model'=>'search.prefix_code',
+                                                            'ng-change'=>'searchDB()',
+                                                            'placeholder'=>'Prefix Code',
+                                                        ]) !!}
                     </div>
                     <div class="form-group col-md-3 col-sm-6 col-xs-12">
                         {!! Form::label('custcategory', 'Category', ['class'=>'control-label search-title']) !!}
@@ -262,7 +272,7 @@ Vending Machine
                                 </td>
                                 <td class="col-md-2 text-left">
                                     <a href="/person/@{{ vm.person_id }}" ng-if="vm.person_id">
-                                        @{{ vm.cust_id}} - @{{vm.company}}
+                                        @{{ vm.cust_prefix_code}}-@{{vm.code}} <br> @{{vm.company}}
                                     </a>
                                 </td>
                                 <td class="col-md-1 text-center">
