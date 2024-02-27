@@ -319,7 +319,7 @@ var app = angular.module('app', [
             if(singleperson) {
                 var contentString = '<span style=font-size:10px;>' +
                     '<b>' +
-                    '(' + singleperson.id + ') ' + singleperson.cust_id + ' - ' + singleperson.company +
+                    '(' + singleperson.id + ') ' + singleperson.code + ' - ' + singleperson.company +
                     '</b>' +
                     // '<br>' +
                     // '<span style="font-size:13px">' + '<b>' + singleperson.del_postcode + '</b>' + '</span>' + ' ' + singleperson.del_address +
@@ -344,7 +344,7 @@ var app = angular.module('app', [
                         var marker = new google.maps.Marker({
                             position: pos,
                             map: map,
-                            title: singleperson.cust_id + ' - ' + singleperson.company + ' - ' + singleperson.custcategory,
+                            title: singleperson.code + ' - ' + singleperson.company + ' - ' + singleperson.custcategory,
                             label: {fontSize: '15px', text: singleperson.custcategory, fontWeight: 'bold'},
                             icon: {
                                 labelOrigin: new google.maps.Point(15,10),
@@ -364,7 +364,7 @@ var app = angular.module('app', [
                     // var address = person.del_address.replace(/ /g, '+');
                     var contentString = '<span style=font-size:10px;>' +
                         '<b>' +
-                        person.cust_id + ' - ' + person.company + ' - ' + person.custcategory +
+                        person.code + ' - ' + person.company + ' - ' + person.custcategory +
                         '</b>' +
                         // '<br>' +
                         // '<span style="font-size:13px">' + '<b>' + person.del_postcode + '</b>' + '</span>' + ' ' + person.del_address +
@@ -394,7 +394,7 @@ var app = angular.module('app', [
                     var marker = new google.maps.Marker({
                         position: pos,
                         map: map,
-                        title: person.cust_id + ' - ' + person.company + ' - ' + person.custcategory,
+                        title: person.code + ' - ' + person.company + ' - ' + person.custcategory,
                         label: {fontSize: '15px', text: (key + $scope.indexFrom).toString(), fontWeight: 'bold'},
                         icon: {
                             labelOrigin: new google.maps.Point(15,10),
@@ -825,7 +825,7 @@ var app = angular.module('app', [
                 // console.log(singleperson)
                 var contentString = '<span style=font-size:10px;>' +
                     '<b>' +
-                    '(' + singleperson.id + ') ' + singleperson.cust_id + ' - ' + singleperson.company +
+                    '(' + singleperson.id + ') ' + singleperson.code + ' - ' + singleperson.company +
                     '</b>' +
                     // '<br>' +
                     // '<span style="font-size:13px">' + '<b>' + singleperson.del_postcode + '</b>' + '</span>' + ' ' + singleperson.del_address +
@@ -849,7 +849,7 @@ var app = angular.module('app', [
                         var marker = new google.maps.Marker({
                             position: pos,
                             map: map,
-                            title: singleperson.cust_id + ' - ' + singleperson.company + ' - ' + singleperson.custcategory,
+                            title: singleperson.code + ' - ' + singleperson.company + ' - ' + singleperson.custcategory,
                             label: {fontSize: '15px', text: singleperson.custcategory, fontWeight: 'bold'},
                             icon: {
                                 labelOrigin: new google.maps.Point(15,10),
@@ -870,7 +870,7 @@ var app = angular.module('app', [
                     // var address = person.del_address.replace(/ /g, '+');
                     var contentString = '<span style=font-size:10px;>' +
                         '<b>' +
-                        person.cust_id + ' - ' + person.company + ' - ' + person.custcategory +
+                        person.code + ' - ' + person.company + ' - ' + person.custcategory +
                         '</b>' +
                         // '<br>' +
                         // '<span style="font-size:13px">' + '<b>' + person.del_postcode + '</b>' + '</span>' + ' ' + person.del_address +
@@ -899,7 +899,7 @@ var app = angular.module('app', [
                     var marker = new google.maps.Marker({
                         position: pos,
                         map: map,
-                        title: person.cust_id + ' - ' + person.company + ' - ' + person.custcategory,
+                        title: person.code + ' - ' + person.company + ' - ' + person.custcategory,
                         label: {fontSize: '15px', text: (key + $scope.indexFrom).toString(), fontWeight: 'bold'},
                         icon: {
                             labelOrigin: new google.maps.Point(15,10),

@@ -564,7 +564,7 @@ function transController($scope, $http, $window) {
                     var marker = new google.maps.Marker({
                         position: pos,
                         map: map,
-                        title: '(' + singleperson.id + ') ' + singleperson.cust_id + ' - ' + singleperson.company,
+                        title: '(' + singleperson.id + ') ' + singleperson.code + ' - ' + singleperson.company,
                         label: { fontSize: '15px', text: '' + singleperson.sequence * 1, fontWeight: 'bold' },
                         icon: {
                             labelOrigin: new google.maps.Point(15, 10),
@@ -582,7 +582,7 @@ function transController($scope, $http, $window) {
             var contentString = '<span style=font-size:10px;>' +
                 '<span style="font-size:13px">' + '<b>' + singleperson.del_postcode + '; ' + singleperson.custcategory + '</b>' + '</span>' +
                 '<br>' +
-                '<b>' + singleperson.id + '</b>' + ', ' + singleperson.cust_id + ', ' + singleperson.company +
+                '<b>' + singleperson.id + '</b>' + ', ' + singleperson.code + ', ' + singleperson.company +
                 '<br>' +
                 singleperson.del_address +
                 '<br>' +
@@ -615,7 +615,7 @@ function transController($scope, $http, $window) {
                     var contentString = '<span style=font-size:10px;>' +
                         '<span style="font-size:13px">' + '<b>' + person.del_postcode + '; ' + person.custcategory + '</b>' + '</span>' +
                         '<br>' +
-                        '<b>' + person.id + '</b>' + ', ' + person.cust_id + ', ' + person.company +
+                        '<b>' + person.id + '</b>' + ', ' + person.code + ', ' + person.company +
                         '<br>' +
                         person.del_address +
                         '<br>' +
@@ -631,7 +631,7 @@ function transController($scope, $http, $window) {
                     var marker = new google.maps.Marker({
                         position: pos,
                         map: map,
-                        title: '(' + person.id + ') ' + person.cust_id + ' - ' + person.company,
+                        title: '(' + person.id + ') ' + person.code + ' - ' + person.company,
                         label: { fontSize: '15px', text: '' + person.sequence * 1, fontWeight: 'bold' },
                         icon: {
                             labelOrigin: new google.maps.Point(15, 10),
@@ -667,7 +667,7 @@ function transController($scope, $http, $window) {
                         var contentString = '<span style=font-size:10px;>' +
                         '<span style="font-size:13px">' + '<b>#' + person.sequence + ', ' + person.del_postcode + '</span>' + '</b>' +
                         '<br>' +
-                        '<b>' + person.id + '</b>' + ' ' + person.cust_id + ', ' + person.company +
+                        '<b>' + person.id + '</b>' + ' ' + person.code + ', ' + person.company +
                         '<br>' +
                         person.del_address +
                         '<br>' +
@@ -683,7 +683,7 @@ function transController($scope, $http, $window) {
                         var marker = new google.maps.Marker({
                             position: pos,
                             map: map,
-                            title: '(' + person.id + ') ' + person.cust_id + ' - ' + person.company,
+                            title: '(' + person.id + ') ' + person.code + ' - ' + person.company,
                             label: { fontSize: '15px', text: person.custcategory, fontWeight: 'bold' },
                             icon: {
                                 labelOrigin: new google.maps.Point(15, 10),
@@ -770,7 +770,7 @@ function transController($scope, $http, $window) {
             var contentString = '<span style=font-size:10px;>' +
             '<span style="font-size:13px">' + '<b>' + person.del_postcode + '; ' + person.custcategory + '</b>' + '</span>' +
             '<br>' +
-            '<b>' + person.id + '</b>' + ', ' + person.cust_id + ', ' + person.company +
+            '<b>' + person.id + '</b>' + ', ' + person.code + ', ' + person.company +
             '<br>' +
             person.del_address +
             '<br>' +
@@ -786,7 +786,7 @@ function transController($scope, $http, $window) {
             var marker = new google.maps.Marker({
                 position: pos,
                 map: map,
-                title: '(' + person.id + ') ' + person.cust_id + ' - ' + person.company,
+                title: '(' + person.id + ') ' + person.code + ' - ' + person.company,
                 label: { fontSize: '15px', text: '' + person.sequence * 1, fontWeight: 'bold' },
                 icon: {
                     labelOrigin: new google.maps.Point(15, 10),

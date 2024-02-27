@@ -559,6 +559,7 @@ class RptController extends Controller
 
         $query = DB::table('transactions')
             ->leftJoin('people', 'transactions.person_id', '=', 'people.id')
+            ->leftJoin('cust_prefixes', 'people.cust_prefix_id', '=', 'cust_prefixes.id')
             ->leftJoin('profiles', 'people.profile_id', '=', 'profiles.id')
             ->leftJoin('custcategories', 'custcategories.id', '=', 'people.custcategory_id');
 
@@ -602,8 +603,10 @@ class RptController extends Controller
         $query = $query->select(
             'transactions.id',
             'people.cust_id',
+            'people.code',
             'people.company',
             'people.id as person_id',
+            'cust_prefixes.code as cust_prefix_code',
             'transactions.status',
             DB::raw('DATE(transactions.delivery_date) AS delivery_date'),
             'transactions.driver',

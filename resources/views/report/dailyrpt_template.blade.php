@@ -27,20 +27,31 @@
     <div class="panel-body">
     {!! Form::hidden('user_id', Auth::user()->id, ['class'=>'form-group', 'id'=>'user_id']) !!}
         {!! Form::open(['id'=>'daily_rpt', 'method'=>'POST','action'=>['RptController@getDailyPdf']]) !!}
-        <div class="row col-md-12 col-sm-12 col-xs-12">
-            <div class="form-group col-md-2 col-sm-6 col-xs-12">
-                {!! Form::label('transaction_id', 'Invoice', ['class'=>'control-label search-title']) !!}
-                {!! Form::text('transaction_id', null, ['class'=>'form-control input-sm', 'ng-model'=>'search.id', 'ng-change'=>'dbSearch()', 'ng-model-options'=>'{ debounce: 350 }', 'placeholder'=>'Inv Num']) !!}
+        <div class="row">
+            <div class="col-md-3 col-sm-6 col-xs-12">
+                <div class="form-group">
+                    {!! Form::label('transaction_id', 'Invoice', ['class'=>'control-label search-title']) !!}
+                    {!! Form::text('transaction_id', null, ['class'=>'form-control input-sm', 'ng-model'=>'search.id', 'ng-change'=>'dbSearch()', 'ng-model-options'=>'{ debounce: 350 }', 'placeholder'=>'Inv Num']) !!}
+                </div>
             </div>
-            <div class="form-group col-md-2 col-sm-6 col-xs-12">
-                {!! Form::label('cust_id', 'ID', ['class'=>'control-label search-title']) !!}
-                {!! Form::text('cust_id', null, ['class'=>'form-control input-sm', 'ng-model'=>'search.cust_id', 'ng-change'=>'dbSearch()', 'ng-model-options'=>'{ debounce: 350 }', 'placeholder'=>'Cust ID']) !!}
+            <div class="col-md-3 col-sm-6 col-xs-12">
+                <div class="form-group">
+                {!! Form::label('prefix_code', 'Prefix Code', ['class'=>'control-label search-title']) !!}
+                {!! Form::text('prefix_code', null,
+                                                [
+                                                    'class'=>'form-control input-sm',
+                                                    'ng-model'=>'search.prefix_code',
+                                                    'ng-change'=>'searchDB()',
+                                                    'placeholder'=>'Prefix Code',
+                                                    'ng-model-options'=>'{ debounce: 500 }'
+                                                ]) !!}
+                </div>
             </div>
-            <div class="form-group col-md-2 col-sm-6 col-xs-12">
+            <div class="form-group col-md-3 col-sm-6 col-xs-12">
                 {!! Form::label('company', 'Company', ['class'=>'control-label search-title']) !!}
                 {!! Form::text('company', null, ['class'=>'form-control input-sm', 'ng-model'=>'search.company', 'ng-change'=>'dbSearch()', 'ng-model-options'=>'{ debounce: 350 }', 'placeholder'=>'Company']) !!}
             </div>
-            <div class="form-group col-md-2 col-sm-6 col-xs-12">
+            <div class="form-group col-md-3 col-sm-6 col-xs-12">
                 {!! Form::label('statuses', 'Status', ['class'=>'control-label search-title']) !!}
 {{--
                 <select name="statuses" class="selectmultiple form-control" ng-model="search.statuses" ng-change="dbSearch()" multiple>
@@ -68,62 +79,65 @@
                 {!! Form::label('pay_status', 'Payment:', ['class'=>'control-label search-title']) !!}
                 {!! Form::text('pay_status', null, ['class'=>'form-control input-sm', 'ng-model'=>'search.pay_status', 'ng-change'=>'dbSearch()', 'ng-model-options'=>'{ debounce: 350 }', 'placeholder'=>'Payment']) !!}
             </div> --}}
-            <div class="form-group col-md-2 col-sm-6 col-xs-12">
-                {!! Form::label('pay_status', 'Payment', ['class'=>'control-label search-title']) !!}
-                {!! Form::select('pay_status', [''=>'All', 'Owe'=>'Owe', 'Paid'=>'Paid'], null,
-                    [
-                    'class'=>'select form-control',
-                    'ng-model'=>'search.pay_status',
-                    'ng-change'=>'dbSearch()'
-                    ])
-                !!}
-            </div>
-            {{-- driver can only view himself --}}
-            @unless(Auth::user()->hasRole('driver') or auth()->user()->hasRole('technician'))
-                <div class="form-group col-md-2 col-sm-6 col-xs-12 hidden">
-                    {!! Form::label('paid_by', 'Pay Received By', ['class'=>'control-label search-title']) !!}
-                    {!! Form::text('paid_by', null, ['class'=>'form-control input-sm', 'ng-model'=>'paid_by', 'ng-change'=>'paidByChange(paid_by)', 'ng-model-options'=>'{ debounce: 350 }', 'placeholder'=>'Pay Received By']) !!}
+            <div class="row col-md-12 col-sm-12 col-xs-12">
+                <div class="form-group col-md-3 col-sm-6 col-xs-12">
+                    {!! Form::label('pay_status', 'Payment', ['class'=>'control-label search-title']) !!}
+                    {!! Form::select('pay_status', [''=>'All', 'Owe'=>'Owe', 'Paid'=>'Paid'], null,
+                        [
+                        'class'=>'select form-control',
+                        'ng-model'=>'search.pay_status',
+                        'ng-change'=>'dbSearch()'
+                        ])
+                    !!}
                 </div>
-            @else
-                <div class="form-group col-md-2 col-sm-6 col-xs-12 hidden">
-                    {!! Form::label('paid_by', 'Pay Received By', ['class'=>'control-label search-title']) !!}
-                    {!! Form::text('paid_by', Auth::user()->name, ['class'=>'form-control input-sm', 'placeholder'=>'Pay Received By', 'disabled'=>'disbaled']) !!}
+
+                {{-- driver can only view himself --}}
+                @unless(Auth::user()->hasRole('driver') or auth()->user()->hasRole('technician'))
+                    <div class="form-group col-md-3 col-sm-6 col-xs-12 hidden">
+                        {!! Form::label('paid_by', 'Pay Received By', ['class'=>'control-label search-title']) !!}
+                        {!! Form::text('paid_by', null, ['class'=>'form-control input-sm', 'ng-model'=>'paid_by', 'ng-change'=>'paidByChange(paid_by)', 'ng-model-options'=>'{ debounce: 350 }', 'placeholder'=>'Pay Received By']) !!}
+                    </div>
+                @else
+                    <div class="form-group col-md-3 col-sm-6 col-xs-12 hidden">
+                        {!! Form::label('paid_by', 'Pay Received By', ['class'=>'control-label search-title']) !!}
+                        {!! Form::text('paid_by', Auth::user()->name, ['class'=>'form-control input-sm', 'placeholder'=>'Pay Received By', 'disabled'=>'disbaled']) !!}
+                    </div>
+                @endunless
+                {{-- paid_at toggle only when on change because need to fulfil orWhere --}}
+                <div class="form-group col-md-3 col-sm-6 col-xs-12">
+                    {!! Form::label('paid_at', 'Date', ['class'=>'control-label search-title']) !!}
+                    <div class="input-group">
+                        <datepicker date-set="@{{today}}" date-format="yyyy-MM-dd">
+                            <input
+                                type = "text"
+                                name = "paid_at"
+                                class = "form-control input-sm"
+                                placeholder = "Date"
+                                ng-model = "paid_at"
+                                ng-change = "dateChange2(paid_at)"
+                            />
+                        </datepicker>
+                        <span class="input-group-addon fa fa-backward" ng-click="onPrevSingleClicked(paid_at)"></span>
+                        <span class="input-group-addon fa fa-forward" ng-click="onNextSingleClicked(paid_at)"></span>
+                    </div>
                 </div>
-            @endunless
-            {{-- paid_at toggle only when on change because need to fulfil orWhere --}}
-            <div class="form-group col-md-2 col-sm-6 col-xs-12">
-                {!! Form::label('paid_at', 'Date', ['class'=>'control-label search-title']) !!}
-                <div class="input-group">
+                <div class="form-group col-md-3 col-sm-6 col-xs-12 hidden">
+                    {!! Form::label('delivery_date', 'Delivery On:', ['class'=>'control-label search-title']) !!}
+
                     <datepicker date-set="@{{today}}" date-format="yyyy-MM-dd">
                         <input
                             type = "text"
-                            name = "paid_at"
+                            name = "delivery_date"
                             class = "form-control input-sm"
-                            placeholder = "Date"
-                            ng-model = "paid_at"
-                            ng-change = "dateChange2(paid_at)"
+                            placeholder = "Delivery Date"
+                            ng-model = "delivery_date"
+                            ng-change = "dateChange(delivery_date)"
                         />
                     </datepicker>
-                    <span class="input-group-addon fa fa-backward" ng-click="onPrevSingleClicked(paid_at)"></span>
-                    <span class="input-group-addon fa fa-forward" ng-click="onNextSingleClicked(paid_at)"></span>
                 </div>
             </div>
-            <div class="form-group col-md-2 col-sm-6 col-xs-12 hidden">
-                {!! Form::label('delivery_date', 'Delivery On:', ['class'=>'control-label search-title']) !!}
-
-                <datepicker date-set="@{{today}}" date-format="yyyy-MM-dd">
-                    <input
-                        type = "text"
-                        name = "delivery_date"
-                        class = "form-control input-sm"
-                        placeholder = "Delivery Date"
-                        ng-model = "delivery_date"
-                        ng-change = "dateChange(delivery_date)"
-                    />
-                </datepicker>
-            </div>
         </div>
-        <div class="row col-md-12 col-sm-12 col-xs-12">
+        <div class="row">
             {{-- driver can only view himself --}}
             @unless(Auth::user()->hasRole('driver') or auth()->user()->hasRole('technician'))
 {{--
@@ -131,7 +145,7 @@
                     {!! Form::label('driver', 'User:', ['class'=>'control-label search-title']) !!}
                     {!! Form::text('driver', null, ['class'=>'form-control input-sm', 'ng-model'=>'driver', 'ng-change'=>'driverChange(driver)', 'ng-model-options'=>'{ debounce: 350 }', 'placeholder'=>'User']) !!}
                 </div> --}}
-                <div class="form-group col-md-2 col-sm-6 col-xs-12">
+                <div class="form-group col-md-3 col-sm-6 col-xs-12">
                     {!! Form::label('driver', 'User', ['class'=>'control-label search-title']) !!}
                     <select name="driver" class="form-control select" ng-model="driver" ng-change="driverChange(driver)">
                         <option value="">All</option>
@@ -145,12 +159,12 @@
                     </select>
                 </div>
             @else
-                <div class="form-group col-md-2 col-sm-6 col-xs-12">
+                <div class="form-group col-md-3 col-sm-6 col-xs-12">
                     {!! Form::label('driver', 'User', ['class'=>'control-label search-title']) !!}
                     {!! Form::text('driver', Auth::user()->name, ['class'=>'form-control input-sm', 'placeholder'=>'User', 'readonly'=>'readonly']) !!}
                 </div>
             @endunless
-            <div class="form-group col-md-2 col-sm-6 col-xs-12">
+            <div class="form-group col-md-3 col-sm-6 col-xs-12">
                 {!! Form::label('profile_id', 'Profile', ['class'=>'control-label search-title']) !!}
                 {!! Form::select('profile_id', [''=>'All']+
                     $profiles::filterUserProfile()
@@ -481,7 +495,9 @@
                                     @{{ transaction.id }}
                                 </a>
                             </td>
-                            <td class="col-md-1 text-center">@{{ transaction.cust_id }} </td>
+                            <td class="col-md-1 text-center">
+                                @{{ transaction.cust_prefix_code }}-@{{ transaction.code }}
+                            </td>
                             <td class="col-md-1 text-center" id="to-pdf">
                             <a href="/person/@{{ transaction.person_id }}">
                             @{{ transaction.company }}

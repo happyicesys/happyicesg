@@ -104,7 +104,7 @@ class Person extends Baum\Node
 
     public function identifiableName()
     {
-        return $this->cust_id.' - '.$this->company;
+        return $this->code.' - '.$this->company;
     }
 
     public function bank()
@@ -351,7 +351,7 @@ class Person extends Baum\Node
 
     public function getFullNameAttribute()
     {
-        return $this->attribute['cust_id'].'-'.$this->attribute['name'];
+        return $this->attribute['code'].'-'.$this->attribute['name'];
     }
 
     // scopes

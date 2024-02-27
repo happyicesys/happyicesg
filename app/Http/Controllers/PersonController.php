@@ -741,6 +741,7 @@ class PersonController extends Controller
         $rep_person = $person->replicate();
         // $find_already_replicate = Person::where('cust_id', 'LIKE', $person->cust_id . '-replicate-%');
         // $rep_person->cust_id = $find_already_replicate->first() ? substr($find_already_replicate->max('cust_id'), 0, -1) . (substr($find_already_replicate->max('cust_id'), -1) + 1) : $person->cust_id . '-replicate-1';
+        $rep_person->company = $person->company . ' (Replicate)';
         $rep_person->cust_id = $person->custPrefix->code. '-'. $runningNumber;
         $rep_person->del_lat = null;
         $rep_person->del_lng = null;

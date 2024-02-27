@@ -139,8 +139,6 @@
                                     {{ $transaction->cust_prefix_code }}-{{ $transaction->code }}
                                 </td>
                                 <td class="col-xs-2 text-left" style="width: 10%;  height: 70%; overflow: hidden;">
-                                    {{ $transaction->cust_id }}
-                                    <br>
                                     {{ $transaction->company }}
                                 </td>
                                 <td class="col-xs-1 text-center" style="width: 3%;">

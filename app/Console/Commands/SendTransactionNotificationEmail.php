@@ -50,10 +50,12 @@ class SendTransactionNotificationEmail extends Command
 
         $transactions = DB::table('transactions')
                         ->leftJoin('people', 'transactions.person_id', '=', 'people.id')
+                        ->leftJoin('cust_prefixes', 'people.cust_prefix_id', '=', 'cust_prefixes.id')
                         ->leftJoin('profiles', 'people.profile_id', '=', 'profiles.id')
                         ->leftJoin('custcategories', 'people.custcategory_id', '=', 'custcategories.id')
                         ->select(
                                     'people.cust_id', 'people.company',
+                                    'people.code', 'cust_prefixes.code as cust_prefix',
                                     'people.name', 'people.id as person_id', 'transactions.del_postcode', 'transactions.bill_postcode',
                                     'transactions.status', 'transactions.delivery_date', 'transactions.driver',
                                     'transactions.total_qty', 'transactions.pay_status',

@@ -15,7 +15,7 @@ class JobController extends Controller
     {
         $this->middleware('auth');
     }
-    
+
     // return person maintenance index()
     public function getJobIndex()
     {
@@ -62,12 +62,12 @@ class JobController extends Controller
             'task_date' => request('task_date'),
             'updated_by' => auth()->user()->id
         ]);
-    }    
+    }
 
     // get all people api()
     public function getPeopleOptionsApi()
     {
-        $people = Person::orderBy('cust_id')->get();
+        $people = Person::orderBy('code')->get();
         return $people;
     }
 
@@ -93,7 +93,7 @@ class JobController extends Controller
         $from = request('from');
         $to = request('to');
         $progress = request('progress');
-        
+
         // reading whether search input is filled
         if($task_name) {
             $jobs = $jobs->where('task_name', 'LIKE', '%' . $task_name . '%');
@@ -105,7 +105,7 @@ class JobController extends Controller
 
         if($to) {
             $jobs = $jobs->whereDate('task_date', '<=', $to);
-        }        
+        }
 
         if($progress) {
             switch($progress) {
@@ -114,7 +114,7 @@ class JobController extends Controller
                     break;
                 case 'Completed':
                     $jobs = $jobs->where('progress', '=', 100);
-                    break;                    
+                    break;
             }
         }else {
             $jobs = $jobs->orWhere('progress', '<', 100)->orWhere('is_verify', null);

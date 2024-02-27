@@ -13,7 +13,7 @@
                         INV #
                     </th>
                     <th style="border: 1px solid black; padding:5px 15px 5px 15px;">
-                        ID
+                        Prefix Code
                     </th>
                     <th style="border: 1px solid black; padding:5px 15px 5px 15px;">
                         ID Name
@@ -59,7 +59,7 @@
                             {{$transaction->id}}
                         </td>
                         <td style="border: 1px solid black; padding:5px 15px 5px 15px;" align="center">
-                            {{$transaction->cust_id}}
+                            {{$transaction->cust_prefix}}-{{$transaction->code}}
                         </td>
                         <td style="border: 1px solid black; padding:5px 15px 5px 15px;" align="center">
                             {{$transaction->cust_id[0] == 'D' || $transaction->cust_id[0] == 'H' ? $transaction->name : $transaction->company }}

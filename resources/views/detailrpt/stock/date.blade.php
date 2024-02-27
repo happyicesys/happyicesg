@@ -72,11 +72,14 @@
         <div class="row">
             <div class="col-md-3 col-sm-6 col-xs-12">
                 <div class="form-group">
-                    {!! Form::label('cust_id', 'ID', ['class'=>'control-label search-title']) !!}
-                    {!! Form::text('cust_id',
-                        request('cust_id') ? request('cust_id') : null,
-                        ['class'=>'form-control'])
-                    !!}
+                {!! Form::label('prefix_code', 'Prefix Code', ['class'=>'control-label search-title']) !!}
+                {!! Form::text('prefix_code', null,
+                                                [
+                                                    'class'=>'form-control input-sm',
+                                                    'ng-model'=>'search.prefix_code',
+                                                    'ng-change'=>'searchDB()',
+                                                    'placeholder'=>'Prefix Code',
+                                                ]) !!}
                 </div>
             </div>
             <div class="col-md-3 col-sm-6 col-xs-12">
@@ -94,14 +97,16 @@
                     {!! Form::label('person_id', 'Customer', ['class'=>'control-label search-title']) !!}
                     {!! Form::select('person_id',
                         [''=>'All'] +
-                        $speople::select(DB::raw("CONCAT(cust_id,' - ',company) AS full, id"))
+                        $speople::query()
+                            ->leftJoin('cust_prefixes', 'people.cust_prefix_id', '=', 'cust_prefixes.id')
+                            ->select(DB::raw("CONCAT(cust_prefixes.code,'-',people.code,' - ',company) AS full, people.id"))
                             ->whereActive('Yes')
                             ->where('cust_id', 'NOT LIKE', 'H%')
                             ->whereHas('profile', function($q) {
                                 $q->filterUserProfile();
                             })
-                            ->orderBy('cust_id')
-                            ->pluck('full', 'id')
+                            ->orderBy('people.code')
+                            ->pluck('full', 'people.id')
                             ->all(),
                         request('person_id') ? request('person_id') : null,
                         ['class'=>'select form-control'])

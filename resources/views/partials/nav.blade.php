@@ -294,11 +294,11 @@
                     </li>
                 @endif
 
-                @if($gt_sales_lead_access and config('app.usage') != 'operator')
+                {{-- @if($gt_sales_lead_access and config('app.usage') != 'operator')
                     <li class="{{ Request::segment(1) == 'potential-customer' ? 'active' : '' }}">
                         <a href="/potential-customer"><i class="fa fa-address-card-o"></i> GT Sales Lead</a>
                     </li>
-                @endif
+                @endif --}}
 
                 @if($price_template_access)
                     <li class="{{ Request::segment(1) == 'price-template' ? 'active' : '' }}">
@@ -306,12 +306,12 @@
                     </li>
                 @endif
 
-                @if($route_template and config('app.usage') != 'operator')
+                {{-- @if($route_template and config('app.usage') != 'operator')
                     <li class="{{ Request::segment(1) == 'route-template' ? 'active' : '' }}">
                         <a href="/route-template"><i class="fa fa-road" aria-hidden="true"></i> Route Template</a>
                     </li>
-                @endif
-                @if($hd_access and config('app.usage') != 'operator')
+                @endif --}}
+                {{-- @if($hd_access and config('app.usage') != 'operator')
                     <li class="{{ Request::segment(1) == 'hdprofile' || Request::segment(1) == 'personasset' ? 'active' : '' }}">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" type="button" aria-haspopup="true" aria-expanded="false"><i class="fa fa-fw fa-truck"></i>
                             HD Profile
@@ -320,13 +320,13 @@
                         <ul class="dropdown-menu">
                             <li class="text-left"><a href="/hdprofile/transation"> Transaction</a></li>
                             <li class="text-left"><a href="/personasset">{{$PERSONASSET_TITLE}}</a></li>
-                            {{-- <li class="text-left"><a href="/hdprofile/sales"> Sales</a></li> --}}
+                            <li class="text-left"><a href="/hdprofile/sales"> Sales</a></li>
                         </ul>
                     </li>
                 @endif
                 @if($personasset_access)
 
-                @endif
+                @endif --}}
                 @if($item_access)
                     <li class="{{ Request::segment(1) == 'item' ? 'active' : '' }}">
                         <a href="/item"><i class="fa fa-fw fa-shopping-cart"></i> {{ $ITEM_TITLE }}</a>
@@ -400,7 +400,7 @@
                     </li>
                 @endif
 
-                @if($dtd_access and config('app.usage') != 'operator')
+                {{-- @if($dtd_access and config('app.usage') != 'operator')
                     <li class="{{ (Request::segment(1) == 'setup' || Request::segment(1) == 'member' || Request::segment(1) == 'market') ? 'active' : '' }}">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" type="button" aria-haspopup="true" aria-expanded="false"><i class="fa fa-fw fa-address-card"></i> Door To Door <i class="fa fa-caret-down"></i></a>
                         <ul class="dropdown-menu">
@@ -418,28 +418,28 @@
                     <li class="{{ Request::segment(1) == 'franrpt' ? 'active' : '' }}">
                         <a href="/franrpt"><i class="fa fa-fw fa-area-chart"></i> {{ $FRANCHISE_RPT }}</a>
                     </li>
-                @endif
+                @endif --}}
                 {{-- @if($vending_access and config('app.usage') != 'operator') --}}
                     <li class="{{ (Request::segment(1) == 'bom' || Request::segment(1) == 'personmaintenance' || Request::segment(1) == 'vm' || Request::segment(1) == 'deal') ? 'active' : '' }}">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" type="button" aria-haspopup="true" aria-expanded="false"><i class="fa fa-fw fa-rocket"></i> Vending <i class="fa fa-caret-down"></i></a>
                         <ul class="dropdown-menu">
-                            @if($bom_access and $vending_access and config('app.usage') != 'operator')
+                            {{-- @if($bom_access and $vending_access and config('app.usage') != 'operator')
                                 <li class="text-left"><a href="/bom"> {{ $BOM_TITLE }}</a></li>
                             @endif
                             @if($personmaintenance_access and $vending_access and config('app.usage') != 'operator')
                                 <li class="text-left"><a href="/personmaintenance"> {{ $PERSONMAINTENANCE_TITLE }}</a></li>
-                            @endif
+                            @endif --}}
                             <li class="text-left"><a href="/vm"> Machine</a></li>
                             <li class="text-left"><a href="/simcard"> SIM card</a></li>
                             <li class="text-left"><a href="/cashless"> Cashless</a></li>
                         </ul>
                     </li>
                 {{-- @endif --}}
-                @if($jobcard_access and config('app.usage') != 'operator')
+                {{-- @if($jobcard_access and config('app.usage') != 'operator')
                     <li class="{{ Request::segment(1) == 'jobcard' ? 'active' : '' }}">
                         <a href="/jobcard"><i class="fa fa-th-list "></i> {{ $JOBCARD_TITLE }}</a>
                     </li>
-                @endif
+                @endif --}}
 {{--                 @if($ecommerce_access)
                     <li class="{{ strpos(Request::path(), 'ecommerce') !== false ? 'active' : '' }}">
                         <a href="/ecommerce"><i class="fa fa-shopping-bag "></i> {{ $ECOMMERCE_TITLE }}</a>

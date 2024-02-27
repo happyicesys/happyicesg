@@ -128,13 +128,13 @@
                               INV #
                             </th>
                             <th class="col-xs-1 text-center">
-                              ID
+                              Prefix Code
+                            </th>
+                            <th class="col-xs-1 text-center">
+                              ID Name
                             </th>
                             <th class="col-xs-1 text-center">
                               Vend ID
-                            </th>
-                            <th class="col-xs-1 text-center">
-                              Prefix Code
                             </th>
                             <th class="col-xs-1 text-center">
                               Postcode
@@ -173,11 +173,10 @@
                                     {{ $transaction->id }}
                                 </td>
                                 <td class="col-xs-1 text-center">
-                                    {{ $transaction->cust_id }}<br>
-                                    {{ $transaction->company }}
+                                  {{ $transaction->cust_prefix_code }}-{{ $transaction->code }}
                                 </td>
                                 <td class="col-xs-1 text-center">
-                                  {{ $transaction->cust_prefix_code }}-{{ $transaction->code }}
+                                    {{ $transaction->company }}
                                 </td>
                                 <td class="col-xs-1 text-center">
                                   {{ $transaction->vend_code }}

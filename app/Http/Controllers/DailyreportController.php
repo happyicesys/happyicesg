@@ -37,11 +37,9 @@ class DailyreportController extends Controller
 
         $deals = Deal::with([
             'item',
-            'transaction',
-            'transaction.person',
             'transaction.person.profile',
-            'transaction.person.custcategory',
             'transaction.person.custcategory.custcategoryGroup',
+            'transaction.person.custPrefix',
         ])
         ->leftJoin('transactions', 'transactions.id', '=', 'deals.transaction_id')
         ->leftJoin('users', 'users.name', '=', 'transactions.driver')
@@ -314,12 +312,14 @@ class DailyreportController extends Controller
     public function getAccountManagerPerformanceApi()
     {
         $transactions = Transaction::leftJoin('people', 'people.id', '=', 'transactions.person_id')
+                                ->leftJoin('cust_prefixes', 'cust_prefixes.id', '=', 'people.cust_prefix_id')
                                 ->leftJoin('custcategories', 'custcategories.id', '=', 'people.custcategory_id')
                                 ->leftJoin('custcategory_groups', 'custcategory_groups.id', '=', 'custcategories.custcategory_group_id')
                                 ->leftJoin('profiles', 'profiles.id', '=', 'people.profile_id')
                                 ->leftJoin('users AS account_manager', 'account_manager.id', '=', 'people.account_manager');
         $deals = Deal::leftJoin('transactions', 'transactions.id', '=', 'people.transaction_id')
                                 ->leftJoin('people', 'people.id', '=', 'transactions.person_id')
+                                ->leftJoin('cust_prefixes', 'cust_prefixes.id', '=', 'people.cust_prefix_id')
                                 ->leftJoin('custcategories', 'custcategories.id', '=', 'people.custcategory_id')
                                 ->leftJoin('custcategory_groups', 'custcategory_groups.id', '=', 'custcategories.custcategory_group_id')
                                 ->leftJoin('profiles', 'profiles.id', '=', 'people.profile_id')
@@ -327,6 +327,7 @@ class DailyreportController extends Controller
                                 ->leftJoin('users AS account_manager', 'account_manager.id', '=', 'people.account_manager');
 
         $outletVisits = OutletVisit::leftJoin('people', 'people.id', '=', 'outlet_visits.person_id')
+                                ->leftJoin('cust_prefixes', 'cust_prefixes.id', '=', 'people.cust_prefix_id')
                                 ->leftJoin('custcategories', 'custcategories.id', '=', 'people.custcategory_id')
                                 ->leftJoin('custcategory_groups', 'custcategory_groups.id', '=', 'custcategories.custcategory_group_id')
                                 ->leftJoin('profiles', 'profiles.id', '=', 'people.profile_id')
@@ -368,6 +369,48 @@ class DailyreportController extends Controller
             $transactions = $transactions->where('people.id', 'LIKE', '%'.$custId.'%');
             $deals = $deals->where('people.id', 'LIKE', '%'.$custId.'%');
             $outletVisits = $outletVisits->where('people.id', 'LIKE', '%'.$custId.'%');
+        }
+
+        if($prefixCode = request('prefix_code')) {
+            $transactions = $transactions->where(function($query) use ($prefixCode) {
+                $lettersOnly = preg_replace("/[^a-zA-Z]/", "", $prefixCode);
+                $numbersOnly = preg_replace("/[^0-9]/", "", $prefixCode);
+                if($lettersOnly && !$numbersOnly) {
+                    $query->where('cust_prefixes.code', 'LIKE', '%' . $lettersOnly . '%');
+                }
+                if($numbersOnly && !$lettersOnly) {
+                    $query->where('people.code', 'LIKE', '%' . $numbersOnly . '%');
+                }
+                if($lettersOnly && $numbersOnly) {
+                    $query->where('cust_prefixes.code', 'LIKE', '%' . $lettersOnly . '%')->where('people.code', 'LIKE', '%' . $numbersOnly . '%');
+                }
+            });
+            $deals = $deals->where(function($query) use ($prefixCode) {
+                $lettersOnly = preg_replace("/[^a-zA-Z]/", "", $prefixCode);
+                $numbersOnly = preg_replace("/[^0-9]/", "", $prefixCode);
+                if($lettersOnly && !$numbersOnly) {
+                    $query->where('cust_prefixes.code', 'LIKE', '%' . $lettersOnly . '%');
+                }
+                if($numbersOnly && !$lettersOnly) {
+                    $query->where('people.code', 'LIKE', '%' . $numbersOnly . '%');
+                }
+                if($lettersOnly && $numbersOnly) {
+                    $query->where('cust_prefixes.code', 'LIKE', '%' . $lettersOnly . '%')->where('people.code', 'LIKE', '%' . $numbersOnly . '%');
+                }
+            });
+            $outletVisits = $outletVisits->where(function($query) use ($prefixCode) {
+                $lettersOnly = preg_replace("/[^a-zA-Z]/", "", $prefixCode);
+                $numbersOnly = preg_replace("/[^0-9]/", "", $prefixCode);
+                if($lettersOnly && !$numbersOnly) {
+                    $query->where('cust_prefixes.code', 'LIKE', '%' . $lettersOnly . '%');
+                }
+                if($numbersOnly && !$lettersOnly) {
+                    $query->where('people.code', 'LIKE', '%' . $numbersOnly . '%');
+                }
+                if($lettersOnly && $numbersOnly) {
+                    $query->where('cust_prefixes.code', 'LIKE', '%' . $lettersOnly . '%')->where('people.code', 'LIKE', '%' . $numbersOnly . '%');
+                }
+            });
         }
 
         if($company = request('company')) {
@@ -574,7 +617,7 @@ class DailyreportController extends Controller
     private function filterCommission($deals, $request)
     {
         if($request->profile_id) {
-            $deals = $deals->whereHas('person', function($query) use ($request) {
+            $deals = $deals->whereHas('transaction.person', function($query) use ($request) {
                 $query->where('profile_id', $request->profile_id);
             });
         }
@@ -589,8 +632,31 @@ class DailyreportController extends Controller
             });
         }
         if($request->cust_id) {
-            $deals = $deals->whereHas('person', function($query) use ($request) {
+            $deals = $deals->whereHas('transaction.person', function($query) use ($request) {
                 $query->where('cust_id', 'LIKE', $request->cust_id.'%');
+            });
+        }
+        if($prefixCode = $request->prefix_code) {
+            $transactions = $transactions->where(function($query) use ($prefixCode) {
+                $lettersOnly = preg_replace("/[^a-zA-Z]/", "", $prefixCode);
+                $numbersOnly = preg_replace("/[^0-9]/", "", $prefixCode);
+                if($lettersOnly && !$numbersOnly) {
+                    $query->whereHas('transaction.person.custPrefix', function($query) use ($lettersOnly) {
+                        $query->where('code', 'LIKE', '%' . $lettersOnly . '%');
+                    });
+                }
+                if($numbersOnly && !$lettersOnly) {
+                    $query->whereHas('transaction.person', function($query) use ($numbersOnly) {
+                        $query->where('code', 'LIKE', '%' . $numbersOnly . '%');
+                    });
+                }
+                if($lettersOnly && $numbersOnly) {
+                    $query->whereHas('transaction.person.custPrefix', function($query) use ($lettersOnly) {
+                        $query->where('code', 'LIKE', '%' . $lettersOnly . '%');
+                    })->whereHas('transaction.person', function($query) use ($numbersOnly) {
+                        $query->where('code', 'LIKE', '%' . $numbersOnly . '%');
+                    });
+                }
             });
         }
         if($request->id_prefix) {

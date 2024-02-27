@@ -498,7 +498,7 @@ function transController($scope, $http) {
         if (singleperson) {
             var contentString = '<span style=font-size:10px;>' +
                 '<b>' +
-                '(' + singleperson.id + ') ' + singleperson.cust_id + ' - ' + singleperson.company +
+                '(' + singleperson.id + ') ' + singleperson.code + ' - ' + singleperson.company +
                 '</b>' +
                 '<br>' +
                 '<span style="font-size:13px">' + '<b>' + singleperson.del_postcode + '</b>' + '</span>' + ' ' + singleperson.del_address +
@@ -523,7 +523,7 @@ function transController($scope, $http) {
                     var marker = new google.maps.Marker({
                         position: pos,
                         map: map,
-                        title: '(' + singleperson.id + ') ' + singleperson.cust_id + ' - ' + singleperson.company,
+                        title: '(' + singleperson.id + ') ' + singleperson.code + ' - ' + singleperson.company,
                         label: { fontSize: '15px', text: singleperson.custcategory, fontWeight: 'bold' },
                         icon: {
                             labelOrigin: new google.maps.Point(15, 10),
@@ -543,7 +543,7 @@ function transController($scope, $http) {
                 // var address = person.del_address.replace(/ /g, '+');
                 var contentString = '<span style=font-size:10px;>' +
                     '<b>' +
-                    '(' + person.id + ') ' + person.cust_id + ' - ' + person.company +
+                    '(' + person.id + ') ' + person.code + ' - ' + person.company +
                     '</b>' +
                     '<br>' +
                     '<span style="font-size:13px">' + '<b>' + person.del_postcode + '</b>' + '</span>' + ' ' + person.del_address +
@@ -573,7 +573,7 @@ function transController($scope, $http) {
                 var marker = new google.maps.Marker({
                     position: pos,
                     map: map,
-                    title: '(' + person.id + ') ' + person.cust_id + ' - ' + person.company,
+                    title: '(' + person.id + ') ' + person.code + ' - ' + person.company,
                     label: { fontSize: '15px', text: person.custcategory, fontWeight: 'bold' },
                     icon: {
                         labelOrigin: new google.maps.Point(15, 10),

@@ -28,14 +28,14 @@
                 <div class="form-group">
                     {!! Form::label('person_id', 'Customer', ['class'=>'control-label search-title']) !!}
                     {!! Form::select('person_id', [''=>null]+
-                        $people::select(DB::raw("CONCAT(cust_id,' - ',company) AS full, id"))
+                        $people::leftJoin('cust_prefixes', 'cust_prefixes.id', '=', 'people.cust_prefix_id')->select(DB::raw("CONCAT(cust_prefixes.code,'-',people.code, ' - ' ,company) AS full, people.id"))
                             ->whereActive('Yes')
                             ->where('cust_id', 'NOT LIKE', 'H%')
                             ->whereHas('profile', function($q) {
                                 $q->filterUserProfile();
                             })
-                            ->orderBy('cust_id')
-                            ->pluck('full', 'id')
+                            ->orderBy('people.code')
+                            ->pluck('full', 'people.id')
                             ->all(),
                         $request->person_id ? $request->person_id : null,
                         ['class'=>'select form-control'])

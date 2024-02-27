@@ -113,15 +113,13 @@
                 <div class="row">
                     <div class="col-md-3 col-sm-6 col-xs-12">
                         <div class="form-group">
-                            {!! Form::label('cust_id', 'ID', ['class'=>'control-label search-title']) !!}
-                            {!! Form::text('cust_id',
-                                null,
-                                [
-                                    'class'=>'form-control',
-                                    'ng-model'=>'search.cust_id',
-                                    'placeholder'=>'Cust ID'
-                                ])
-                            !!}
+                            {!! Form::label('prefix_code', 'Prefix Code', ['class'=>'control-label search-title']) !!}
+                            {!! Form::text('prefix_code', null,
+                                                            [
+                                                                'class'=>'form-control input-sm',
+                                                                'ng-model'=>'search.prefix_code',
+                                                                'placeholder'=>'Prefix Code',
+                                                            ]) !!}
                         </div>
                     </div>
                     <div class="col-md-3 col-sm-6 col-xs-12">
@@ -370,10 +368,10 @@
                                 <span ng-if="search.sortName == 'del_postcode' && search.sortBy" class="fa fa-caret-up"></span>
                             </th>
                             <th class="col-md-1 text-center">
-                                <a href="" ng-click="sortTable('cust_id')">
-                                Cust ID
-                                <span ng-if="search.sortName == 'cust_id' && !search.sortBy" class="fa fa-caret-down"></span>
-                                <span ng-if="search.sortName == 'cust_id' && search.sortBy" class="fa fa-caret-up"></span>
+                                <a href="" ng-click="sortTable('code')">
+                                Prefix Code
+                                <span ng-if="search.sortName == 'code' && !search.sortBy" class="fa fa-caret-down"></span>
+                                <span ng-if="search.sortName == 'code' && search.sortBy" class="fa fa-caret-up"></span>
                             </th>
                         </tr>
                         </thead>
@@ -390,7 +388,7 @@
                                     @{{person.del_postcode}}
                                 </td>
                                 <td class="col-md-1 text-center">
-                                    @{{person.cust_id}}
+                                    @{{person.code}}
                                 </td>
                             </tr>
                             <tr>
@@ -626,7 +624,7 @@
                         <div class="modal-header">
                           <button type="button" class="close" data-dismiss="modal">&times;</button>
                           <h4 class="modal-title">
-                            Outlet Visit "@{{form.person.cust_id}} - @{{form.person.company}}"
+                            Outlet Visit "@{{form.person.code}} - @{{form.person.company}}"
                         </h4>
                         </div>
                         <div class="modal-body">

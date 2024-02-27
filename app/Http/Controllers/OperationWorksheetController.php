@@ -363,6 +363,7 @@ class OperationWorksheetController extends Controller
         $custcategoryGroup = request('custcategory_group');
         // $exclude_custcategory = request('exclude_custcategory');
         $cust_id = request('cust_id');
+        $prefixCode = request('prefix_code');
         $company = request('company');
         $status = request('status');
         $today = $datesVar['today'];
@@ -406,6 +407,22 @@ class OperationWorksheetController extends Controller
         if($cust_id) {
             $transactions = $transactions->whereHas('person', function($q) use ($cust_id) {
                 $q->where('cust_id', 'LIKE', '%'.$cust_id.'%');
+            });
+        }
+
+        if($prefixCode = $request->prefix_code) {
+            $transactions = $transactions->where(function($query) use ($prefixCode) {
+                $lettersOnly = preg_replace("/[^a-zA-Z]/", "", $prefixCode);
+                $numbersOnly = preg_replace("/[^0-9]/", "", $prefixCode);
+                if($lettersOnly && !$numbersOnly) {
+                    $query->where('cust_prefixes.code', 'LIKE', '%' . $lettersOnly . '%');
+                }
+                if($numbersOnly && !$lettersOnly) {
+                    $query->where('people.code', 'LIKE', '%' . $numbersOnly . '%');
+                }
+                if($lettersOnly && $numbersOnly) {
+                    $query->where('cust_prefixes.code', 'LIKE', '%' . $lettersOnly . '%')->where('people.code', 'LIKE', '%' . $numbersOnly . '%');
+                }
             });
         }
 
@@ -647,6 +664,7 @@ class OperationWorksheetController extends Controller
         $account_manager = request('account_manager');
         $last_transac_color = request('last_transac_color');
         $outletvisit_date = request('outletvisit_date');
+        $prefixCode = request('prefix_code');
         // die(var_dump($preferred_days));
 
         if($profile_id) {
@@ -835,6 +853,22 @@ class OperationWorksheetController extends Controller
             $people = $people->whereDate('outlet_visits.date', '=', $outletvisit_date);
         }
 
+        if($prefixCode) {
+            $people = $people->where(function($query) use ($prefixCode) {
+                $lettersOnly = preg_replace("/[^a-zA-Z]/", "", $prefixCode);
+                $numbersOnly = preg_replace("/[^0-9]/", "", $prefixCode);
+                if($lettersOnly && !$numbersOnly) {
+                    $query->where('cust_prefixes.code', 'LIKE', '%' . $lettersOnly . '%');
+                }
+                if($numbersOnly && !$lettersOnly) {
+                    $query->where('people.code', 'LIKE', '%' . $numbersOnly . '%');
+                }
+                if($lettersOnly && $numbersOnly) {
+                    $query->where('cust_prefixes.code', 'LIKE', '%' . $lettersOnly . '%')->where('people.code', 'LIKE', '%' . $numbersOnly . '%');
+                }
+            });
+        }
+
         return $people;
     }
 
@@ -898,7 +932,9 @@ class OperationWorksheetController extends Controller
             GROUP BY x.person_id
         ) outlet_visits");
 
-        $people =   Person::leftJoin('custcategories', 'custcategories.id', '=', 'people.custcategory_id')
+        $people =   Person::query()
+                    ->leftJoin('cust_prefixes', 'cust_prefixes.id', '=', 'people.cust_prefix_id')
+                    ->leftJoin('custcategories', 'custcategories.id', '=', 'people.custcategory_id')
                     ->leftJoin('custcategory_groups', 'custcategory_groups.id', '=', 'custcategories.custcategory_group_id')
                     ->leftJoin('profiles', 'profiles.id', '=', 'people.profile_id')
                     ->leftJoin($last, 'people.id', '=', 'last.person_id')
@@ -910,7 +946,9 @@ class OperationWorksheetController extends Controller
                     ->leftJoin('users AS account_manager', 'account_manager.id', '=', 'people.account_manager')
                     ->leftJoin($outletVisits, 'people.id', '=', 'outlet_visits.person_id')
                     ->select(
-                            'people.id', 'people.id AS person_id', 'people.cust_id', 'people.name AS attn_name', 'people.contact', 'people.company', 'people.del_postcode', 'people.operation_note', 'people.del_address', 'people.del_lat', 'people.del_lng', 'zones.name AS zone_name',
+                            'people.id', 'people.id AS person_id', 'people.cust_id', 'people.name AS attn_name', 'people.contact', 'people.company', 'people.del_postcode', 'people.operation_note', 'people.del_address', 'people.del_lat', 'people.del_lng', 'people.code',
+                            'cust_prefixes.code AS cust_prefix_code',
+                            'zones.name AS zone_name',
                             DB::raw('SUBSTRING(people.preferred_days, 1, 1) AS monday'),
                             DB::raw('SUBSTRING(people.preferred_days, 3, 1) AS tuesday'),
                             DB::raw('SUBSTRING(people.preferred_days, 5, 1) AS wednesday'),

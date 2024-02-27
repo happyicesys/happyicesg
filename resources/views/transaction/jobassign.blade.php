@@ -50,7 +50,7 @@ Job Assign
                                                             'ng-model-options'=>'{ debounce: 1000 }'
                                                         ]) !!}
                     </div>
-                    <div class="form-group col-md-3 col-sm-6 col-xs-12">
+                    {{-- <div class="form-group col-md-3 col-sm-6 col-xs-12">
                         {!! Form::label('id', 'ID', ['class'=>'control-label search-title']) !!}
                         {!! Form::text('id', null,
                                                     [
@@ -61,6 +61,17 @@ Job Assign
                                                         'ng-model-options'=>'{ debounce: 1000 }'
                                                     ])
                         !!}
+                    </div> --}}
+                    <div class="form-group col-md-3 col-sm-6 col-xs-12">
+                        {!! Form::label('prefix_code', 'Prefix Code', ['class'=>'control-label search-title']) !!}
+                        {!! Form::text('prefix_code', null,
+                                                        [
+                                                            'class'=>'form-control input-sm',
+                                                            'ng-model'=>'search.prefix_code',
+                                                            'ng-change'=>'searchDB()',
+                                                            'placeholder'=>'Prefix Code',
+                                                            'ng-model-options'=>'{ debounce: 1000 }'
+                                                        ]) !!}
                     </div>
                     <div class="form-group col-md-3 col-sm-6 col-xs-12">
                         {!! Form::label('company', 'ID Name', ['class'=>'control-label search-title']) !!}
@@ -514,17 +525,6 @@ Job Assign
                                                             'ng-model'=>'search.vend_code',
                                                             'ng-change'=>'searchDB()',
                                                             'placeholder'=>'Vend ID',
-                                                            'ng-model-options'=>'{ debounce: 1000 }'
-                                                        ]) !!}
-                    </div>
-                    <div class="form-group col-md-3 col-sm-6 col-xs-12">
-                        {!! Form::label('prefix_code', 'Prefix Code', ['class'=>'control-label search-title']) !!}
-                        {!! Form::text('prefix_code', null,
-                                                        [
-                                                            'class'=>'form-control input-sm',
-                                                            'ng-model'=>'search.prefix_code',
-                                                            'ng-change'=>'searchDB()',
-                                                            'placeholder'=>'Prefix Code',
                                                             'ng-model-options'=>'{ debounce: 1000 }'
                                                         ]) !!}
                     </div>
@@ -991,9 +991,6 @@ Job Assign
                                     @{{ transaction.cust_prefix_code }}-@{{ transaction.code }}
                                 </td>
                                 <td class="col-md-1 text-center">
-                                    <span class="col-md-12" style="color:gray;">
-                                        @{{ transaction.cust_id }}
-                                    </span>
                                     <span class="col-md-12"><a href="/person/@{{ transaction.person_id }}">@{{transaction.cust_id[0] == 'D' || transaction.cust_id[0] == 'H' ? transaction.name : transaction.company}}</a></span>
                                 </td>
                                 <td class="col-md-1 text-center">
