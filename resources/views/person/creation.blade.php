@@ -7,34 +7,40 @@
 
     <div class="panel-body">
         <div class="row">
-            {{-- <div class="form-group col-md-2 col-sm-4 col-xs-12">
-                {!! Form::label('cust_id', 'ID', ['class'=>'control-label search-title']) !!}
-                <label class="pull-right">
-                    <input type="checkbox" name="strictCustId" ng-model="search.strictCustId" ng-change="searchDB($event)">
-                    <span style="margin-top: 5px; margin-right: 5px; font-size: 12px;">
-                        Strict
-                    </span>
-                </label>
-                {!! Form::text('cust_id', null,
+            <div class="form-group col-md-2 col-sm-4 col-xs-12">
+                {!! Form::label('code', 'Cust Code', ['class'=>'control-label search-title']) !!}
+                {!! Form::text('code', null,
                                                 [
                                                     'class'=>'form-control input-sm',
-                                                    'ng-model'=>'search.cust_id',
-                                                    'placeholder'=>'ID',
+                                                    'ng-model'=>'search.code',
+                                                    'placeholder'=>'Customer Code',
                                                     'ng-change'=>'searchDB()',
                                                     'ng-model-options'=>'{ debounce: 500 }'
                                                 ])
                 !!}
-            </div> --}}
+            </div>
             <div class="form-group col-md-2 col-sm-4 col-xs-12">
-                {!! Form::label('prefix_code', 'Prefix Code', ['class'=>'control-label search-title']) !!}
-                {!! Form::text('prefix_code', null,
+                {!! Form::label('cust_prefix_id', 'Cust Prefix', ['class'=>'control-label search-title']) !!}
+                <select name="cust_prefix_id" id="cust_prefix_id" class="selectmultiple form-control" ng-model="search.cust_prefix_id" ng-change="searchDB()" multiple>
+                    <option value="-1">-- Unassigned --</option>
+                    @foreach($custPrefixes::orderBy('code')->get() as $custPrefix)
+                        <option value="{{$custPrefix->id}}">
+                            {{$custPrefix->code}}
+                        </option>
+                    @endforeach
+                </select>
+            </div>
+            <div class="form-group col-md-2 col-sm-4 col-xs-12">
+                {!! Form::label('company', 'Cust Name', ['class'=>'control-label search-title']) !!}
+                {!! Form::text('company', null,
                                                 [
                                                     'class'=>'form-control input-sm',
-                                                    'ng-model'=>'search.prefix_code',
+                                                    'ng-model'=>'search.company',
+                                                    'placeholder'=>'Cust Name',
                                                     'ng-change'=>'searchDB()',
-                                                    'placeholder'=>'Prefix Code',
                                                     'ng-model-options'=>'{ debounce: 500 }'
-                                                ]) !!}
+                                                ])
+                !!}
             </div>
             <div class="form-group col-md-2 col-sm-4 col-xs-12">
                 {!! Form::label('custcategory', 'Cust Category', ['class'=>'control-label search-title']) !!}
@@ -74,19 +80,6 @@
                 !!}
             </div>
             <div class="form-group col-md-2 col-sm-4 col-xs-12">
-                {!! Form::label('company', 'ID Name', ['class'=>'control-label search-title']) !!}
-                {!! Form::text('company', null,
-                                                [
-                                                    'class'=>'form-control input-sm',
-                                                    'ng-model'=>'search.company',
-                                                    'placeholder'=>'ID Name',
-                                                    'ng-change'=>'searchDB()',
-                                                    'ng-model-options'=>'{ debounce: 500 }'
-                                                ])
-                !!}
-            </div>
-
-            <div class="form-group col-md-2 col-sm-4 col-xs-12">
                 {!! Form::label('active', 'Status', ['class'=>'control-label search-title']) !!}
                 <select name="active" id="active" class="selectmultiple form-control" ng-model="search.active" ng-change="searchDB()" multiple>
                     <option value="">All</option>
@@ -98,6 +91,8 @@
                     @endif
                 </select>
             </div>
+        </div>
+        <div class="row">
             <div class="form-group col-md-2 col-sm-4 col-xs-12">
                 {!! Form::label('tags', 'Tags', ['class'=>'control-label search-title']) !!}
                 <select name="tags" id="tags" class="selectmultiple form-control" ng-model="search.tags" ng-change="searchDB()" multiple>
@@ -109,8 +104,6 @@
                     @endforeach
                 </select>
             </div>
-        </div>
-        <div class="row">
             @if(!auth()->user()->hasRole('watcher') and !auth()->user()->hasRole('subfranchisee') and !auth()->user()->hasRole('hd_user'))
             <div class="form-group col-md-2 col-sm-4 col-xs-12">
                 {!! Form::label('profile_id', 'Profile', ['class'=>'control-label search-title']) !!}

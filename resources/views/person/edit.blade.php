@@ -63,7 +63,7 @@
                         @elseif($person->active == 'New')
                             <h4><span class="label label-primary">New</span></h4>
                         @endif
-                        <h4 class="panel-title" style="padding-top:5px;"><strong>Profile for {{$person->custPrefix->code}}-{{$person->code}} : {{$person->company}} </strong></h4>
+                        <h4 class="panel-title" style="padding-top:5px;"><strong>Profile for {{$person->code}} ({{$person->custPrefix->code}}) : {{$person->company}} </strong></h4>
                     </span>
                     </div>
                 </div>
@@ -174,7 +174,7 @@
     <div class="panel-heading">
         <h3 class="panel-title">
             <strong>Transaction History for
-                {{$person->custPrefix->code}}-{{$person->code}} : {{$person->company}}
+                {{$person->code}} ({{$person->custPrefix->code}}) : {{$person->company}}
             </strong>
             @if($person->cust_id[0] === 'D' or $person->cust_id[0] === 'H')
                 <a href="/person/log/{{$person->id}}" class="btn btn-warning pull-right">Log History</a>

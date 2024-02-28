@@ -24,17 +24,18 @@
 <div class="row">
     <div class="col-md-3 col-sm-3 col-xs-12">
         <div class="form-group">
-            {!! Form::label('cust_prefix_id', 'Customer Prefix', ['class'=>'control-label']) !!}
-            {!! Form::label('art', '*', ['class'=>'control-label', 'style'=>'color:red;']) !!}
-            {!! Form::select('cust_prefix_id', $custPrefixes::lists('code', 'id'), null, ['id'=>'cust_prefix_id', 'class'=>'selectNormal form-control', 'disabled'=>$disabled]) !!}
+            {!! Form::label('code', 'Cust Code', ['class'=>'control-label']) !!}
+            {!! Form::text('code', null, ['class'=>'form-control', 'disabled'=>'disabled']) !!}
         </div>
     </div>
     <div class="col-md-3 col-sm-3 col-xs-12">
         <div class="form-group">
-            {!! Form::label('code', 'Customer Code', ['class'=>'control-label']) !!}
-            {!! Form::text('code', null, ['class'=>'form-control', 'disabled'=>'disabled']) !!}
+            {!! Form::label('cust_prefix_id', 'Cust Prefix', ['class'=>'control-label']) !!}
+            {!! Form::label('art', '*', ['class'=>'control-label', 'style'=>'color:red;']) !!}
+            {!! Form::select('cust_prefix_id', $custPrefixes::lists('code', 'id'), null, ['id'=>'cust_prefix_id', 'class'=>'selectNormal form-control', 'disabled'=>$disabled]) !!}
         </div>
     </div>
+
     <div class="col-md-3 col-sm-3 col-xs-12">
         <div class="form-group">
             {!! Form::label('is_vend', 'Is Vending Machine?', ['class'=>'control-label']) !!}
@@ -64,7 +65,7 @@
 
     <div class="col-md-4 col-sm-4 col-xs-12">
         <div class="form-group">
-            {!! Form::label('company', 'ID Name', ['class'=>'control-label']) !!}
+            {!! Form::label('company', 'Cust Name', ['class'=>'control-label']) !!}
             {!! Form::label('art', '*', ['class'=>'control-label', 'style'=>'color:red;']) !!}
             {!! Form::text('company', null, ['class'=>'form-control', 'disabled'=>$disabled]) !!}
         </div>

@@ -23,16 +23,17 @@
                         {!! Form::select('person_id',
                             [''=>null] +
                                 $people::leftJoin('custcategories', 'custcategories.id', '=', 'people.custcategory_id')
+                                ->leftJoin('cust_prefixes', 'cust_prefixes.id', '=', 'people.cust_prefix_id')
                                 ->whereHas('profile', function($q){
                                     $q->filterUserProfile();
                                 })
                                 ->filterFranchiseePeople()
                                 ->filterUserCustcategory()
-                                ->select(DB::raw("CONCAT(cust_id,' - ',company) AS full, people.id AS id"))
-                                ->orderBy('cust_id')
+                                ->select(DB::raw("CONCAT(people.code,' (',cust_prefixes.code,') - ',company) AS full, people.id"))
+                                ->orderBy('people.code')
                                 ->whereIn('active', ['Yes'])
                                 ->where('cust_id', 'NOT LIKE', 'H%')
-                                ->lists('full', 'id')
+                                ->lists('full', 'people.id')
                                 ->all(),
                             null,
                             [

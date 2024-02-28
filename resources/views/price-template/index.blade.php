@@ -51,7 +51,7 @@ Price Template
                         <option value=""></option>
                         @foreach($people->orderBy('cust_id', 'asc')->get() as $person)
                             <option value="{{$person->id}}">
-                                {{$person->custPrefix->code}}-{{$person->code}} {{$person->company}}
+                                {{$person->code}} ({{$person->custPrefix->code}}) - {{$person->company}}
                             </option>
                         @endforeach
                     </select>
@@ -188,7 +188,7 @@ Price Template
                                     <li>
                                         <a href="/person/@{{ person.id }}/edit">
                                             {{-- @{{person}} --}}
-                                            @{{person.cust_prefix.code}}-@{{person.code}} @{{person.company}}
+                                            @{{person.code}} (@{{person.cust_prefix.code}}) - @{{person.company}}
                                         </a>
                                         &nbsp;
                                         <button class="btn btn-warning btn-xs" ng-click="onPriceTemplatePersonUnbind(person.id)">

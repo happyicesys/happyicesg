@@ -75,7 +75,7 @@
                             <div class="form-group" style="padding-top: 3px; margin-bottom: 0px;">
                                 <div style="font-size:14px"><strong>Customer:</strong></div>
                                 <div style="border: solid thin; height:40px; padding-bottom: 10px;">
-                                    <span class="col-xs-12">{{$person->custPrefix->code}}-{{$person->code}} @if($person->vend_code) Vend#:{{$person->vend_code}} @endif</span>
+                                    <span class="col-xs-12">{{$person->code}} ({{$person->custPrefix->code}})</span>
                                     <span class="col-xs-12">{{$person->company}}</span>
                                     @if(($transaction->person->is_vending === 1 or $transaction->person->is_dvm) and $transaction->person->vending)
                                     <div class="col-xs-12">
@@ -335,6 +335,20 @@
                                     <div class="col-xs-7" style="font-size: 120%;">
                                         <div class="form-group" style="margin-bottom: 0px;">
                                             <span class="inline">{{$transaction->deliveryorder->job_type}}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endif
+                            @if($transaction->person->vend_code)
+                                <div class="row">
+                                    <div class="col-xs-5" style="font-size: 110%;">
+                                        <div class="form-group" style="margin-bottom: 0px;">
+                                            <span class="inline"><strong>Vend#:</strong></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-7" style="font-size: 110%;">
+                                        <div class="form-group" style="margin-bottom: 0px;">
+                                            <span class="inline">{{$transaction->person->vend_code}}</span>
                                         </div>
                                     </div>
                                 </div>

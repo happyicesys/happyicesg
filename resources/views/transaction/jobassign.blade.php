@@ -2,6 +2,7 @@
 @inject('people', 'App\Person')
 @inject('custcategories', 'App\Custcategory')
 @inject('custcategoryGroups', 'App\CustcategoryGroup')
+@inject('custPrefixes', 'App\CustPrefix')
 @inject('franchisees', 'App\User')
 @inject('items', 'App\Item')
 @inject('persontags', 'App\Persontag')
@@ -50,31 +51,31 @@ Job Assign
                                                             'ng-model-options'=>'{ debounce: 1000 }'
                                                         ]) !!}
                     </div>
-                    {{-- <div class="form-group col-md-3 col-sm-6 col-xs-12">
-                        {!! Form::label('id', 'ID', ['class'=>'control-label search-title']) !!}
-                        {!! Form::text('id', null,
-                                                    [
-                                                        'class'=>'form-control input-sm',
-                                                        'ng-model'=>'search.cust_id',
-                                                        'ng-change'=>'searchDB()',
-                                                        'placeholder'=>'Cust ID',
-                                                        'ng-model-options'=>'{ debounce: 1000 }'
-                                                    ])
-                        !!}
-                    </div> --}}
-                    <div class="form-group col-md-3 col-sm-6 col-xs-12">
-                        {!! Form::label('prefix_code', 'Prefix Code', ['class'=>'control-label search-title']) !!}
-                        {!! Form::text('prefix_code', null,
+                    <div class="form-group col-md-3 col-sm-4 col-xs-12">
+                        {!! Form::label('code', 'Cust Code', ['class'=>'control-label search-title']) !!}
+                        {!! Form::text('code', null,
                                                         [
                                                             'class'=>'form-control input-sm',
-                                                            'ng-model'=>'search.prefix_code',
+                                                            'ng-model'=>'search.code',
+                                                            'placeholder'=>'Customer Code',
                                                             'ng-change'=>'searchDB()',
-                                                            'placeholder'=>'Prefix Code',
                                                             'ng-model-options'=>'{ debounce: 1000 }'
-                                                        ]) !!}
+                                                        ])
+                        !!}
+                    </div>
+                    <div class="form-group col-md-3 col-sm-4 col-xs-12">
+                        {!! Form::label('cust_prefix_id', 'Cust Prefix', ['class'=>'control-label search-title']) !!}
+                        <select name="cust_prefix_id" id="cust_prefix_id" class="selectmultiple form-control" ng-model="search.cust_prefix_id" ng-change="searchDB()" multiple>
+                            <option value="-1">-- Unassigned --</option>
+                            @foreach($custPrefixes::orderBy('code')->get() as $custPrefix)
+                                <option value="{{$custPrefix->id}}">
+                                    {{$custPrefix->code}}
+                                </option>
+                            @endforeach
+                        </select>
                     </div>
                     <div class="form-group col-md-3 col-sm-6 col-xs-12">
-                        {!! Form::label('company', 'ID Name', ['class'=>'control-label search-title']) !!}
+                        {!! Form::label('company', 'Cust Name', ['class'=>'control-label search-title']) !!}
                         {!! Form::text('company', null,
                                                         [
                                                             'class'=>'form-control input-sm',
@@ -85,6 +86,8 @@ Job Assign
                                                         ])
                         !!}
                     </div>
+                </div>
+                <div class="row">
                     <div class="form-group col-md-3 col-sm-6 col-xs-12">
                         {!! Form::label('statuses', 'Status', ['class'=>'control-label search-title']) !!}
                         <select name="statuses" class="selectmultiple form-control" ng-model="search.statuses" ng-change="searchDB()" multiple>
@@ -95,8 +98,6 @@ Job Assign
                             <option value="Cancelled">Cancelled</option>
                         </select>
                     </div>
-                </div>
-                <div class="row">
                     <div class="form-group col-md-3 col-sm-6 col-xs-12">
                         {!! Form::label('pay_status', 'Payment', ['class'=>'control-label search-title']) !!}
                         {!! Form::select('pay_status', [''=>'All', 'Owe'=>'Owe', 'Paid'=>'Paid'], null,
@@ -106,59 +107,6 @@ Job Assign
                             'ng-change'=>'searchDB()'
                             ])
                         !!}
-                    </div>
-{{--
-                    <div class="form-group col-md-3 col-sm-6 col-xs-12">
-                        {!! Form::label('updated_by', 'Last Modify By', ['class'=>'control-label search-title']) !!}
-                        {!! Form::text('updated_by', null,
-                                                            [
-                                                                'class'=>'form-control input-sm',
-                                                                'ng-model'=>'search.updated_by',
-                                                                'ng-change'=>'searchDB()',
-                                                                'placeholder'=>'Last Modified By',
-                                                                'ng-model-options'=>'{ debounce: 500 }'
-                                                            ])
-                        !!}
-                    </div>
-                    <div class="form-group col-md-3 col-sm-6 col-xs-12">
-                        {!! Form::label('updated_at', 'Last Modify Dt', ['class'=>'control-label search-title']) !!}
-                        <div class="input-group">
-                            <datepicker>
-                                <input
-                                    type = "text"
-                                    class = "form-control input-sm"
-                                    placeholder = "Last Modify Date"
-                                    ng-model = "search.updated_at"
-                                    ng-change = "dateChange2(search.updated_at)"
-                                />
-                            </datepicker>
-                            <span class="input-group-addon fa fa-backward" ng-click="onPrevSingleClicked('updated_at', search.updated_at)"></span>
-                            <span class="input-group-addon fa fa-forward" ng-click="onNextSingleClicked('updated_at', search.updated_at)"></span>
-                        </div>
-                    </div> --}}
-
-                    <div class="form-group col-md-3 col-sm-6 col-xs-12">
-                        {!! Form::label('driver', 'Assigned Driver', ['class'=>'control-label search-title']) !!}
-                        @if(auth()->user()->hasRole('driver') or auth()->user()->hasRole('technician'))
-                            <select name="driver" class="form-control select" ng-model="search.driver" ng-change="searchDB()">
-                                <option value="">All</option>
-                                <option value="{{auth()->user()->name}}">
-                                    {{auth()->user()->name}}
-                                </option>
-                            </select>
-                        @else
-                            <select name="driver" class="form-control select" ng-model="search.driver" ng-change="searchDB()">
-                                <option value="">All</option>
-                                <option value="-1">-- Unassigned --</option>
-                                @foreach($users::where('is_active', 1)->orderBy('name')->get() as $user)
-                                    @if(($user->hasRole('driver') or $user->hasRole('technician') or $user->hasRole('driver-supervisor') or $user->id === 100010 or $user->hasRole('merchandiser')) and count($user->profiles) > 0)
-                                        <option value="{{$user->name}}">
-                                            {{$user->name}}
-                                        </option>
-                                    @endif
-                                @endforeach
-                            </select>
-                        @endif
                     </div>
                     <div class="form-group col-md-3 col-sm-6 col-xs-12">
                         {!! Form::label('custcategory', 'Cust Category', ['class'=>'control-label search-title']) !!}
@@ -528,6 +476,29 @@ Job Assign
                                                             'ng-model-options'=>'{ debounce: 1000 }'
                                                         ]) !!}
                     </div>
+                    <div class="form-group col-md-3 col-sm-6 col-xs-12">
+                        {!! Form::label('driver', 'Assigned Driver', ['class'=>'control-label search-title']) !!}
+                        @if(auth()->user()->hasRole('driver') or auth()->user()->hasRole('technician'))
+                            <select name="driver" class="form-control select" ng-model="search.driver" ng-change="searchDB()">
+                                <option value="">All</option>
+                                <option value="{{auth()->user()->name}}">
+                                    {{auth()->user()->name}}
+                                </option>
+                            </select>
+                        @else
+                            <select name="driver" class="form-control select" ng-model="search.driver" ng-change="searchDB()">
+                                <option value="">All</option>
+                                <option value="-1">-- Unassigned --</option>
+                                @foreach($users::where('is_active', 1)->orderBy('name')->get() as $user)
+                                    @if(($user->hasRole('driver') or $user->hasRole('technician') or $user->hasRole('driver-supervisor') or $user->id === 100010 or $user->hasRole('merchandiser')) and count($user->profiles) > 0)
+                                        <option value="{{$user->name}}">
+                                            {{$user->name}}
+                                        </option>
+                                    @endif
+                                @endforeach
+                            </select>
+                        @endif
+                    </div>
                 </div>
 
                 <div class="row">
@@ -738,9 +709,9 @@ Job Assign
                         {{-- hidden table for excel export --}}
                         <tr style="background-color: #8BD5FC">
                             @if(!auth()->user()->hasRole('driver') and !auth()->user()->hasRole('technician'))
-                            <th colspan="20">
+                            <th colspan="21">
                             @else
-                            <th colspan="16">
+                            <th colspan="17">
                             @endif
                                 @{{driver.name}}
                                 @if(!auth()->user()->hasRole('driver') and !auth()->user()->hasRole('technician'))
@@ -837,15 +808,21 @@ Job Assign
                             </th>
                             <th class="col-md-1 text-center">
                                 <a href="" ng-click="sortTable('code', driverkey)">
-                                Prefix Code
+                                Cust Code
                                 <span ng-if="search.sortName == 'code' && !search.sortBy" class="fa fa-caret-down"></span>
                                 <span ng-if="search.sortName == 'code' && search.sortBy" class="fa fa-caret-up"></span>
                             </th>
                             <th class="col-md-1 text-center">
-                                <a href="" ng-click="sortTable('cust_id', driverkey)">
-                                Customer
-                                <span ng-if="search.sortName == 'cust_id' && !search.sortBy" class="fa fa-caret-down"></span>
-                                <span ng-if="search.sortName == 'cust_id' && search.sortBy" class="fa fa-caret-up"></span>
+                                <a href="" ng-click="sortTable('cust_prefix_code', driverkey)">
+                                Cust Prefix
+                                <span ng-if="search.sortName == 'cust_prefix_code' && !search.sortBy" class="fa fa-caret-down"></span>
+                                <span ng-if="search.sortName == 'cust_prefix_code' && search.sortBy" class="fa fa-caret-up"></span>
+                            </th>
+                            <th class="col-md-1 text-center">
+                                <a href="" ng-click="sortTable('company', driverkey)">
+                                Cust Name
+                                <span ng-if="search.sortName == 'company' && !search.sortBy" class="fa fa-caret-down"></span>
+                                <span ng-if="search.sortName == 'company' && search.sortBy" class="fa fa-caret-up"></span>
                             </th>
                             <th class="col-md-1 text-center">
                                 <a href="" ng-click="sortTable('vend_code', driverkey)">
@@ -988,7 +965,10 @@ Job Assign
                                     </span>
                                 </td>
                                 <td class="col-md-1 text-center">
-                                    @{{ transaction.cust_prefix_code }}-@{{ transaction.code }}
+                                    @{{ transaction.code }}
+                                </td>
+                                <td class="col-md-1 text-center">
+                                    @{{ transaction.cust_prefix_code }}
                                 </td>
                                 <td class="col-md-1 text-center">
                                     <span class="col-md-12"><a href="/person/@{{ transaction.person_id }}">@{{transaction.cust_id[0] == 'D' || transaction.cust_id[0] == 'H' ? transaction.name : transaction.company}}</a></span>

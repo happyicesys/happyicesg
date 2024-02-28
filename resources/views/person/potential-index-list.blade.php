@@ -21,7 +21,17 @@
 
             <div class="row">
                 <div class="form-group col-md-2 col-sm-4 col-xs-12">
-                    {!! Form::label('cust_prefix_id', 'Customer Prefix', ['class'=>'control-label search-title']) !!}
+                    {!! Form::label('code', 'Cust Code', ['class'=>'control-label search-title']) !!}
+                    {!! Form::text('code', null,
+                                                    [
+                                                        'class'=>'form-control input-sm',
+                                                        'ng-model'=>'search.code',
+                                                        'placeholder'=>'Customer Code',
+                                                    ])
+                    !!}
+                </div>
+                <div class="form-group col-md-2 col-sm-4 col-xs-12">
+                    {!! Form::label('cust_prefix_id', 'Cust Prefix', ['class'=>'control-label search-title']) !!}
                     <select name="cust_prefix_id" id="cust_prefix_id" class="selectmultiple form-control" ng-model="search.cust_prefix_id" multiple>
                         <option value="-1">-- Unassigned --</option>
                         @foreach($custPrefixes::orderBy('code')->get() as $custPrefix)
@@ -32,41 +42,12 @@
                     </select>
                 </div>
                 <div class="form-group col-md-2 col-sm-4 col-xs-12">
-                    {!! Form::label('code', 'Customer Code', ['class'=>'control-label search-title']) !!}
-                    {!! Form::text('code', null,
-                                                    [
-                                                        'class'=>'form-control input-sm',
-                                                        'ng-model'=>'search.code',
-                                                        'placeholder'=>'Customer Code',
-                                                    ])
-                    !!}
-                </div>
-                {{-- <div class="form-group col-md-2 col-sm-4 col-xs-12">
-                    {!! Form::label('cust_id', 'ID', ['class'=>'control-label search-title']) !!}
-                    <label class="pull-right">
-                        <input type="checkbox" name="strictCustId" ng-model="search.strictCustId" ng-change="searchDB($event)">
-                        <span style="margin-top: 5px; margin-right: 5px; font-size: 12px;">
-                            Strict
-                        </span>
-                    </label>
-                    {!! Form::text('cust_id', null,
-                                                    [
-                                                        'class'=>'form-control input-sm',
-                                                        'ng-model'=>'search.cust_id',
-                                                        'placeholder'=>'ID',
-                                                        'ng-change'=>'searchDB($event)',
-                                                        'ng-keydown' => '$event.keyCode === 13 && searchDB($event)',
-                                                        'ng-model-options'=>'{ debounce: 500 }'
-                                                    ])
-                    !!}
-                </div> --}}
-                <div class="form-group col-md-2 col-sm-4 col-xs-12">
-                    {!! Form::label('company', 'ID Name', ['class'=>'control-label search-title']) !!}
+                    {!! Form::label('company', 'Cust Name', ['class'=>'control-label search-title']) !!}
                     {!! Form::text('company', null,
                                                     [
                                                         'class'=>'form-control input-sm',
                                                         'ng-model'=>'search.company',
-                                                        'placeholder'=>'ID Name',
+                                                        'placeholder'=>'Cust Name',
                                                         'ng-change'=>'searchDB($event)',
                                                         'ng-keydown' => '$event.keyCode === 13 && searchDB($event)',
                                                         'ng-model-options'=>'{ debounce: 500 }'
@@ -565,26 +546,20 @@
                         #
                     </th>
                     <th class="col-md-1 text-center">
-                        <a href="" ng-click="sortTable('prefix_code')">
-                        Prefix
-                        <span ng-if="search.sortName == 'prefix_code' && !search.sortBy" class="fa fa-caret-down"></span>
-                        <span ng-if="search.sortName == 'prefix_code' && search.sortBy" class="fa fa-caret-up"></span>
-                    </th>
-                    <th class="col-md-1 text-center">
                         <a href="" ng-click="sortTable('code')">
                         Cust Code
                         <span ng-if="search.sortName == 'code' && !search.sortBy" class="fa fa-caret-down"></span>
                         <span ng-if="search.sortName == 'code' && search.sortBy" class="fa fa-caret-up"></span>
                     </th>
-                    {{-- <th class="col-md-1 text-center">
-                        <a href="" ng-click="sortTable('cust_id')">
-                        ID
-                        <span ng-if="search.sortName == 'cust_id' && !search.sortBy" class="fa fa-caret-down"></span>
-                        <span ng-if="search.sortName == 'cust_id' && search.sortBy" class="fa fa-caret-up"></span>
-                    </th> --}}
+                    <th class="col-md-1 text-center">
+                        <a href="" ng-click="sortTable('cust_prefix_code')">
+                        Cust Prefix
+                        <span ng-if="search.sortName == 'cust_prefix_code' && !search.sortBy" class="fa fa-caret-down"></span>
+                        <span ng-if="search.sortName == 'cust_prefix_code' && search.sortBy" class="fa fa-caret-up"></span>
+                    </th>
                     <th class="col-md-2 text-center">
                         <a href="" ng-click="sortTable('company')">
-                        ID Name
+                        Cust Name
                         <span ng-if="search.sortName == 'company' && !search.sortBy" class="fa fa-caret-down"></span>
                         <span ng-if="search.sortName == 'company' && search.sortBy" class="fa fa-caret-up"></span>
                     </th>

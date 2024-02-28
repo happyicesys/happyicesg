@@ -1434,6 +1434,21 @@ class PersonController extends Controller
                 $query->whereIn('freezers.id', $freezers);
             });
         }
+        if($request->cust_prefix_id != '' && $request->cust_prefix_id != []) {
+            $custPrefixID = $request->cust_prefix_id;
+
+            if(in_array('-1', $custPrefixID)) {
+                $people = $people->where(function($query) {
+                    $query->whereNull('cust_prefix_id')->orWhere('cust_prefix_id', 0);
+                });
+            }else {
+                $people = $people->whereIn('cust_prefix_id', $custPrefixID);
+            }
+        }
+
+        if($code = $request->code) {
+            $people = $people->where('people.code', 'LIKE', '%' . $code . '%');
+        }
 
         return $people;
     }

@@ -3977,6 +3977,22 @@ class TransactionController extends Controller
             });
         }
 
+        if(request('cust_prefix_id') != '' && request('cust_prefix_id')!= []) {
+            $custPrefixID = request('cust_prefix_id');
+
+            if(in_array('-1', $custPrefixID)) {
+                $transactions = $transactions->where(function($query) {
+                    $query->whereNull('people.cust_prefix_id')->orWhere('people.cust_prefix_id', 0);
+                });
+            }else {
+                $transactions = $transactions->whereIn('people.cust_prefix_id', $custPrefixID);
+            }
+        }
+
+        if($code = request('code')) {
+            $transactions = $transactions->where('people.code', 'LIKE', '%' . $code . '%');
+        }
+
         if(request('sortName')){
             $transactions = $transactions->orderBy(request('sortName'), request('sortBy') ? 'asc' : 'desc');
         }

@@ -9,7 +9,7 @@
     <div class="panel-body">
         <label style="margin-bottom: 15px; font-size: 18px;">
             <a href="/person/{{ $person->id }}">
-             {{$transaction->person->custPrefix->code}}-{{$transaction->person->code}}
+             {{$transaction->person->code}} ({{$transaction->person->custPrefix->code}})
               - {{$transaction->person->company}}
             </a>
             @if(($transaction->person->is_vending === 1 or $transaction->person->is_dvm) and $transaction->person->vending)
