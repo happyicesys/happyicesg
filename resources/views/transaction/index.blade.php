@@ -73,17 +73,6 @@
                                                             'ng-model-options'=>'{ debounce: 700 }'
                                                         ]) !!}
                     </div>
-{{--
-                    <div class="form-group col-md-3 col-sm-6 col-xs-12">
-                        {!! Form::label('prefix_code', 'Prefix Code', ['class'=>'control-label search-title']) !!}
-                        {!! Form::text('prefix_code', null,
-                                                        [
-                                                            'class'=>'form-control input-sm',
-                                                            'ng-model'=>'search.prefix_code',
-                                                            'ng-change'=>'searchDB()',
-                                                            'placeholder'=>'Prefix Code',
-                                                        ]) !!}
-                    </div> --}}
                     <div class="form-group col-md-3 col-sm-4 col-xs-12">
                         {!! Form::label('cust_prefix_id', 'Cust Prefix', ['class'=>'control-label search-title']) !!}
                         <select name="cust_prefix_id" id="cust_prefix_id" class="selectmultiple form-control" ng-model="search.cust_prefix_id" multiple>

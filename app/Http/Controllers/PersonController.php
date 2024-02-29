@@ -396,6 +396,8 @@ class PersonController extends Controller
         // $request->merge(['code' => preg_replace('/[^0-9]/', '', $request->cust_id)]);
         $input = $request->all();
         unset($input['type']);
+
+        // dd($input);
         $person->update($input);
 
         // serial number validation for vending

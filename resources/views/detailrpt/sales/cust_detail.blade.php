@@ -29,20 +29,6 @@
         </div>
         {{-- <div class="col-md-3 col-sm-6 col-xs-12">
             <div class="form-group">
-                {!! Form::label('cust_id', 'ID', ['class'=>'control-label search-title']) !!}
-                {!! Form::text('cust_id', null,
-                                            [
-                                                'class'=>'form-control input-sm',
-                                                'ng-model'=>'search.cust_id',
-                                                'placeholder'=>'Cust ID',
-                                                'ng-change'=>'searchDB()',
-                                                'ng-model-options'=>'{ debounce: 500 }'
-                                            ])
-                !!}
-            </div>
-        </div> --}}
-        <div class="col-md-3 col-sm-6 col-xs-12">
-            <div class="form-group">
             {!! Form::label('prefix_code', 'Prefix Code', ['class'=>'control-label search-title']) !!}
             {!! Form::text('prefix_code', null,
                                             [
@@ -52,22 +38,29 @@
                                                 'placeholder'=>'Prefix Code',
                                             ]) !!}
             </div>
+        </div> --}}
+        <div class="col-md-3 col-sm-6 col-xs-12">
+            <div class="form-group">
+                {!! Form::label('code', 'Cust Code', ['class'=>'control-label search-title']) !!}
+                {!! Form::text('code', null,
+                                                [
+                                                    'class'=>'form-control input-sm',
+                                                    'ng-model'=>'search.code',
+                                                    'placeholder'=>'Customer Code',
+                                                ])
+                !!}
+            </div>
         </div>
         <div class="col-md-3 col-sm-6 col-xs-12">
             <div class="form-group">
-                {!! Form::label('id_prefix', 'ID Group', ['class'=>'control-label search-title']) !!}
-                <select class="select form-group" name="id_prefix" ng-model="search.id_prefix" ng-change="searchDB()">
-                    <option value="">All</option>
-                    <option value="C">C</option>
-                    <option value="D">D</option>
-                    <option value="E">E</option>
-                    <option value="F">F</option>
-                    <option value="G">G</option>
-                    <option value="H">H</option>
-                    <option value="R">R</option>
-                    <option value="S">S</option>
-                    <option value="V">V</option>
-                    <option value="W">W</option>
+                {!! Form::label('cust_prefix_id', 'Cust Prefix', ['class'=>'control-label search-title']) !!}
+                <select name="cust_prefix_id" id="cust_prefix_id" class="selectmultiple form-control" ng-model="search.cust_prefix_id" multiple>
+                    <option value="-1">-- Unassigned --</option>
+                    @foreach($custPrefixes::orderBy('code')->get() as $custPrefix)
+                        <option value="{{$custPrefix->id}}">
+                            {{$custPrefix->code}}
+                        </option>
+                    @endforeach
                 </select>
             </div>
         </div>
@@ -75,12 +68,12 @@
     <div class="row">
         <div class="col-md-3 col-sm-6 col-xs-12">
             <div class="form-group">
-                {!! Form::label('company', 'ID Name', ['class'=>'control-label search-title']) !!}
+                {!! Form::label('company', 'Cust Name', ['class'=>'control-label search-title']) !!}
                 {!! Form::text('company', null,
                                                 [
                                                     'class'=>'form-control input-sm',
                                                     'ng-model'=>'search.company',
-                                                    'placeholder'=>'ID Name',
+                                                    'placeholder'=>'Cust Name',
                                                     'ng-change'=>'searchDB()',
                                                     'ng-model-options'=>'{ debounce: 500 }'
                                                 ])
@@ -301,6 +294,24 @@
             </select>
             </div>
         </div>
+        <div class="col-md-3 col-sm-6 col-xs-12">
+            <div class="form-group">
+                {!! Form::label('id_prefix', 'ID Group', ['class'=>'control-label search-title']) !!}
+                <select class="select form-group" name="id_prefix" ng-model="search.id_prefix" ng-change="searchDB()">
+                    <option value="">All</option>
+                    <option value="C">C</option>
+                    <option value="D">D</option>
+                    <option value="E">E</option>
+                    <option value="F">F</option>
+                    <option value="G">G</option>
+                    <option value="H">H</option>
+                    <option value="R">R</option>
+                    <option value="S">S</option>
+                    <option value="V">V</option>
+                    <option value="W">W</option>
+                </select>
+            </div>
+        </div>
 
     </div>
 </div>
@@ -347,20 +358,20 @@
                     #
                 </th>
                 <th class="col-md-1 text-center">
-                    <a href="" ng-click="sortTable('prefix_code')">
-                    Prefix Code
-                    <span ng-if="search.sortName == 'prefix_code' && !search.sortBy" class="fa fa-caret-down"></span>
-                    <span ng-if="search.sortName == 'prefix_code' && search.sortBy" class="fa fa-caret-up"></span>
+                    <a href="" ng-click="sortTable('code')">
+                    Cust Code
+                    <span ng-if="search.sortName == 'code' && !search.sortBy" class="fa fa-caret-down"></span>
+                    <span ng-if="search.sortName == 'code' && search.sortBy" class="fa fa-caret-up"></span>
                 </th>
-                {{-- <th class="col-md-1 text-center">
-                    <a href="" ng-click="sortTable('cust_id')">
-                    ID
-                    <span ng-if="search.sortName == 'cust_id' && !search.sortBy" class="fa fa-caret-down"></span>
-                    <span ng-if="search.sortName == 'cust_id' && search.sortBy" class="fa fa-caret-up"></span>
-                </th> --}}
+                <th class="col-md-1 text-center">
+                    <a href="" ng-click="sortTable('cust_prefix_code')">
+                    Cust Prefix
+                    <span ng-if="search.sortName == 'cust_prefix_code' && !search.sortBy" class="fa fa-caret-down"></span>
+                    <span ng-if="search.sortName == 'cust_prefix_code' && search.sortBy" class="fa fa-caret-up"></span>
+                </th>
                 <th class="col-md-2 text-center">
                     <a href="" ng-click="sortTable('company')">
-                    ID Name
+                    Cust Name
                     <span ng-if="search.sortName == 'company' && !search.sortBy" class="fa fa-caret-down"></span>
                     <span ng-if="search.sortName == 'company' && search.sortBy" class="fa fa-caret-up"></span>
                 </th>
@@ -412,7 +423,7 @@
             </tr>
 
             <tr style="background-color: #DDFDF8">
-                <th colspan="6"></th>
+                <th colspan="7"></th>
                 <th class="col-md-1 text-right" style="font-size: 13px;">
                     <span class="pull-left" style="font-size:11px;">
                         Trans:
@@ -510,11 +521,11 @@
                         @{{ $index + indexFrom }}
                     </td>
                     <td class="col-md-1 text-center" style="max-width: 100px;">
-                        @{{ transaction.cust_prefix_code }}-@{{ transaction.code }}
+                        @{{ transaction.code }}
                     </td>
-                    {{-- <td class="col-md-1 text-center">
-                        @{{ transaction.cust_id }}
-                    </td> --}}
+                    <td class="col-md-1 text-center">
+                        @{{ transaction.cust_prefix_code }}
+                    </td>
                     <td class="col-md-1 text-left">
                         <a href="/person/@{{ transaction.person_id }}">
                             @{{ transaction.cust_id[0] == 'D' || transaction.cust_id[0] == 'H' ? transaction.name : transaction.company }}

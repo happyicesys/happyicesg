@@ -2,6 +2,7 @@
 @inject('customers', 'App\Person')
 @inject('custcategories', 'App\Custcategory')
 @inject('custcategoryGroups', 'App\CustcategoryGroup')
+@inject('custPrefixes', 'App\CustPrefix')
 @inject('franchisees', 'App\User')
 @inject('items', 'App\Item')
 @inject('itemGroups', 'App\ItemGroup')

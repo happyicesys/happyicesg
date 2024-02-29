@@ -63,23 +63,11 @@
         </div>
     </div> --}}
 
-    <div class="col-md-4 col-sm-4 col-xs-12">
+    <div class="col-md-12 col-sm-12 col-xs-12">
         <div class="form-group">
             {!! Form::label('company', 'Cust Name', ['class'=>'control-label']) !!}
             {!! Form::label('art', '*', ['class'=>'control-label', 'style'=>'color:red;']) !!}
             {!! Form::text('company', null, ['class'=>'form-control', 'disabled'=>$disabled]) !!}
-        </div>
-    </div>
-    <div class="col-md-4 col-sm-4 col-xs-12">
-        <div class="form-group">
-            {!! Form::label('com_remark', 'Company', ['class'=>'control-label']) !!}
-            {!! Form::text('com_remark', null, ['class'=>'form-control', 'disabled'=>$disabled]) !!}
-        </div>
-    </div>
-    <div class="col-md-4 col-sm-4 col-xs-12">
-        <div class="form-group">
-            {!! Form::label('bill_postcode', 'Billing Postcode', ['class'=>'control-label']) !!}
-            {!! Form::text('bill_postcode', null, ['class'=>'form-control', 'id'=>'bill_postcode', 'disabled'=>$disabled, 'ng-model'=>'form.bill_postcode']) !!}
         </div>
     </div>
 </div>
