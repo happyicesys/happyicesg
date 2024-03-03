@@ -149,7 +149,7 @@ class DetailRptController extends Controller
 
         $queryStr = $this->searchTransactionRawFilter($queryStr, $request);
 
-        $queryStr .= " AND pay_status='Owe' AND (status='Delivered' OR status='Verified Owe') ";
+        $queryStr .= " AND pay_status='Owe' AND (status='Delivered' OR status='Verified Owe') AND LEFT(cust_id, 1) != 'D' AND LEFT(cust_id, 1) != 'H' ";
 
         $thistotalStr = $queryStr;
         $prevtotalStr = $queryStr;
@@ -207,7 +207,7 @@ class DetailRptController extends Controller
         $transactions = $this->filterUserDbProfile($transactions);
         $transactions = $this->filterUserDbCustcategory($transactions);
 
-        $transactions = $transactions->latest('thistotal.outstanding', 'DESC')->groupBy('people.id');
+        $transactions = $transactions->where('cust_id', 'NOT LIKE', 'D%')->where('cust_id', 'NOT LIKE', 'H%')->latest('thistotal.outstanding', 'DESC')->groupBy('people.id');
 
         if($request->sortName){
             $transactions = $transactions->orderBy($request->sortName, $request->sortBy ? 'asc' : 'desc');
@@ -2531,9 +2531,7 @@ class DetailRptController extends Controller
                     DB::raw('ROUND((COALESCE(total_stock_value.amount, 0) + COALESCE(latest_data.balance_coin, 0)) + (COALESCE(total_vending_cash.amount, 0) + COALESCE(total_vending_float.amount, 0)), 2) AS vm_stock_value')
                 );
 
-        if($request->profile_id or $request->delivery_from or $request->delivery_to or $request->status or $request->cust_id or $request->company or $request->person_id or $request->custcategory or request('is_commission')) {
-            $deals = $this->invoiceBreakdownSummaryFilter($request, $deals);
-        }
+        $deals = $this->invoiceBreakdownSummaryFilter($request, $deals);
 
         // add user profile filters
         $deals = $this->filterUserDbProfile($deals);
@@ -2985,6 +2983,8 @@ class DetailRptController extends Controller
         $custcategory_id = request('custcategory_id');
         $is_inventory = request('is_inventory');
         $prefixCode = request('prefix_code');
+        $custPrefixID = $request->cust_prefix_id;
+        $code = $request->code;
 
         if(request()->isMethod('get')) {
             $delivery_from = Carbon::today()->startOfMonth()->toDateString();
@@ -3032,6 +3032,19 @@ class DetailRptController extends Controller
                 }
             });
         }
+        if($custPrefixID != '' && $custPrefixID != []) {
+            if(in_array('-1', $custPrefixID)) {
+                $deals = $deals->where(function($query) {
+                    $query->whereNull('people.cust_prefix_id')->orWhere('people.cust_prefix_id', 0);
+                });
+            }else {
+                $deals = $deals->whereIn('people.cust_prefix_id', $custPrefixID);
+            }
+        }
+
+        if($code) {
+            $deals = $deals->where('people.code', 'LIKE', '%' . $code . '%');
+        }
 
         return $deals;
     }
@@ -3053,6 +3066,8 @@ class DetailRptController extends Controller
         $is_commission = request('is_commission');
         $driver = request('driver');
         $prefixCode = request('prefix_code');
+        $custPrefixID = $request->cust_prefix_id;
+        $code = $request->code;
 
         if($profile_id) {
             $deals = $deals->where('profiles.id', $profile_id);
@@ -3141,6 +3156,19 @@ class DetailRptController extends Controller
                 }
             });
         }
+        if($custPrefixID != '' && $custPrefixID != []) {
+            if(in_array('-1', $custPrefixID)) {
+                $deals = $deals->where(function($query) {
+                    $query->whereNull('people.cust_prefix_id')->orWhere('people.cust_prefix_id', 0);
+                });
+            }else {
+                $deals = $deals->whereIn('people.cust_prefix_id', $custPrefixID);
+            }
+        }
+
+        if($code) {
+            $deals = $deals->where('people.code', 'LIKE', '%' . $code . '%');
+        }
         return $deals;
     }
 
@@ -3207,8 +3235,10 @@ class DetailRptController extends Controller
         $company = $request->company;
         $person_id = $request->person_id;
         $custcategory = $request->custcategory;
-        $is_commission = request('is_commission');
-        $prefixCode = request('prefix_code');
+        $is_commission = $request->is_commission;
+        $prefixCode = $request->prefix_code;
+        $custPrefixID = $request->cust_prefix_id;
+        $code = $request->code;
 
         if($profile_id) {
             $deals = $deals->where('profiles.id', $profile_id);
@@ -3279,6 +3309,20 @@ class DetailRptController extends Controller
                 }
             });
         }
+        if($custPrefixID != '' && $custPrefixID != []) {
+            if(in_array('-1', $custPrefixID)) {
+                $deals = $deals->where(function($query) {
+                    $query->whereNull('people.cust_prefix_id')->orWhere('people.cust_prefix_id', 0);
+                });
+            }else {
+                $deals = $deals->whereIn('people.cust_prefix_id', $custPrefixID);
+            }
+        }
+
+        if($code) {
+            $deals = $deals->where('people.code', 'LIKE', '%' . $code . '%');
+        }
+
         return $deals;
     }
 
@@ -3470,6 +3514,8 @@ class DetailRptController extends Controller
         $is_gst_inclusive = $request->is_gst_inclusive;
         $gst_rate = $request->gst_rate;
         $prefixCode = $request->prefix_code;
+        $custPrefixID = $request->cust_prefix_id;
+        $code = $request->code;
 
         if($profile_id){
             $transactions = $transactions->where('profiles.id', $profile_id);
@@ -3595,6 +3641,20 @@ class DetailRptController extends Controller
             });
         }
 
+        if($custPrefixID != '' && $custPrefixID != []) {
+            if(in_array('-1', $custPrefixID)) {
+                $transactions = $transactions->where(function($query) {
+                    $query->whereNull('people.cust_prefix_id')->orWhere('people.cust_prefix_id', 0);
+                });
+            }else {
+                $transactions = $transactions->whereIn('people.cust_prefix_id', $custPrefixID);
+            }
+        }
+
+        if($code) {
+            $transactions = $transactions->where('people.code', 'LIKE', '%' . $code . '%');
+        }
+
         if($request->sortName){
             $transactions = $transactions->orderBy($request->sortName, $request->sortBy ? 'asc' : 'desc');
         }
@@ -3637,6 +3697,8 @@ class DetailRptController extends Controller
         $itemGroupId = $request->item_group_id;
         $isInventory = $request->is_inventory;
         $prefixCode = $request->prefix_code;
+        $custPrefixID = $request->cust_prefix_id;
+        $code = $request->code;
 
         if($profile_id){
             $transactions = $transactions->where('profiles.id', $profile_id);
@@ -3824,6 +3886,20 @@ class DetailRptController extends Controller
                     $query->where('cust_prefixes.code', 'LIKE', '%' . $lettersOnly . '%')->where('people.code', 'LIKE', '%' . $numbersOnly . '%');
                 }
             });
+        }
+
+        if($custPrefixID != '' && $custPrefixID != []) {
+            if(in_array('-1', $custPrefixID)) {
+                $transactions = $transactions->where(function($query) {
+                    $query->whereNull('people.cust_prefix_id')->orWhere('people.cust_prefix_id', 0);
+                });
+            }else {
+                $transactions = $transactions->whereIn('people.cust_prefix_id', $custPrefixID);
+            }
+        }
+
+        if($code) {
+            $transactions = $transactions->where('people.code', 'LIKE', '%' . $code . '%');
         }
 
         if($request->sortName){

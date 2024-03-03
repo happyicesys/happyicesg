@@ -229,43 +229,44 @@
         </div> --}}
         <div class="col-md-3 col-sm-6 col-xs-12">
             <div class="form-group">
-            {!! Form::label('prefix_code', 'Prefix Code', ['class'=>'control-label search-title']) !!}
-            {!! Form::text('prefix_code', null,
-                                            [
-                                                'class'=>'form-control input-sm',
-                                                'ng-model'=>'search.prefix_code',
-                                                'ng-change'=>'searchDB()',
-                                                'placeholder'=>'Prefix Code',
-                                                'ng-model-options'=>'{ debounce: 500 }'
-                                            ]) !!}
-            </div>
-        </div>
-        <div class="col-md-3 col-sm-6 col-xs-12">
-            <div class="form-group">
-                {!! Form::label('company', 'ID Name', ['class'=>'control-label search-title']) !!}
-                {!! Form::text('company', null,
+                {!! Form::label('code', 'Cust Code', ['class'=>'control-label search-title']) !!}
+                {!! Form::text('code', null,
                                                 [
                                                     'class'=>'form-control input-sm',
-                                                    'ng-model'=>'search.company',
-                                                    'placeholder'=>'ID Name',
-                                                    'ng-change'=>'searchDB()',
-                                                    'ng-model-options'=>'{ debounce: 500 }'
+                                                    'ng-model'=>'search.code',
+                                                    'placeholder'=>'Customer Code',
                                                 ])
                 !!}
             </div>
         </div>
         <div class="col-md-3 col-sm-6 col-xs-12">
             <div class="form-group">
-                {!! Form::label('is_commission', 'Include Commission', ['class'=>'control-label search-title']) !!}
-                {!! Form::select('is_commission', ['0'=>'No', ''=>'Yes, all', '1'=>'VM Commission', '2'=> 'Supermarket Fee'], null,
-                    [
-                        'class'=>'select form-control',
-                        'ng-model'=>'search.is_commission',
-                        'ng-change'=>'searchDB()'
-                    ])
+                {!! Form::label('cust_prefix_id', 'Cust Prefix', ['class'=>'control-label search-title']) !!}
+                <select name="cust_prefix_id" id="cust_prefix_id" class="selectmultiple form-control" ng-model="search.cust_prefix_id" multiple>
+                    <option value="-1">-- Unassigned --</option>
+                    @foreach($custPrefixes::orderBy('code')->get() as $custPrefix)
+                        <option value="{{$custPrefix->id}}">
+                            {{$custPrefix->code}}
+                        </option>
+                    @endforeach
+                </select>
+            </div>
+        </div>
+        <div class="col-md-3 col-sm-6 col-xs-12">
+            <div class="form-group">
+                {!! Form::label('company', 'Cust Name', ['class'=>'control-label search-title']) !!}
+                {!! Form::text('company', null,
+                                                [
+                                                    'class'=>'form-control input-sm',
+                                                    'ng-model'=>'search.company',
+                                                    'placeholder'=>'Cust Name',
+                                                    'ng-change'=>'searchDB()',
+                                                    'ng-model-options'=>'{ debounce: 500 }'
+                                                ])
                 !!}
             </div>
         </div>
+
     </div>
     <div class="row">
         <div class="col-md-3 col-sm-6 col-xs-12">
@@ -293,6 +294,18 @@
                         </option>
                     @endforeach
                 </select>
+            </div>
+        </div>
+        <div class="col-md-3 col-sm-6 col-xs-12">
+            <div class="form-group">
+                {!! Form::label('is_commission', 'Include Commission', ['class'=>'control-label search-title']) !!}
+                {!! Form::select('is_commission', ['0'=>'No', ''=>'Yes, all', '1'=>'VM Commission', '2'=> 'Supermarket Fee'], null,
+                    [
+                        'class'=>'select form-control',
+                        'ng-model'=>'search.is_commission',
+                        'ng-change'=>'searchDB()'
+                    ])
+                !!}
             </div>
         </div>
     </div>

@@ -36,43 +36,32 @@
             </div>
             <div class="col-md-3 col-sm-6 col-xs-12">
                 <div class="form-group">
-                {!! Form::label('prefix_code', 'Prefix Code', ['class'=>'control-label search-title']) !!}
-                {!! Form::text('prefix_code', null,
-                                                [
-                                                    'class'=>'form-control input-sm',
-                                                    'ng-model'=>'search.prefix_code',
-                                                    'ng-change'=>'searchDB()',
-                                                    'placeholder'=>'Prefix Code',
-                                                    'ng-model-options'=>'{ debounce: 500 }'
-                                                ]) !!}
+                    {!! Form::label('code', 'Cust Code', ['class'=>'control-label search-title']) !!}
+                    {!! Form::text('code', null,
+                                                    [
+                                                        'class'=>'form-control input-sm',
+                                                        'ng-model'=>'search.code',
+                                                        'placeholder'=>'Customer Code',
+                                                    ])
+                    !!}
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6 col-xs-12">
+                <div class="form-group">
+                    {!! Form::label('cust_prefix_id', 'Cust Prefix', ['class'=>'control-label search-title']) !!}
+                    <select name="cust_prefix_id" id="cust_prefix_id" class="selectmultiple form-control" ng-model="search.cust_prefix_id" multiple>
+                        <option value="-1">-- Unassigned --</option>
+                        @foreach($custPrefixes::orderBy('code')->get() as $custPrefix)
+                            <option value="{{$custPrefix->id}}">
+                                {{$custPrefix->code}}
+                            </option>
+                        @endforeach
+                    </select>
                 </div>
             </div>
             <div class="form-group col-md-3 col-sm-6 col-xs-12">
-                {!! Form::label('company', 'Company', ['class'=>'control-label search-title']) !!}
+                {!! Form::label('company', 'Cust Name', ['class'=>'control-label search-title']) !!}
                 {!! Form::text('company', null, ['class'=>'form-control input-sm', 'ng-model'=>'search.company', 'ng-change'=>'dbSearch()', 'ng-model-options'=>'{ debounce: 350 }', 'placeholder'=>'Company']) !!}
-            </div>
-            <div class="form-group col-md-3 col-sm-6 col-xs-12">
-                {!! Form::label('statuses', 'Status', ['class'=>'control-label search-title']) !!}
-{{--
-                <select name="statuses" class="selectmultiple form-control" ng-model="search.statuses" ng-change="dbSearch()" multiple>
-                    <option value="">All</option>
-                    <option value="Pending">Pending</option>
-                    <option value="Confirmed">Confirmed</option>
-                    <option value="Delivered">Delivered</option>
-                    <option value="Verified Owe">Verified Owe</option>
-                    <option value="Verified Paid">Verified Paid</option>
-                </select> --}}
-                <select name="status" class="select form-control" ng-model="search.status" ng-change="dbSearch()">
-                    <option value="">All</option>
-                    <option value="Pending">Pending</option>
-                    <option value="Confirmed">Confirmed</option>
-                    <option value="Delivered">Delivered</option>
-                    <option value="Verified Owe">Verified Owe</option>
-                    <option value="Verified Paid">Verified Paid</option>
-                </select>
-{{--
-
-                {!! Form::text('status', null, ['class'=>'form-control input-sm', 'ng-model'=>'search.status', 'ng-change'=>'dbSearch()', 'ng-model-options'=>'{ debounce: 350 }', 'placeholder'=>'Status']) !!} --}}
             </div>
 {{--
             <div class="form-group col-md-2 col-sm-6 col-xs-12">
@@ -80,6 +69,17 @@
                 {!! Form::text('pay_status', null, ['class'=>'form-control input-sm', 'ng-model'=>'search.pay_status', 'ng-change'=>'dbSearch()', 'ng-model-options'=>'{ debounce: 350 }', 'placeholder'=>'Payment']) !!}
             </div> --}}
             <div class="row col-md-12 col-sm-12 col-xs-12">
+                <div class="form-group col-md-3 col-sm-6 col-xs-12">
+                    {!! Form::label('statuses', 'Status', ['class'=>'control-label search-title']) !!}
+                    <select name="status" class="select form-control" ng-model="search.status" ng-change="dbSearch()">
+                        <option value="">All</option>
+                        <option value="Pending">Pending</option>
+                        <option value="Confirmed">Confirmed</option>
+                        <option value="Delivered">Delivered</option>
+                        <option value="Verified Owe">Verified Owe</option>
+                        <option value="Verified Paid">Verified Paid</option>
+                    </select>
+                </div>
                 <div class="form-group col-md-3 col-sm-6 col-xs-12">
                     {!! Form::label('pay_status', 'Payment', ['class'=>'control-label search-title']) !!}
                     {!! Form::select('pay_status', [''=>'All', 'Owe'=>'Owe', 'Paid'=>'Paid'], null,
@@ -414,14 +414,20 @@
                             <span ng-if="search.sortName == 'id' && search.sortBy" class="fa fa-caret-up"></span>
                         </th>
                         <th class="col-md-1 text-center">
-                            <a href="" ng-click="sortTable('cust_id')">
-                            ID
-                            <span ng-if="search.sortName == 'cust_id' && !search.sortBy" class="fa fa-caret-down"></span>
-                            <span ng-if="search.sortName == 'cust_id' && search.sortBy" class="fa fa-caret-up"></span>
+                            <a href="" ng-click="sortTable('code')">
+                            Cust Code
+                            <span ng-if="search.sortName == 'code' && !search.sortBy" class="fa fa-caret-down"></span>
+                            <span ng-if="search.sortName == 'code' && search.sortBy" class="fa fa-caret-up"></span>
+                        </th>
+                        <th class="col-md-1 text-center">
+                            <a href="" ng-click="sortTable('cust_prefix_code')">
+                            Cust Prefix
+                            <span ng-if="search.sortName == 'cust_prefix_code' && !search.sortBy" class="fa fa-caret-down"></span>
+                            <span ng-if="search.sortName == 'cust_prefix_code' && search.sortBy" class="fa fa-caret-up"></span>
                         </th>
                         <th class="col-md-1 text-center">
                             <a href="" ng-click="sortTable('company')">
-                            Company
+                            Cust Name
                             <span ng-if="search.sortName == 'company' && !search.sortBy" class="fa fa-caret-down"></span>
                             <span ng-if="search.sortName == 'company' && search.sortBy" class="fa fa-caret-up"></span>
                         </th>
@@ -496,7 +502,10 @@
                                 </a>
                             </td>
                             <td class="col-md-1 text-center">
-                                @{{ transaction.cust_prefix_code }}-@{{ transaction.code }}
+                                @{{ transaction.code }}
+                            </td>
+                            <td class="col-md-1 text-center">
+                                @{{ transaction.cust_prefix_code }}
                             </td>
                             <td class="col-md-1 text-center" id="to-pdf">
                             <a href="/person/@{{ transaction.person_id }}">

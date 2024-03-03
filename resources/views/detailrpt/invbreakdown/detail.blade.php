@@ -28,7 +28,9 @@
                 <div class="form-group">
                     {!! Form::label('person_id', 'Customer', ['class'=>'control-label search-title']) !!}
                     {!! Form::select('person_id', [''=>null]+
-                        $people::leftJoin('cust_prefixes', 'cust_prefixes.id', '=', 'people.cust_prefix_id')->select(DB::raw("CONCAT(cust_prefixes.code,'-',people.code, ' - ' ,company) AS full, people.id"))
+                        $people::query()
+                            ->leftJoin('cust_prefixes', 'cust_prefixes.id', '=', 'people.cust_prefix_id')
+                            ->select(DB::raw("CONCAT(people.code, ' (', cust_prefixes.code, ') - ' ,company) AS full, people.id"))
                             ->whereActive('Yes')
                             ->where('cust_id', 'NOT LIKE', 'H%')
                             ->whereHas('profile', function($q) {

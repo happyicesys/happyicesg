@@ -40,6 +40,9 @@ function invbreakdownSummaryController($scope, $http) {
 
     angular.element(document).ready(function () {
         $('.select').select2();
+        $('.selectmultiple').select2({
+            placeholder: 'Choose one or many..'
+        });
     });
 
     $scope.exportData = function () {

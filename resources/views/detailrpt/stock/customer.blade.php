@@ -1,3 +1,4 @@
+@inject('custPrefixes', 'App\CustPrefix')
 @inject('profiles', 'App\Profile')
 @inject('sdeals', 'App\Deal')
 @inject('speople', 'App\Person')
@@ -71,19 +72,34 @@
         <div class="row">
             <div class="col-md-3 col-sm-6 col-xs-12">
                 <div class="form-group">
-                {!! Form::label('prefix_code', 'Prefix Code', ['class'=>'control-label search-title']) !!}
-                {!! Form::text('prefix_code', null,
-                                                [
-                                                    'class'=>'form-control input-sm',
-                                                    'ng-model'=>'search.prefix_code',
-                                                    'ng-change'=>'searchDB()',
-                                                    'placeholder'=>'Prefix Code',
-                                                ]) !!}
+                    {!! Form::label('code', 'Cust Code', ['class'=>'control-label search-title']) !!}
+                    {!! Form::text('code', null,
+                                                    [
+                                                        'class'=>'form-control input-sm',
+                                                        'ng-model'=>'search.code',
+                                                        'placeholder'=>'Customer Code',
+                                                        'ng-change'=>'searchDB()',
+                                                        'ng-model-options'=>'{ debounce: 500 }'
+                                                    ])
+                    !!}
                 </div>
             </div>
             <div class="col-md-3 col-sm-6 col-xs-12">
                 <div class="form-group">
-                    {!! Form::label('company', 'ID Name', ['class'=>'control-label search-title']) !!}
+                    {!! Form::label('cust_prefix_id', 'Cust Prefix', ['class'=>'control-label search-title']) !!}
+                    <select name="cust_prefix_id" id="cust_prefix_id" class="selectmultiple form-control" ng-model="search.cust_prefix_id" ng-change="searchDB()" multiple>
+                        <option value="-1">-- Unassigned --</option>
+                        @foreach($custPrefixes::orderBy('code')->get() as $custPrefix)
+                            <option value="{{$custPrefix->id}}">
+                                {{$custPrefix->code}}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6 col-xs-12">
+                <div class="form-group">
+                    {!! Form::label('company', 'Cust Name', ['class'=>'control-label search-title']) !!}
                     {!! Form::text('company',
                         request('company') ? request('company') : null,
                         ['class'=>'form-control'])
@@ -112,15 +128,6 @@
                     !!}
                 </div>
             </div>
-            <div class="col-md-3 col-sm-6 col-xs-12">
-                <div class="form-group">
-                    {!! Form::label('custcategory_id', 'Cust Category', ['class'=>'control-label search-title']) !!}
-                    {!! Form::select('custcategory_id', [''=>'All'] + $scustcategories::orderBy('name')->pluck('name', 'id')->all(),
-                        request('custcategory_id') ? request('custcategory_id') : null,
-                        ['class'=>'select form-control'])
-                    !!}
-                </div>
-            </div>
         </div>
         <div class="row form-group">
             <div class="col-md-3 col-sm-6 col-xs-12">
@@ -128,6 +135,15 @@
                     {!! Form::label('is_inventory', 'Product Type', ['class'=>'control-label search-title']) !!}
                     {!! Form::select('is_inventory', ['1'=>'Inventory Item', 'All'=>'All'],
                         request('is_inventory') ? request('is_inventory') : '1',
+                        ['class'=>'select form-control'])
+                    !!}
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6 col-xs-12">
+                <div class="form-group">
+                    {!! Form::label('custcategory_id', 'Cust Category', ['class'=>'control-label search-title']) !!}
+                    {!! Form::select('custcategory_id', [''=>'All'] + $scustcategories::orderBy('name')->pluck('name', 'id')->all(),
+                        request('custcategory_id') ? request('custcategory_id') : null,
                         ['class'=>'select form-control'])
                     !!}
                 </div>
@@ -349,5 +365,8 @@
         format: 'YYYY-MM-DD'
     });
     $('.select').select2();
+    $('.selectmultiple').select2({
+        placeholder: 'Choose one or many..'
+    });
 </script>
 @stop

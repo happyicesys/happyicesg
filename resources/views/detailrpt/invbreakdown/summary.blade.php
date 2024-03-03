@@ -1,3 +1,4 @@
+@inject('custPrefixes', 'App\Custprefix')
 @inject('profiles', 'App\Profile')
 @inject('searchpeople', 'App\Person')
 @inject('custcategories', 'App\Custcategory')
@@ -105,28 +106,40 @@
             </div> --}}
             <div class="col-md-3 col-sm-6 col-xs-12">
                 <div class="form-group">
-                    {!! Form::label('prefix_code', 'Prefix Code', ['class'=>'control-label search-title']) !!}
-                    {!! Form::text('prefix_code',
-                        null,
-                        [
-                            'class'=>'form-control',
-                            'ng-model'=>'search.prefix_code',
-                            'placeholder'=>'Prefix Code',
-                            'ng-change'=>'searchDB()',
-                            'ng-model-options'=>'{ debounce: 500 }'
-                        ])
+                    {!! Form::label('code', 'Cust Code', ['class'=>'control-label search-title']) !!}
+                    {!! Form::text('code', null,
+                                                    [
+                                                        'class'=>'form-control input-sm',
+                                                        'ng-model'=>'search.code',
+                                                        'placeholder'=>'Customer Code',
+                                                        'ng-change'=>'searchDB()',
+                                                        'ng-model-options'=>'{ debounce: 500 }'
+                                                    ])
                     !!}
                 </div>
             </div>
             <div class="col-md-3 col-sm-6 col-xs-12">
                 <div class="form-group">
-                    {!! Form::label('company', 'ID Name', ['class'=>'control-label search-title']) !!}
+                    {!! Form::label('cust_prefix_id', 'Cust Prefix', ['class'=>'control-label search-title']) !!}
+                    <select name="cust_prefix_id" id="cust_prefix_id" class="selectmultiple form-control" ng-model="search.cust_prefix_id" ng-change="searchDB()" multiple>
+                        <option value="-1">-- Unassigned --</option>
+                        @foreach($custPrefixes::orderBy('code')->get() as $custPrefix)
+                            <option value="{{$custPrefix->id}}">
+                                {{$custPrefix->code}}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6 col-xs-12">
+                <div class="form-group">
+                    {!! Form::label('company', 'Cust Name', ['class'=>'control-label search-title']) !!}
                     {!! Form::text('company',
                         null,
                         [
                             'class'=>'form-control',
                             'ng-model'=>'search.company',
-                            'placeholder'=>'ID Name',
+                            'placeholder'=>'Cust Name',
                             'ng-change'=>'searchDB()',
                             'ng-model-options'=>'{ debounce: 500 }'
                         ])

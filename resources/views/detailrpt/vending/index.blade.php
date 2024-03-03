@@ -1,3 +1,5 @@
+
+@inject('custPrefixes', 'App\CustPrefix')
 @inject('profiles', 'App\Profile')
 @inject('customers', 'App\Person')
 @inject('custcategories', 'App\Custcategory')

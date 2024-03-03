@@ -1,4 +1,5 @@
 @inject('people', 'App\Person')
+@inject('custPrefixes', 'App\CustPrefix')
 @inject('drivers', 'App\User')
 @inject('profiles', 'App\Profile')
 @inject('roles', 'App\Role')

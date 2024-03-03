@@ -26,51 +26,33 @@
                   </select>
               </div>
           </div>
-          {{-- <div class="col-md-3 col-sm-6 col-xs-12">
-              <div class="form-group">
-                  {!! Form::label('cust_id', 'Cust ID', ['class'=>'control-label search-title']) !!}
-                  {!! Form::text('cust_id', null,
-                                              [
-                                                  'class'=>'form-control input-sm',
-                                                  'ng-model'=>'search.cust_id',
-                                                  'placeholder'=>'Cust ID',
-                                                  'ng-change'=>'searchDB()',
-                                                  'ng-model-options'=>'{ debounce: 500 }'
-                                              ])
-                  !!}
-              </div>
-          </div> --}}
           <div class="col-md-3 col-sm-6 col-xs-12">
             <div class="form-group">
-            {!! Form::label('prefix_code', 'Prefix Code', ['class'=>'control-label search-title']) !!}
-            {!! Form::text('prefix_code', null,
-                                            [
-                                                'class'=>'form-control input-sm',
-                                                'ng-model'=>'search.prefix_code',
-                                                'ng-change'=>'searchDB()',
-                                                'placeholder'=>'Prefix Code',
-                                                'ng-model-options'=>'{ debounce: 500 }'
-                                            ]) !!}
+                {!! Form::label('code', 'Cust Code', ['class'=>'control-label search-title']) !!}
+                {!! Form::text('code', null,
+                                                [
+                                                    'class'=>'form-control input-sm',
+                                                    'ng-model'=>'search.code',
+                                                    'placeholder'=>'Customer Code',
+                                                ])
+                !!}
             </div>
         </div>
-          <div class="col-md-3 col-sm-6 col-xs-12">
+        <div class="col-md-3 col-sm-6 col-xs-12">
             <div class="form-group">
-                {!! Form::label('id_prefix', 'ID Group', ['class'=>'control-label search-title']) !!}
-                <select class="select form-group" name="id_prefix" ng-model="search.id_prefix" ng-change="searchDB()">
-                    <option value="">All</option>
-                    <option value="C">C</option>
-                    <option value="D">D</option>
-                    <option value="E">E</option>
-                    <option value="F">F</option>
-                    <option value="G">G</option>
-                    <option value="H">H</option>
-                    <option value="R">R</option>
-                    <option value="S">S</option>
-                    <option value="V">V</option>
-                    <option value="W">W</option>
+                {!! Form::label('cust_prefix_id', 'Cust Prefix', ['class'=>'control-label search-title']) !!}
+                <select name="cust_prefix_id" id="cust_prefix_id" class="selectmultiple form-control" ng-model="search.cust_prefix_id" multiple>
+                    <option value="-1">-- Unassigned --</option>
+                    @foreach($custPrefixes::orderBy('code')->get() as $custPrefix)
+                        <option value="{{$custPrefix->id}}">
+                            {{$custPrefix->code}}
+                        </option>
+                    @endforeach
                 </select>
             </div>
         </div>
+
+
       </div>
       <div class="row">
           <div class="col-md-3 col-sm-6 col-xs-12">
@@ -299,6 +281,24 @@
                         </option>
                     @endforeach
                 </select>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6 col-xs-12">
+                <div class="form-group">
+                    {!! Form::label('id_prefix', 'ID Group', ['class'=>'control-label search-title']) !!}
+                    <select class="select form-group" name="id_prefix" ng-model="search.id_prefix" ng-change="searchDB()">
+                        <option value="">All</option>
+                        <option value="C">C</option>
+                        <option value="D">D</option>
+                        <option value="E">E</option>
+                        <option value="F">F</option>
+                        <option value="G">G</option>
+                        <option value="H">H</option>
+                        <option value="R">R</option>
+                        <option value="S">S</option>
+                        <option value="V">V</option>
+                        <option value="W">W</option>
+                    </select>
                 </div>
             </div>
     </div>

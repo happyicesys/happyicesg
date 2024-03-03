@@ -2,7 +2,7 @@
 {!! Form::open(['id'=>'submit_generate', 'method'=>'POST', 'action'=>['VendingController@batchGenerateVendingInvoice'], 'onsubmit'=>'return verifySubmit()']) !!}
 <div class="col-md-12 col-sm-12 col-xs-12">
     <div class="row">
-        <div class="col-md-4 col-sm-6 col-xs-12">
+        <div class="col-md-3 col-sm-6 col-xs-12">
             <div class="form-group">
                 {!! Form::label('profile_id', 'Profile', ['class'=>'control-label search-title']) !!}
                 {!! Form::select('profile_id', [''=>'All']+
@@ -17,13 +17,42 @@
                 !!}
             </div>
         </div>
-        <div class="col-md-4 col-sm-6 col-xs-12" ng-show="!search.begin_date && !search.end_date">
+        <div class="col-md-3 col-sm-6 col-xs-12" ng-show="!search.begin_date && !search.end_date">
             <div class="form-group">
                 {!! Form::label('current_month', 'Month', ['class'=>'control-label search-title']) !!}
                 <select class="select form-control" name="current_month" ng-model="search.current_month" ng-init="search.current_month = getPreviousMonthYear()" ng-change="searchDB()">
                     <option value="">All</option>
                     @foreach($month_options as $key => $value)
                         <option value="{{$key}}" selected="{{Carbon\Carbon::today()->subMonth()->month.'-'.Carbon\Carbon::today()->subMonth()->year ? 'selected' : ''}}">{{$value}}</option>
+                    @endforeach
+                </select>
+            </div>
+        </div>
+        <div class="col-md-3 col-sm-6 col-xs-12">
+            <div class="form-group">
+                {!! Form::label('id_prefix', 'ID Group', ['class'=>'control-label search-title']) !!}
+                <select class="select form-group" name="id_prefix" ng-model="search.id_prefix" ng-change="searchDB()">
+                    <option value="">All</option>
+                    <option value="C">C</option>
+                    <option value="D">D</option>
+                    <option value="E">E</option>
+                    <option value="F">F</option>
+                    <option value="G">G</option>
+                    <option value="H">H</option>
+                    <option value="R">R</option>
+                    <option value="S">S</option>
+                    <option value="V">V</option>
+                    <option value="W">W</option>
+                </select>
+            </div>
+        </div>
+        <div class="col-md-3 col-sm-6 col-xs-12">
+            <div class="form-group">
+                {!! Form::label('custcategory', 'Cust Category', ['class'=>'control-label search-title']) !!}
+                <select name="custcategory[]" class="selectmultiple form-control" ng-model="search.custcategory" ng-change="searchDB()" multiple>
+                    <option value="">All</option>
+                    @foreach($custcategories::orderBy('name')->get() as $custcategory)
+                    <option value="{{$custcategory->id}}">{{$custcategory->name}}</option>
                     @endforeach
                 </select>
             </div>
@@ -59,72 +88,52 @@
                                         ])
             !!}
         </div> --}}
-        <div class="col-md-4 col-sm-6 col-xs-12">
-            <div class="form-group">
-                {!! Form::label('prefix_code', 'Prefix Code', ['class'=>'control-label search-title']) !!}
-                {!! Form::text('prefix_code', null,
-                                                [
-                                                    'class'=>'form-control input-sm',
-                                                    'ng-model'=>'search.prefix_code',
-                                                    'ng-change'=>'searchDB()',
-                                                    'placeholder'=>'Prefix Code',
-                                                    'ng-model-options'=>'{ debounce: 700 }'
-                                                ]) !!}
-            </div>
-        </div>
+
     </div>
     <div class="row">
-        <div class="col-md-4 col-sm-6 col-xs-12">
+        <div class="col-md-3 col-sm-6 col-xs-12">
             <div class="form-group">
-                {!! Form::label('id_prefix', 'ID Group', ['class'=>'control-label search-title']) !!}
-                <select class="select form-group" name="id_prefix" ng-model="search.id_prefix" ng-change="searchDB()">
-                    <option value="">All</option>
-                    <option value="C">C</option>
-                    <option value="D">D</option>
-                    <option value="E">E</option>
-                    <option value="F">F</option>
-                    <option value="G">G</option>
-                    <option value="H">H</option>
-                    <option value="R">R</option>
-                    <option value="S">S</option>
-                    <option value="V">V</option>
-                    <option value="W">W</option>
-                </select>
-            </div>
-        </div>
-        <div class="col-md-4 col-sm-6 col-xs-12">
-            <div class="form-group">
-                {!! Form::label('company', 'ID Name', ['class'=>'control-label search-title']) !!}
-                {!! Form::text('company', null,
+                {!! Form::label('code', 'Cust Code', ['class'=>'control-label search-title']) !!}
+                {!! Form::text('code', null,
                                                 [
                                                     'class'=>'form-control input-sm',
-                                                    'ng-model'=>'search.company',
-                                                    'placeholder'=>'ID Name'
+                                                    'ng-model'=>'search.code',
+                                                    'placeholder'=>'Customer Code',
+                                                    'ng-change'=>'searchDB()',
+                                                    'ng-model-options'=>'{ debounce: 500 }'
                                                 ])
                 !!}
             </div>
         </div>
-        <div class="col-md-4 col-sm-6 col-xs-12">
+        <div class="col-md-3 col-sm-6 col-xs-12">
             <div class="form-group">
-                {!! Form::label('custcategory', 'Cust Category', ['class'=>'control-label search-title']) !!}
-{{--                 {!! Form::select('custcategory', [''=>'All'] + $custcategories::orderBy('name')->pluck('name', 'id')->all(), null,
-                    [
-                    'class'=>'select form-control',
-                    'ng-model'=>'search.custcategory',
-                    'ng-change'=>'searchDB()'
-                    ])
-                !!} --}}
-                <select name="custcategory[]" class="selectmultiple form-control" ng-model="search.custcategory" ng-change="searchDB()" multiple>
-                    <option value="">All</option>
-                    @foreach($custcategories::orderBy('name')->get() as $custcategory)
-                    <option value="{{$custcategory->id}}">{{$custcategory->name}}</option>
+                {!! Form::label('cust_prefix_id', 'Cust Prefix', ['class'=>'control-label search-title']) !!}
+                <select name="cust_prefix_id" id="cust_prefix_id" class="selectmultiple form-control" ng-model="search.cust_prefix_id" ng-change="searchDB()" multiple>
+                    <option value="-1">-- Unassigned --</option>
+                    @foreach($custPrefixes::orderBy('code')->get() as $custPrefix)
+                        <option value="{{$custPrefix->id}}">
+                            {{$custPrefix->code}}
+                        </option>
                     @endforeach
                 </select>
             </div>
         </div>
+        <div class="col-md-3 col-sm-6 col-xs-12">
+            <div class="form-group">
+                {!! Form::label('company', 'Cust Name', ['class'=>'control-label search-title']) !!}
+                {!! Form::text('company', null,
+                                                [
+                                                    'class'=>'form-control input-sm',
+                                                    'ng-model'=>'search.company',
+                                                    'placeholder'=>'Cust Name'
+                                                ])
+                !!}
+            </div>
+        </div>
+
     </div>
     <div class="row">
-        <div class="col-md-4 col-sm-6 col-xs-12">
+        <div class="col-md-3 col-sm-6 col-xs-12">
             <div class="form-group">
                 {!! Form::label('status', 'Status', ['class'=>'control-label search-title']) !!}
                 {!! Form::select('status', [''=>'All', 'Delivered'=>'Delivered', 'Confirmed'=>'Confirmed', 'Cancelled'=>'Cancelled'], null,
@@ -135,7 +144,7 @@
                 !!}
             </div>
         </div>
-        <div class="col-md-4 col-sm-6 col-xs-12">
+        <div class="col-md-3 col-sm-6 col-xs-12">
             <div class="form-group">
                 {!! Form::label('is_rental', 'Coorperate Method', ['class'=>'control-label search-title']) !!}
                 {!! Form::select('is_rental', [''=>'All', '2'=>'Rental Based', '1'=>'Profit Sharing', '3' => 'Free Placement'], null,
@@ -146,7 +155,7 @@
                 !!}
             </div>
         </div>
-        <div class="col-md-4 col-sm-6 col-xs-12">
+        <div class="col-md-3 col-sm-6 col-xs-12">
             <div class="form-group">
                 {!! Form::label('is_active', 'Customer Status', ['class'=>'control-label search-title']) !!}
                 {!! Form::select('is_active', [
@@ -164,7 +173,7 @@
                 !!}
             </div>
         </div>
-        <div class="col-md-4 col-sm-6 col-xs-12">
+        <div class="col-md-3 col-sm-6 col-xs-12">
             <div class="form-group">
                 {!! Form::label('is_pwp', 'Is PWP?', ['class'=>'control-label search-title']) !!}
                 <select name="is_pwp" id="is_pwp" class="select form-control" ng-model="search.is_pwp" ng-change="searchDB($event)">
