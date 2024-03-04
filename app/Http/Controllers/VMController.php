@@ -405,6 +405,22 @@ class VMController extends Controller
             }
         }
 
+        $custPrefixID = request('cust_prefix_id');
+        if($custPrefixID != '' && $custPrefixID != []) {
+            if(in_array('-1', $custPrefixID)) {
+                $vendings = $vendings->where(function($query) {
+                    $query->whereNull('people.cust_prefix_id')->orWhere('people.cust_prefix_id', 0);
+                });
+            }else {
+                $vendings = $vendings->whereIn('people.cust_prefix_id', $custPrefixID);
+            }
+        }
+
+        $code = request('code');
+        if($code) {
+            $vendings = $vendings->where('people.code', 'LIKE', '%' . $code . '%');
+        }
+
         if (request('sortName')) {
             $vendings = $vendings->orderBy(request('sortName'), request('sortBy') ? 'asc' : 'desc');
         }

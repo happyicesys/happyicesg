@@ -665,6 +665,8 @@ class OperationWorksheetController extends Controller
         $last_transac_color = request('last_transac_color');
         $outletvisit_date = request('outletvisit_date');
         $prefixCode = request('prefix_code');
+        $custPrefixID = $request->cust_prefix_id;
+        $code = $request->code;
         // die(var_dump($preferred_days));
 
         if($profile_id) {
@@ -867,6 +869,20 @@ class OperationWorksheetController extends Controller
                     $query->where('cust_prefixes.code', 'LIKE', '%' . $lettersOnly . '%')->where('people.code', 'LIKE', '%' . $numbersOnly . '%');
                 }
             });
+        }
+
+        if($custPrefixID != '' && $custPrefixID != []) {
+            if(in_array('-1', $custPrefixID)) {
+                $people = $people->where(function($query) {
+                    $query->whereNull('people.cust_prefix_id')->orWhere('people.cust_prefix_id', 0);
+                });
+            }else {
+                $people = $people->whereIn('people.cust_prefix_id', $custPrefixID);
+            }
+        }
+
+        if($code) {
+            $people = $people->where('people.code', 'LIKE', '%' . $code . '%');
         }
 
         return $people;

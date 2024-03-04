@@ -1,3 +1,4 @@
+@inject('custPrefixes', 'App\CustPrefix')
 @inject('profiles', 'App\Profile')
 @inject('customers', 'App\Person')
 @inject('custcategories', 'App\Custcategory')
@@ -113,24 +114,38 @@
                 <div class="row">
                     <div class="col-md-3 col-sm-6 col-xs-12">
                         <div class="form-group">
-                            {!! Form::label('prefix_code', 'Prefix Code', ['class'=>'control-label search-title']) !!}
-                            {!! Form::text('prefix_code', null,
+                            {!! Form::label('code', 'Cust Code', ['class'=>'control-label search-title']) !!}
+                            {!! Form::text('code', null,
                                                             [
                                                                 'class'=>'form-control input-sm',
-                                                                'ng-model'=>'search.prefix_code',
-                                                                'placeholder'=>'Prefix Code',
-                                                            ]) !!}
+                                                                'ng-model'=>'search.code',
+                                                                'placeholder'=>'Customer Code',
+                                                            ])
+                            !!}
                         </div>
                     </div>
                     <div class="col-md-3 col-sm-6 col-xs-12">
                         <div class="form-group">
-                            {!! Form::label('company', 'ID Name', ['class'=>'control-label search-title']) !!}
+                            {!! Form::label('cust_prefix_id', 'Cust Prefix', ['class'=>'control-label search-title']) !!}
+                            <select name="cust_prefix_id" id="cust_prefix_id" class="selectmultiple form-control" ng-model="search.cust_prefix_id" multiple>
+                                <option value="-1">-- Unassigned --</option>
+                                @foreach($custPrefixes::orderBy('code')->get() as $custPrefix)
+                                    <option value="{{$custPrefix->id}}">
+                                        {{$custPrefix->code}}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-6 col-xs-12">
+                        <div class="form-group">
+                            {!! Form::label('company', 'Cust Name', ['class'=>'control-label search-title']) !!}
                             {!! Form::text('company',
                                 null,
                                 [
                                     'class'=>'form-control',
                                     'ng-model'=>'search.company',
-                                    'placeholder'=>'ID Name'
+                                    'placeholder'=>'Cust Name'
                                 ])
                             !!}
                         </div>
@@ -150,6 +165,8 @@
                             </datepicker>
                         </div>
                     </div>
+                </div>
+                <div class="row">
                     <div class="col-md-3 col-sm-6 col-xs-12">
                         <div class="form-group">
                             {!! Form::label('preferred_days', 'Preferred Day(s)', ['class'=>'control-label search-title']) !!}
@@ -165,8 +182,6 @@
                             </select>
                         </div>
                     </div>
-                </div>
-                <div class="row">
                     <div class="col-md-3 col-sm-6 col-xs-12">
                         <div class="form-group">
                             {!! Form::label('zones', 'Zone', ['class'=>'control-label search-title']) !!}
@@ -215,6 +230,8 @@
                             !!}
                         </div>
                     </div>
+                </div>
+                <div class="row">
                     <div class="col-md-3 col-sm-6 col-xs-12">
                         <div class="form-group">
                             {!! Form::label('color', 'Show Color', ['class'=>'control-label search-title']) !!}
@@ -234,8 +251,6 @@
                             !!}
                         </div>
                     </div>
-                </div>
-                <div class="row">
                     <div class="form-group col-md-3 col-sm-6 col-xs-12">
                         {!! Form::label('tags', 'Customer Tags', ['class'=>'control-label search-title']) !!}
                         <select name="tags" id="tags" class="selectmultiple form-control" ng-model="search.tags" ng-change="searchDB()" multiple>
@@ -287,6 +302,8 @@
                             !!}
                         </div>
                     </div>
+                </div>
+                <div class="row">
                     <div class="col-md-3 col-sm-6 col-xs-12">
                         <div class="form-group">
                             {!! Form::label('outletvisit_date', 'Last Outlet Visit Dt', ['class'=>'control-label search-title']) !!}
@@ -302,8 +319,6 @@
                             </datepicker>
                         </div>
                     </div>
-                </div>
-                <div class="row">
                     <div class="col-md-3 col-sm-6 col-xs-12">
                         <div class="form-group">
                             {!! Form::label('del_postcode', 'Postcode', ['class'=>'control-label search-title']) !!}
@@ -388,13 +403,13 @@
                                     @{{person.del_postcode}}
                                 </td>
                                 <td class="col-md-1 text-center">
-                                    @{{person.code}}
+                                    @{{person.code}} (@{{person.cust_prefix_code}})
                                 </td>
                             </tr>
                             <tr>
                                 <td colspan="1"></td>
                                 <th class="col-md-1 text-left" style="background-color: #DDFDF8">
-                                    ID Name
+                                    Cust Name
                                 </th>
                                 <th class="col-md-1 text-left" colspan="2">
                                     <a href="/person/@{{ person.person_id }}">
