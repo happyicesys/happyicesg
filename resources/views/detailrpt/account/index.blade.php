@@ -1,5 +1,5 @@
 @inject('profiles', 'App\Profile')
-@inject('custPrefixes', 'App\Custprefix')
+@inject('custPrefixes', 'App\CustPrefix')
 @inject('customers', 'App\Person')
 @inject('custcategories', 'App\Custcategory')
 @inject('custcategoryGroups', 'App\CustcategoryGroup')
