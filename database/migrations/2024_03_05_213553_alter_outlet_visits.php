@@ -13,9 +13,9 @@ class AlterOutletVisits extends Migration
     public function up()
     {
         Schema::table('outlet_visits', function (Blueprint $table) {
-            $table->bigInteger('created_by')->index();
-            $table->datetime('date')->index();
-            $table->bigInteger('person_id')->index();
+            $table->bigInteger('created_by')->index()->change();
+            $table->datetime('date')->index()->change();
+            $table->bigInteger('person_id')->index()->change();
         });
     }
 
