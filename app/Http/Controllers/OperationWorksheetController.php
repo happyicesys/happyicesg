@@ -665,8 +665,8 @@ class OperationWorksheetController extends Controller
         $last_transac_color = request('last_transac_color');
         $outletvisit_date = request('outletvisit_date');
         $prefixCode = request('prefix_code');
-        $custPrefixID = $request->cust_prefix_id;
-        $code = $request->code;
+        $custPrefixID = request('cust_prefix_id');
+        $code = request('code');
         // die(var_dump($preferred_days));
 
         if($profile_id) {
@@ -911,21 +911,21 @@ class OperationWorksheetController extends Controller
         $last = $prevStr;
 
         $last3 .= " AND (a.status='Delivered' OR a.status='Verified Owe' OR a.status='Verified Paid' OR a.status='Cancelled')
-                ORDER BY a.delivery_date DESC, a.created_at DESC
+                ORDER BY a.delivery_date DESC
                 LIMIT 2,1
                 )
             GROUP BY y.id
         ) last3";
 
         $last2 .= " AND (a.status='Delivered' OR a.status='Verified Owe' OR a.status='Verified Paid' OR a.status='Cancelled')
-                ORDER BY a.delivery_date DESC, a.created_at DESC
+                ORDER BY a.delivery_date DESC
                 LIMIT 1,1
                 )
             GROUP BY y.id
         ) last2";
 
         $last .= " AND (a.status='Delivered' OR a.status='Verified Owe' OR a.status='Verified Paid' OR a.status='Cancelled')
-                ORDER BY a.delivery_date DESC, a.created_at DESC
+                ORDER BY a.delivery_date DESC
                 LIMIT 1
                 )
             GROUP BY y.id
@@ -942,7 +942,7 @@ class OperationWorksheetController extends Controller
             WHERE x.id = (
                 SELECT a.id FROM outlet_visits a
                 WHERE x.person_id=a.person_id
-                ORDER BY a.date DESC, a.created_at DESC
+                ORDER BY a.date DESC
                 LIMIT 1
             )
             GROUP BY x.person_id
@@ -955,7 +955,6 @@ class OperationWorksheetController extends Controller
                     ->leftJoin('profiles', 'profiles.id', '=', 'people.profile_id')
                     ->leftJoin($last, 'people.id', '=', 'last.person_id')
                     ->leftJoin($last2, 'people.id', '=', 'last2.person_id')
-                    // ->leftJoin($last3, 'people.id', '=', 'last3.person_id')
                     ->join('persontagattaches', 'persontagattaches.person_id', '=', 'people.id', 'left outer')
                     ->leftJoin('persontags', 'persontags.id', '=', 'persontagattaches.persontag_id')
                     ->leftJoin('zones', 'zones.id', '=', 'people.zone_id')
@@ -979,16 +978,6 @@ class OperationWorksheetController extends Controller
                         'custcategories.id AS custcategory_id', 'custcategories.name AS custcategory', 'custcategories.map_icon_file',
                         'last.transaction_id AS ops_transac', 'last.delivery_date AS ops_deldate', 'last.day AS ops_day', 'last.total AS ops_total', 'last.total_qty AS ops_total_qty',
                         'last2.transaction_id AS ops2_transac', 'last2.delivery_date AS ops2_deldate', 'last2.day AS ops2_day', 'last2.total AS ops2_total', 'last2.total_qty AS ops2_total_qty',
-                        // 'last3.transaction_id AS ops3_transac', 'last3.delivery_date AS ops3_deldate', 'last3.day AS ops3_day', 'last3.total AS ops3_total', 'last3.total_qty AS ops3_total_qty', 'last3.delivery_date AS last3_deldate',
-/*
-                        DB::raw('CASE
-                                    WHEN (DATEDIFF(now(), last.delivery_date) >= 8 AND DATEDIFF(now(), last.delivery_date) < 15)
-                                    THEN "blue"
-                                    WHEN DATEDIFF(now(), last.delivery_date) >= 15
-                                    THEN "red"
-                                ELSE
-                                    "black"
-                                END AS last_date_color'), */
                         'outlet_visits.date AS outletvisit_date', 'outlet_visits.day AS outletvisit_day', 'outlet_visits.outcome',
                         DB::raw('CASE
                                     WHEN (DATEDIFF(now(), outlet_visits.date) >= 7 AND DATEDIFF(now(), outlet_visits.date) < 14)
@@ -998,10 +987,6 @@ class OperationWorksheetController extends Controller
                                 ELSE
                                     "black"
                                 END AS outletvisit_date_color')
-/*
-                        DB::raw('(CASE WHEN last.status = "Cancelled" THEN "Red" ELSE "Black" END) AS last_color'),
-                        DB::raw('(CASE WHEN last2.status = "Cancelled" THEN "Red" ELSE "Black" END) AS last2_color'),
-                        DB::raw('(CASE WHEN last3.status = "Cancelled" THEN "Red" ELSE "Black" END) AS last3_color') */
                     );
         $people = $this->peopleOperationWorksheetDBFilter($people, $datesVar);
 
@@ -1009,39 +994,39 @@ class OperationWorksheetController extends Controller
         $people = $people->where('active', 'Yes');
         // $people = $people->load(['outletVisits', 'outletVisits.creator']);
 
-        $dtdpeople = clone $people;
-        $dtdmember = clone $people;
+        // $dtdpeople = clone $people;
+        // $dtdmember = clone $people;
 
         // rules for normal exclude D and H code
         $people = $people->where('cust_id', 'NOT LIKE', 'H%')
                         ->where('cust_id', 'NOT LIKE', 'D%');
 
         // filter H codes who has transactions within the dates
-        $dtdpeople = $dtdpeople->where('cust_id', 'LIKE', 'H%')
-                                ->whereExists(function($q) use ($datesVar) {
-                                    $q->select('*')
-                                    ->from('deals')
-                                    ->leftJoin('transactions', 'transactions.id', '=', 'deals.transaction_id')
-                                    ->whereRaw('transactions.person_id = people.id')
-                                    ->whereDate('transactions.delivery_date', '>=', $datesVar['earliest'])
-                                    ->whereDate('transactions.delivery_date', '<=', $datesVar['latest'])
-                                    ->where('deals.qty', '>', '0');
-                                });
+        // $dtdpeople = $dtdpeople->where('cust_id', 'LIKE', 'H%')
+        //                         ->whereExists(function($q) use ($datesVar) {
+        //                             $q->select('*')
+        //                             ->from('deals')
+        //                             ->leftJoin('transactions', 'transactions.id', '=', 'deals.transaction_id')
+        //                             ->whereRaw('transactions.person_id = people.id')
+        //                             ->whereDate('transactions.delivery_date', '>=', $datesVar['earliest'])
+        //                             ->whereDate('transactions.delivery_date', '<=', $datesVar['latest'])
+        //                             ->where('deals.qty', '>', '0');
+        //                         });
 
         // filter H codes who has transactions within the dates
-        $dtdmember = $dtdmember->where('cust_id', 'LIKE', 'D%')
-                                ->whereExists(function($q) use ($datesVar) {
-                                    $q->select('*')
-                                    ->from('deals')
-                                    ->leftJoin('transactions', 'transactions.id', '=', 'deals.transaction_id')
-                                    ->whereRaw('transactions.person_id = people.id')
-                                    ->whereDate('transactions.delivery_date', '>=', $datesVar['earliest'])
-                                    ->whereDate('transactions.delivery_date', '<=', $datesVar['latest'])
-                                    ->where('deals.qty', '>', '0');
-                                });
+        // $dtdmember = $dtdmember->where('cust_id', 'LIKE', 'D%')
+        //                         ->whereExists(function($q) use ($datesVar) {
+        //                             $q->select('*')
+        //                             ->from('deals')
+        //                             ->leftJoin('transactions', 'transactions.id', '=', 'deals.transaction_id')
+        //                             ->whereRaw('transactions.person_id = people.id')
+        //                             ->whereDate('transactions.delivery_date', '>=', $datesVar['earliest'])
+        //                             ->whereDate('transactions.delivery_date', '<=', $datesVar['latest'])
+        //                             ->where('deals.qty', '>', '0');
+        //                         });
 
         // union
-        $people = $people->union($dtdpeople)->union($dtdmember);
+        // $people = $people->union($dtdpeople)->union($dtdmember);
 
 /*
                 $people = $people->where(function($query) {
@@ -1058,6 +1043,7 @@ class OperationWorksheetController extends Controller
 
         $pageNum = request('pageNum') ? request('pageNum') : 'All';
 
+        // dd($people->toSql(), $people->getBindings());
         if($pageNum == 'All' or request('excel_all') or request('excel_single')){
             $people = $people->get();
         }else{
@@ -1083,7 +1069,6 @@ class OperationWorksheetController extends Controller
                 $deals =  DB::table('deals')
                         ->leftJoin('items', 'items.id', '=', 'deals.item_id')
                         ->leftJoin('transactions', 'transactions.id', '=', 'deals.transaction_id')
-                        // ->whereIn('transaction_id', $transactionsId)
                         ->where('transactions.person_id', $person->person_id)
                         ->whereDate('transactions.delivery_date', '=', $date);
 

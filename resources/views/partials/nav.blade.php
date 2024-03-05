@@ -367,7 +367,7 @@
                     </li>
                 @endif
                 @if($dailyreport_access and config('app.usage') != 'operator')
-                    <li class="{{ Request::segment(1) == 'dailyreport' ? 'active' : '' }}">
+                    <li class="{{ Request::segment(1) == 'dailyreport' || Request::segment(1) == 'performance' ? 'active' : '' }}">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" type="button" aria-haspopup="true" aria-expanded="false"><i class="fa fa-fw fa-flag"></i> Performance <i class="fa fa-caret-down"></i></a>
                         <ul class="dropdown-menu">
                             @if(!auth()->user()->hasRole('merchandiser') and !auth()->user()->hasRole('merchandiser_plus'))

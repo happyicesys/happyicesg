@@ -16,8 +16,23 @@ class PerformanceController extends Controller
 
     public function getOfficeIndexApi()
     {
-        $tasks = Task::with('createdBy', 'updatedBy')->get();
+        $pageNum = request('pageNum') ? request('pageNum') : 100;
 
-        return $tasks;
+        $tasks = Task::with('createdBy', 'updatedBy');
+
+        if (request('sortName')) {
+            $tasks = $tasks->orderBy(request('sortName'), request('sortBy') ? 'asc' : 'desc');
+        }
+
+        if ($pageNum == 'All') {
+            $tasks = $tasks->latest('created_at')->get();
+        } else {
+            $tasks = $tasks->latest('created_at')->paginate($pageNum);
+        }
+
+        $data = [
+            'model' => $vms
+        ];
+        return $data;
     }
 }
