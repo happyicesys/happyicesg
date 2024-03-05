@@ -1697,7 +1697,10 @@ class PersonController extends Controller
             }
         }
         if ($company) {
-            $people = $people->where('people.company', 'LIKE', '%' . $company . '%');
+            // $people = $people->where('people.company', 'LIKE', '%' . $company . '%');
+            $people = $people->where(function($query) use ($company) {
+                $query->where('people.company', 'LIKE', '%' . $company . '%')->orWhere('people.cust_id', 'LIKE', '%' . $company . '%');
+            });
         }
         if ($contact) {
             $people = $people->where(function ($query) use ($contact) {

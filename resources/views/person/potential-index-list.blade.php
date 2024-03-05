@@ -660,20 +660,22 @@
                         <td class="col-md-1 text-center">
                             @{{ $index + indexFrom }}
                         </td>
-                        <td class="col-md-1 text-center" style="max-width: 100px;">
-                            @{{ person.cust_prefix_code }}
-                        </td>
                         <td class="col-md-1 text-center">
                             <a href="/person/@{{ person.id }}/edit">
                             @{{ person.code }}
                             </a>
                         </td>
+                        <td class="col-md-1 text-center" style="max-width: 100px;">
+                            @{{ person.cust_prefix_code }}
+                        </td>
+
                         {{-- <td class="col-md-1">
                             <a href="/person/@{{ person.id }}/edit">
                             @{{ person.cust_id }}
                             </a>
                         </td> --}}
                         <td class="col-md-2">
+                            @{{ person.cust_id }}<br>
                             @{{ person.company }}
                         </td>
                         <td class="col-md-1 text-center">

@@ -377,6 +377,9 @@
                             @if(auth()->user()->hasRole('admin') or auth()->user()->hasRole('account') or auth()->user()->hasRole('supervisor') or auth()->user()->hasRole('merchandiser') or auth()->user()->hasRole('merchandiser_plus'))
                                 <li class="text-left"><a href="/dailyreport/account-manager-performance"> Acc Manager</a></li>
                             @endif
+                            @if(auth()->user()->hasRole('admin'))
+                                <li class="text-left"><a href="/performance/office"> Office</a></li>
+                            @endif
                         </ul>
                     </li>
                 @endif
