@@ -18,6 +18,8 @@ class Task extends Model
     ];
 
     protected $casts = [
+        'date_from' => 'datetime',
+        'date_to' => 'datetime',
         'status_json' => 'array',
     ];
 

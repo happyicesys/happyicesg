@@ -658,7 +658,8 @@ Route::post('/api/dailyreport/driver-location-count/update/{status}', 'Dailyrepo
 
 Route::get('/performance/office', 'PerformanceController@officeIndex');
 Route::post('/api/performance/office', 'PerformanceController@getOfficeIndexApi');
-
+Route::get('/performance/office/create', 'PerformanceController@createTask');
+Route::post('performance/office/store', 'PerformanceController@storeTask');
 
 Route::get('/freezer/data', 'FreezerController@getData');
 Route::delete('/freezer/data/{id}', 'FreezerController@destroyAjax');

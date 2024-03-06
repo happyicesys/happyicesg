@@ -7,6 +7,7 @@ var app = angular.module('app', [
 
 function performanceOfficeIndexController($scope, $http) {
   // init the variables
+  $scope.today = moment().format("YYYY-MM-DD");
   $scope.alldata = [];
   $scope.totalCount = 0;
   $scope.totalPages = 0;
@@ -14,13 +15,9 @@ function performanceOfficeIndexController($scope, $http) {
   $scope.indexFrom = 0;
   $scope.indexTo = 0;
   $scope.search = {
-      vend_id: '',
-      cust_id: '',
-      company: '',
-      custcategory: '',
-      serial_no: '',
-      racking_config_id: '',
-      vend_code: '',
+      date: $scope.today,
+      name: '',
+      status: '',
       itemsPerPage: 100,
       sortName: '',
       sortBy: true
@@ -34,6 +31,7 @@ function performanceOfficeIndexController($scope, $http) {
       $('.selectmultiple').select2({
           placeholder: 'Choose one or many..'
       });
+
   });
 
   $scope.exportData = function (event) {
@@ -73,25 +71,9 @@ function performanceOfficeIndexController($scope, $http) {
   function getPage(pageNumber) {
       $scope.spinner = true;
       $http.post('/api/performance/office?page=' + pageNumber, $scope.search).success(function (data) {
-          if (data.model.data) {
-              $scope.alldata = data.model.data;
-              $scope.totalCount = data.model.total;
-              $scope.currentPage = data.model.current_page;
-              $scope.indexFrom = data.model.from;
-              $scope.indexTo = data.model.to;
-          } else {
-              $scope.alldata = data.model;
-              $scope.totalCount = data.model.length;
-              $scope.currentPage = 1;
-              $scope.indexFrom = 1;
-              $scope.indexTo = data.model.length;
-          }
-          // get total count
-          $scope.All = data.model.length;
-
-          // return total amount
-          $scope.total_amount = data.total_amount;
-          $scope.spinner = false;
+        $scope.headers = data.headers;
+        $scope.contents = data.contents;
+        $scope.spinner = false;
       }).error(function (data) {
 
       });

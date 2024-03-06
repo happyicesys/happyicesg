@@ -9,7 +9,7 @@ Task Planner
     <div ng-app="app" ng-controller="performanceOfficeIndexController">
 
     <div class="row">
-        <a class="title_hyper pull-left" href="/vm"><h1>Task Planner <i class="fa fa-list"></i> <span ng-show="spinner"> <i class="fa fa-spinner fa-1x fa-spin"></i></span></h1></a>
+        <a class="title_hyper pull-left" href="/vm"><h1>Task Planner (Office) <i class="fa fa-list"></i> <span ng-show="spinner"> <i class="fa fa-spinner fa-1x fa-spin"></i></span></h1></a>
     </div>
 
         <div class="panel panel-default" ng-cloak>
@@ -59,10 +59,11 @@ Task Planner
                             !!}
                         </div>
                     </div>
-                    <div class="col-md-3 col-sm-6 col-xs-12">
+                    {{-- <div class="col-md-3 col-sm-6 col-xs-12">
                         <div class="form-group">
                             {!! Form::label('status', 'Status', ['class'=>'control-label search-title']) !!}
                             <select name="status" id="status" class="select form-control" ng-model="search.status" ng-change="searchDB()">
+                                <option value="">All</option>
                                 @foreach($tasks::STATUSES as $indexStatus => $status)
                                     <option value="{{$indexStatus}}">
                                         {{$status}}
@@ -70,7 +71,7 @@ Task Planner
                                 @endforeach
                             </select>
                         </div>
-                    </div>
+                    </div> --}}
                 </div>
 
 
@@ -82,7 +83,7 @@ Task Planner
                     </div>
 
                     <div class="col-md-4 col-sm-6 col-xs-12 text-right">
-                        <div class="row">
+                        {{-- <div class="row">
                             <label for="display_num">Display</label>
                             <select ng-model="itemsPerPage" name="pageNum" ng-init="itemsPerPage='100'" ng-change="pageNumChanged()">
                                 <option ng-value="100">100</option>
@@ -90,118 +91,37 @@ Task Planner
                                 <option ng-value="All">All</option>
                             </select>
                             <label for="display_num2" style="padding-right: 20px">per Page</label>
-                        </div>
+                        </div> --}}
                         <div class="row">
-                            <label class="" style="padding-right:18px;" for="totalnum">Showing @{{alldata.length}} of @{{totalCount}} entries</label>
+                            <label class="" style="padding-right:18px;" for="totalnum">Showing  entries</label>
                         </div>
                     </div>
                 </div>
 
                 <div class="table-responsive" id="exportable" style="padding-top:20px;">
                     <table class="table table-list-search table-hover table-bordered">
-                        <tr style="background-color: #DDFDF8">
-                            <th class="col-md-1 text-center">
-                                #
+                        <tr>
+                            <th class="col-md-1 text-center" ng-repeat="header in headers" ng-style="{'background-color':'@{{header.color}}'}">
+                                @{{header.shortDate}}
                             </th>
-                            <th class="col-md-1 text-center">
-                                <a href="" ng-click="sortTable('name')">
-                                Name
-                                <span ng-if="search.sortName == 'name' && !search.sortBy" class="fa fa-caret-down"></span>
-                                <span ng-if="search.sortName == 'name' && search.sortBy" class="fa fa-caret-up"></span>
-                            </th>
-                            <th class="col-md-1 text-center">
-                                <a href="" ng-click="sortTable('desc')">
-                                Desc
-                                <span ng-if="search.sortName == 'desc' && !search.sortBy" class="fa fa-caret-down"></span>
-                                <span ng-if="search.sortName == 'desc' && search.sortBy" class="fa fa-caret-up"></span>
-                            </th>
-                            <th class="col-md-3 text-center">
-                                <a href="" ng-click="sortTable('status')">
-                                Status
-                                <span ng-if="search.sortName == 'status' && !search.sortBy" class="fa fa-caret-down"></span>
-                                <span ng-if="search.sortName == 'status' && search.sortBy" class="fa fa-caret-up"></span>
-                            </th>
-                            <th class="col-md-2 text-center">
-                                <a href="" ng-click="sortTable('date_from')">
-                                Start Date
-                                <span ng-if="search.sortName == 'date_from' && !search.sortBy" class="fa fa-caret-down"></span>
-                                <span ng-if="search.sortName == 'date_from' && search.sortBy" class="fa fa-caret-up"></span>
-                            </th>
-                            <th class="col-md-2 text-center">
-                                <a href="" ng-click="sortTable('date_to')">
-                                  Due Date
-                                <span ng-if="search.sortName == 'date_to' && !search.sortBy" class="fa fa-caret-down"></span>
-                                <span ng-if="search.sortName == 'date_to' && search.sortBy" class="fa fa-caret-up"></span>
-                            </th>
-                            <th class="col-md-2 text-center">
-                              <a href="" ng-click="sortTable('created_by')">
-                                Created By
-                              <span ng-if="search.sortName == 'created_by' && !search.sortBy" class="fa fa-caret-down"></span>
-                              <span ng-if="search.sortName == 'created_by' && search.sortBy" class="fa fa-caret-up"></span>
-                            </th>
-                            <th class="col-md-1 text-center">
-                                Action
+                        </tr>
+                        <tr>
+                            <th class="col-md-1 text-center" ng-repeat="header in headers" ng-style="{'background-color':'@{{header.color}}'}">
+                                @{{header.day}}
                             </th>
                         </tr>
                         <tbody>
-                            <tr dir-paginate="task in alldata | itemsPerPage:itemsPerPage | orderBy:sortType:sortReverse" total-items="totalCount">
-                                <td class="col-md-1 text-center">
-                                    <a href="/vm/@{{ vm.id }}/edit">
-                                        @{{ $index + indexFrom }}
-                                    </a>
-                                </td>
-                                <td class="col-md-1 text-center">
-                                    <a href="/vm/@{{ vm.id }}/edit">
-                                        @{{ vm.serial_no }}
-                                    </a>
-                                </td>
-                                <td class="col-md-1 text-center">
-                                    @{{ vm.type }}
-                                </td>
-                                <td class="col-md-3 text-center">
-                                    @{{ vm.racking_config_name }} <br>
-                                    @{{ vm.racking_config_desc }}
-                                </td>
-                                <td class="col-md-2 text-left">
-                                    <a href="/simcard/@{{vm.simcard_id}}/edit" ng-if="vm.simcard_id">
-                                        @{{ vm.simcard_no }}
-                                            @{{ vm.simcard_no && vm.telco_name ? '-' : '' }}
-                                        @{{vm.telco_name}}
-                                            @{{ vm.telco_name && vm.phone_no ? '-' : '' }}
-                                        @{{vm.phone_no}}
-                                        </a>
-                                </td>
-                                <td class="col-md-2 text-left">
-                                    @{{ vm.provider_name }}
-                                        @{{vm.terminal_id ? '-' : ''}}
-                                    @{{vm.terminal_id}}
-                                </td>
-                                <td class="col-md-2 text-left">
-                                    @{{ vm.desc }}
-                                </td>
-                                <td class="col-md-1 text-center">
-                                    @{{ vm.vend_code}}
-                                </td>
-                                <td class="col-md-2 text-left">
-                                    <a href="/person/@{{ vm.person_id }}" ng-if="vm.person_id">
-                                        @{{ vm.cust_prefix_code}}-@{{vm.code}} <br> @{{vm.company}}
-                                    </a>
-                                </td>
-                                <td class="col-md-1 text-center">
-                                    @{{ vm.custcategory}}
-                                </td>
-                                <td class="col-md-1 text-center">
-                                    <button class="btn btn-danger btn-sm btn-delete" ng-click="confirmDelete($event, vm.id)"><i class="fa fa-times"></i></button>
+                            <tr ng-repeat="">
+                                <td class="col-md-1 text-center" ng-repeat="(index, task) in contents" ng-if="index == header.date">
+                                    @{{task.name}}
+                                    {{-- <button class="btn btn-danger btn-sm btn-delete" ng-click="confirmDelete($event, vm.id)"><i class="fa fa-times"></i></button> --}}
                                 </td>
                             </tr>
-                            <tr ng-if="!alldata || alldata.length == 0">
+                            <tr ng-if="!contents || contents.length == 0">
                                 <td colspan="18" class="text-center">No Records Found</td>
                             </tr>
                         </tbody>
                     </table>
-                </div>
-                <div>
-                    <dir-pagination-controls max-size="5" direction-links="true" boundary-links="true" class="pull-left" on-page-change="pageChanged(newPageNumber)"> </dir-pagination-controls>
                 </div>
         </div>
     </div>
