@@ -839,7 +839,9 @@ class OperationWorksheetController extends Controller
             if (count($tags) == 1) {
                 $tags = [$tags];
             }
-            $people = $people->whereIn('persontags.id', $tags);
+            $people = $people->whereHas('persontagattaches', function($query) use ($tags) {
+                $query->whereIn('persontag_id', $tags);
+            });
         }
 
         if($account_manager != '') {
