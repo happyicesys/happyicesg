@@ -412,6 +412,9 @@ class VMController extends Controller
                     $query->whereNull('people.cust_prefix_id')->orWhere('people.cust_prefix_id', 0);
                 });
             }else {
+                if (count($custPrefixID) == 1) {
+                    $custPrefixID = [$custPrefixID];
+                }
                 $vendings = $vendings->whereIn('people.cust_prefix_id', $custPrefixID);
             }
         }

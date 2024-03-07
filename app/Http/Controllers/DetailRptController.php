@@ -3038,6 +3038,9 @@ class DetailRptController extends Controller
                     $query->whereNull('people.cust_prefix_id')->orWhere('people.cust_prefix_id', 0);
                 });
             }else {
+                if (count($custPrefixID) == 1) {
+                    $custPrefixID = [$custPrefixID];
+                }
                 $deals = $deals->whereIn('people.cust_prefix_id', $custPrefixID);
             }
         }
@@ -3162,6 +3165,9 @@ class DetailRptController extends Controller
                     $query->whereNull('people.cust_prefix_id')->orWhere('people.cust_prefix_id', 0);
                 });
             }else {
+                if (count($custPrefixID) == 1) {
+                    $custPrefixID = [$custPrefixID];
+                }
                 $deals = $deals->whereIn('people.cust_prefix_id', $custPrefixID);
             }
         }
@@ -3315,6 +3321,9 @@ class DetailRptController extends Controller
                     $query->whereNull('people.cust_prefix_id')->orWhere('people.cust_prefix_id', 0);
                 });
             }else {
+                if (count($custPrefixID) == 1) {
+                    $custPrefixID = [$custPrefixID];
+                }
                 $deals = $deals->whereIn('people.cust_prefix_id', $custPrefixID);
             }
         }
@@ -3898,6 +3907,9 @@ class DetailRptController extends Controller
                     $query->whereNull('people.cust_prefix_id')->orWhere('people.cust_prefix_id', 0);
                 });
             }else {
+                if (count($custPrefixID) == 1) {
+                    $custPrefixID = [$custPrefixID];
+                }
                 $transactions = $transactions->whereIn('people.cust_prefix_id', $custPrefixID);
             }
         }
