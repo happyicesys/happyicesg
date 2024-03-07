@@ -3456,9 +3456,10 @@ class DetailRptController extends Controller
     private function convertSoaExcel($transactions, $total)
     {
         $soa_query = clone $transactions;
-        $data = $soa_query->orderBy('people.cust_id')->orderBy('transactions.id')->groupBy('transactions.id')->get();
+        $data = collect($soa_query->orderBy('people.cust_id')->orderBy('transactions.id')->groupBy('transactions.id')->get());
         $title = 'Account SOA';
 
+        // dd(collect($data), $total);
         Excel::create($title.'_'.Carbon::now()->format('dmYHis'), function($excel) use ($data, $total) {
             $excel->sheet('sheet1', function($sheet) use ($data, $total) {
                 $sheet->setAutoSize(true);

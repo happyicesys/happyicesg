@@ -19,8 +19,9 @@
 
     <tr>
     <th>Inv #</th>
-    <th>Customer ID</th>
-    <th>ID Name</th>
+    <th>Cust Code</th>
+    <th>Cust Prefix</th>
+    <th>Cust Name</th>
     <th>Company</th>
     <th>Date</th>
     <th>Pieces</th>
@@ -34,11 +35,12 @@
             @endif
             <tr>
                 <td>{{$transaction->id}}</td>
-                <td>{{$transaction->cust_id}}</td>
+                <td>{{$transaction->code}}</td>
+                <td>{{$transaction->cust_prefix_code}}</td>
                 <td>{{$transaction->company}}</td>
                 <td>{{$transaction->com_remark}}</td>
                 {{-- <td>{{Carbon\Carbon::createFromFormat('Y-m-d', $transaction->order_date)->format('d M y')}}</td> --}}
-                <td>{{Carbon\Carbon::parse($transaction->delivery_date)->format('Y-m-d')}}</td>
+                <td>{{\Carbon\Carbon::parse($transaction->delivery_date)->format('Y-m-d')}}</td>
                 <td>
                     {{$transaction->pieces}}
                 </td>
