@@ -212,6 +212,8 @@ class PersonController extends Controller
         $person->is_combi = $request->has('is_combi') ? 1 : 0;
         $person->is_subsidiary = $request->has('is_subsidiary') ? 1 : 0;
         $person->is_non_freezer_point = $request->has('is_non_freezer_point') ? 1 : 0;
+        $person->bill_postcode = $request->bill_postcode ? trim($request->bill_postcode) : null;
+        $person->del_postcode = $request->del_postcode ? trim($request->del_postcode) : null;
         // default setting is dvm based on custcategory
         if ($person->custcategory) {
             if ($person->custcategory->name == 'V-Dir') {
@@ -325,6 +327,8 @@ class PersonController extends Controller
         $request->merge(array('is_sys' => $request->has('is_sys') == 'true' ? 1 : 0));
         $request->merge(array('is_stock_balance_count_required' => $request->has('is_stock_balance_count_required') == 'true' ? 1 : 0));
         $request->merge(array('is_commission_report' => $request->has('is_commission_report') == 'true' ? 1 : 0));
+        $request->merge(array('bill_postcode' => $request->bill_postcode ? trim($request->bill_postcode) : null));
+        $request->merge(array('del_postcode' => $request->del_postcode ? trim($request->del_postcode) : null));
 
         $person = Person::findOrFail($id);
 
