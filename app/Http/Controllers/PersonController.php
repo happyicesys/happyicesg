@@ -432,11 +432,15 @@ class PersonController extends Controller
         // tagging feature sync
         $this->syncPersonTags($person, $request);
 
-        if($this->retrieveCustomerMigration($person->id)->toArray()) {
-            $client = new Client();
-            // $clientUrl = "https://sys.happyice.com.sg/api/v1/customer/migrate";
-            $clientUrl = config('app.sys_url').'/api/v1/customer/migrate';
-            $clientRequest = $client->post($clientUrl, ['form_params' => $this->retrieveCustomerMigration($person->id)->toArray()[0]]);
+        $personIDClient = new Client();
+        $personIDClientUrl = config('app.sys_url').'/api/v1/customers/person/' . $person->id;
+        $personIDClientRequest = $personIDClient->post($personIDClientUrl, []);
+        if(json_decode($personIDClientRequest->getBody()->getContents())) {
+            if($this->retrieveCustomerMigration($person->id)->toArray()) {
+                $client = new Client();
+                $clientUrl = config('app.sys_url').'/api/v1/customer/migrate';
+                $clientRequest = $client->post($clientUrl, ['form_params' => $this->retrieveCustomerMigration($person->id)->toArray()[0]]);
+            }
         }
 
         return Redirect::action('PersonController@edit', $person->id);
