@@ -5,10 +5,16 @@
 
 <div class="col-md-12 col-sm-12 col-xs-12">
     <div class="row">
-        <div class="col-md-12 col-sm-12 col-xs-12">
+        <div class="col-md-8 col-sm-12 col-xs-12">
             <div class="form-group">
                 {!! Form::label('serial_no', 'Serial Num', ['class'=>'control-label']) !!}
                 {!! Form::text('serial_no', null, ['class'=>'form-control']) !!}
+            </div>
+        </div>
+        <div class="col-md-4 col-sm-12 col-xs-12">
+            <div class="form-group">
+                {!! Form::label('old_serial_no', 'Old Serial Num', ['class'=>'control-label']) !!}
+                {!! Form::text('old_serial_no', null, ['class'=>'form-control']) !!}
             </div>
         </div>
     </div>
@@ -45,6 +51,12 @@
                 {!! Form::select('racking_config_id', [''=>null] + $rackingConfigs::orderBy('name')->lists('name', 'id')->all(),
                             null,
                             ['class'=>'select form-control']) !!}
+            </div>
+        </div>
+        <div class="col-md-6 col-sm-6 col-xs-12">
+            <div class="form-group">
+                {!! Form::label('start_year_month', 'In Service (yy/mm)', ['class'=>'control-label']) !!}
+                {!! Form::text('start_year_month', null, ['class'=>'form-control', 'placeholder'=>'yy/mm']) !!}
             </div>
         </div>
     </div>
